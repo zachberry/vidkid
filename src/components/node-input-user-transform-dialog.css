@@ -1,0 +1,92 @@
+.node-input-user-transform-dialog {
+	position: relative;
+	padding: 0.5em;
+	box-sizing: border-box;
+	border-radius: 0.25em;
+	background: #c5c5c5;
+	color: #424242;
+	padding-right: 1.3em;
+	z-index: 1;
+}
+
+.node-input-user-transform-dialog:before {
+	position: absolute;
+	content: " ";
+	width: 0.5em;
+	height: 0.5em;
+	background: #c5c5c5;
+	top: 50%;
+	right: 0;
+	transform: translate(50%, -50%) rotate(45deg);
+}
+
+.node-input-user-transform-dialog > * {
+	font-size: 0.85em;
+}
+
+.node-input-user-transform-dialog > .close-button {
+	position: absolute;
+	right: 0;
+	top: 50%;
+	transform: translate(0, -50%);
+	background: transparent;
+	border-radius: 1em;
+	width: 1.5em;
+	height: 1.5em;
+	padding: 0;
+	border: none;
+	cursor: pointer;
+	padding-bottom: 0.2em;
+	padding-right: 0.1em;
+}
+
+.node-input-user-transform-dialog > .close-button:hover {
+	color: #990000;
+	background: white;
+}
+
+.node-input-user-transform-dialog > .user-transform {
+	/* border-bottom: 1px solid rgba(0, 0, 0, 0.1); */
+	/* padding-bottom: 0.5em; */
+	/* margin-bottom: 0.5em; */
+	width: 11em;
+}
+
+.node-input-user-transform-dialog > .user-transform > span {
+	width: 22%;
+	vertical-align: middle;
+	display: inline-block;
+	transform: translate(0, -1px);
+}
+
+.node-input-user-transform-dialog > .user-transform > input {
+	border: none;
+	font-family: monospace;
+	border-radius: 0.25em;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+	height: 2em;
+	padding: 0.25em;
+	box-sizing: border-box;
+	vertical-align: middle;
+	width: 53%;
+}
+
+.node-input-user-transform-dialog > .user-transform > .update-transform-button {
+	width: 25%;
+	vertical-align: middle;
+	border-radius: 0.25em;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	height: 2em;
+	padding: 0.25em;
+	box-sizing: border-box;
+	border: none;
+	background: #ffe501;
+	color: black;
+	cursor: pointer;
+}
+
+.node-input-user-transform-dialog > .user-transform > .update-transform-button:hover {
+	background: #ffe501;
+}

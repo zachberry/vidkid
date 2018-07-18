@@ -1,0 +1,34 @@
+.cable {
+	position: absolute;
+	z-index: 1;
+	pointer-events: none;
+	/* background: rgba(0, 0, 255, 0.4); */
+}
+
+.cable.is-hover .path {
+	/* stroke: #00ff83; */
+	stroke: rgb(0, 200, 214);
+}
+
+.cable.is-hover circle {
+	/* fill: #00ff83; */
+	fill: rgb(0, 200, 214);
+}
+
+/* .cable.is-selected .path-bg {
+	stroke: white;
+} */
+
+.cable.is-selected .path {
+	stroke: #ff0065;
+	stroke-dasharray: 3;
+}
+.cable.is-selected circle {
+	fill: #ff0065;
+}
+
+.cable .path-bg,
+.cable circle {
+	cursor: pointer;
+	pointer-events: all;
+}

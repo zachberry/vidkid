@@ -1,0 +1,73 @@
+.node-search-menu {
+	position: relative;
+	background: rgba(0, 0, 0, 0.7);
+	width: 15em;
+	border-radius: 0.25em;
+	box-shadow: 0 2px 2px black;
+	padding-top: 1em;
+	transform: translate(-0.5em, -2em);
+}
+
+.node-search-menu .close-button {
+	position: absolute;
+	right: 0;
+	top: 0;
+	transform: translate(0, 0);
+	background: transparent;
+	border-radius: 0.3125em;
+	width: 1.5em;
+	height: 1.5em;
+	padding: 0;
+	border: none;
+	cursor: pointer;
+	padding-bottom: 0.2em;
+	padding-right: 0.1em;
+	color: white;
+	/* background: red; */
+	font-size: 0.8em;
+}
+
+.node-search-menu .close-button:hover {
+	/* color: #990000; */
+	background: #ffe501;
+}
+
+.node-search-menu .search-field {
+	font-size: 1em;
+	width: 14.5em;
+	padding: 0.25em;
+	box-sizing: border-box;
+	border-radius: 0.25em;
+	border: none;
+	margin: 0.25em;
+}
+
+.node-search-menu .hidden-input {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	opacity: 0;
+	transform: translate(0, 100%);
+	pointer-events: none;
+}
+
+.node-search-menu .menu {
+	width: 100%;
+	color: white;
+}
+
+.node-search-menu .menu li {
+	padding: 0.25em;
+}
+
+.node-search-menu .menu li:hover,
+.node-search-menu .menu li.is-selected,
+.node-search-menu .menu li.is-highlighted {
+	background: #ffe501;
+	color: black;
+}
+
+.node-search-menu .menu li:last-child {
+	border-bottom-left-radius: 0.25em;
+	border-bottom-right-radius: 0.25em;
+}

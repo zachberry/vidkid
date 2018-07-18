@@ -1,0 +1,119 @@
+.node-port {
+	position: relative;
+	line-height: 1em;
+}
+
+.node-port .port {
+	width: 0.5em;
+	height: 0.5em;
+	border-radius: 0.5em;
+	border: 1px solid rgba(255, 255, 255, 0.5);
+	position: absolute;
+}
+
+.node-port .label {
+	font-size: 0.85em;
+	white-space: nowrap;
+	overflow: hidden;
+	display: inline-block;
+}
+
+.node-port .port {
+	position: absolute;
+}
+
+.node-input {
+	padding-left: 3em;
+}
+
+.node-input .label {
+	width: 7.25em;
+}
+
+.node-output .label {
+	width: 5em;
+}
+
+.node-output {
+	padding-right: 1.25em;
+}
+
+.node-port .transform {
+	width: 0.35em;
+	height: 0.35em;
+	/* border-radius: 0.5em; */
+	border: 1px solid rgba(255, 255, 255, 0.5);
+	position: absolute;
+	top: 0.5em;
+	left: 1.25em;
+	transform: translate(0, -50%) translate(0, 1px) rotate(45deg);
+	cursor: pointer;
+}
+
+/*f f 0 0 6 5*/
+
+.node-port .transform.is-transform-set {
+	background: #ffe501;
+	border: 1px solid #ffe501;
+}
+
+.node-port .transform:hover {
+	background: #ffe501;
+	border: 1px solid #ffe501;
+}
+
+.node-input .port {
+	top: 0.5em;
+	left: 0.25em;
+	transform: translate(0, -50%) translate(0, 1px);
+}
+
+.node-port .label {
+	cursor: pointer;
+}
+
+.node-port .label:hover {
+	background: #ffe501;
+	border-radius: 0.25em;
+	color: black;
+}
+
+.node-port .expand {
+	cursor: pointer;
+	/* font-size: 0.5em; */
+	position: absolute;
+	left: 2em;
+	top: -0.16em;
+}
+
+.node-input .expand:hover {
+	color: #ffe501;
+}
+
+.node-input .expand.is-expanded {
+	/* transform: rotateX(180deg) translate(0, 2px); */
+}
+
+.node-output .port {
+	top: 0.5em;
+	right: 0.25em;
+	transform: translate(0, -50%) translate(0, 1px);
+}
+
+.node-input .node-input-user-transform-dialog {
+	position: absolute;
+	left: 1.5em;
+	top: -0.6em;
+	transform: translate(-100%, 0);
+}
+
+.node-input .input-component {
+	width: 9em;
+	background: rgba(255, 255, 255, 0.2);
+	padding: 0.2em;
+	border-radius: 0.25em;
+	margin-top: 0.2em;
+	box-sizing: border-box;
+	margin-left: -2.75em;
+	box-sizing: border-box;
+}

@@ -1,0 +1,95 @@
+.node {
+	background: #4a4a4a;
+	border-radius: 0.25em;
+	color: white;
+	display: inline-block;
+	/* border: 1px solid rgba(0, 0, 0, 0.1); */
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.node header {
+	width: 100%;
+	height: 1.5em;
+	background: #737373;
+
+	border-top-left-radius: 0.25em;
+	border-top-right-radius: 0.25em;
+	position: relative;
+	box-sizing: border-box;
+	font-weight: bold;
+}
+
+/* .node header:hover,
+.node.dragging header {
+	background: #ffe501;
+	color: black;
+} */
+
+.node header .name {
+	cursor: move;
+	padding: 0.2em;
+	width: 100%;
+	display: inline-block;
+	box-sizing: border-box;
+}
+
+.node header .controls {
+	position: absolute;
+	right: 0;
+	top: 0;
+	background: rgba(0, 0, 0, 0.7);
+	border-top-right-radius: 0.25em;
+}
+
+.node header .controls button {
+	background: none;
+	border: none;
+	font-size: 1.2em;
+	padding: 0;
+	width: 1.25em;
+	height: 1.25em;
+	color: white;
+	vertical-align: top;
+	color: white;
+	cursor: pointer;
+	padding-bottom: 0.1em;
+}
+
+.node header .controls .edit-button,
+.node header .controls .copy-button {
+	transform: rotateY(180deg);
+}
+
+.node header .controls button:hover {
+	background: #ffe501;
+	color: black;
+}
+
+.node header .controls button:last-child {
+	border-top-right-radius: 0.208em;
+}
+
+.node .node .ports {
+	position: relative;
+	vertical-align: top;
+	display: inline-block;
+}
+
+.node .inputs {
+	float: left;
+	text-align: left;
+	width: 60%;
+}
+
+.node .outputs {
+	float: right;
+	text-align: right;
+	width: 40%;
+}
+
+.node .component-container {
+	min-width: 15em;
+	clear: both;
+	padding: 1em;
+	box-sizing: border-box;
+}

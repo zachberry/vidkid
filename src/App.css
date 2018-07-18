@@ -1,0 +1,39 @@
+.App {
+}
+
+#todo-create-node {
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 999;
+}
+
+.App .main-menu {
+	width: 100%;
+	background: #080808;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.8);
+	color: #7b7b7b;
+	padding: 0.5em 1em;
+	box-sizing: border-box;
+}
+
+.App .edit-board {
+	position: fixed;
+	left: 0;
+	top: 2.5em;
+	right: 0;
+	bottom: 0;
+}
+
+.App .edit-board .connections-board,
+.App .edit-board .node-board {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.App .screen {
+	z-index: 9999;
+}

@@ -1,0 +1,16 @@
+.toolbar {
+}
+
+.toolbar button {
+	border: none;
+	background: none;
+	font-family: "Work Sans";
+	color: white;
+	font-size: 0.8em;
+	cursor: pointer;
+	height: 3.125em;
+}
+
+.toolbar button:hover {
+	color: #ffe501;
+}

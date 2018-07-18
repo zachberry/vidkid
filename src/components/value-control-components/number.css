@@ -1,0 +1,15 @@
+.number {
+	position: relative;
+	width: 100%;
+	margin-bottom: 0.1em;
+}
+
+.number > .input {
+	margin: 0;
+	box-sizing: border-box;
+	border-radius: 0.25em;
+	border: none;
+	width: 100%;
+	padding: 0.5em;
+	font-family: monospace;
+}

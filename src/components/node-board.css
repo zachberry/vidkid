@@ -1,0 +1,13 @@
+.node-board {
+	background: url("./grid-bg.png");
+}
+
+.node-board .node {
+	position: absolute;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.node-board .menu-container {
+	position: absolute;
+	z-index: 999;
+}

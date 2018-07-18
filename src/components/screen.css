@@ -1,0 +1,69 @@
+.screen {
+	/* overflow: hidden; */
+	position: relative;
+}
+
+.screen.mini {
+	position: fixed;
+	background: white;
+	border: 1px solid #3e3e3e;
+	right: 1em;
+	bottom: 1em;
+	box-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
+	width: 20vw;
+	height: 20vh;
+}
+
+.screen.fullscreen {
+	position: fixed;
+	background: white;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.screen.fullscreen #--app--screen {
+	width: 100%;
+	height: 100%;
+	transform: none;
+}
+
+#--app--screen {
+	position: absolute;
+	left: 0;
+	top: 0;
+	transform: scale(0.2);
+	width: 500%;
+	height: 500%;
+	border: none;
+	transform-origin: top left;
+	border: none;
+	pointer-events: none;
+}
+
+.screen button {
+	position: absolute;
+	right: 0.5em;
+	bottom: 0.5em;
+	border-radius: 0.25em;
+	height: 2em;
+	padding: 0.25em 1em;
+	box-sizing: border-box;
+	background: black;
+	color: gray;
+	cursor: pointer;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	/* opacity: .5; */
+}
+
+.screen.fullscreen button {
+	background: rgba(0, 0, 0, 0.5);
+	color: rgba(255, 255, 255, 0.5);
+}
+
+.screen button:hover {
+	background: #ffe501;
+	border: 1px solid #ffe501;
+	color: black;
+}

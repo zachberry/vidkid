@@ -1,0 +1,16 @@
+.main-menu {
+	height: 2.5em;
+}
+
+.main-menu .logo {
+	display: inline-block;
+	/* color: #ffe501; */
+	/* color: black; */
+}
+
+.main-menu .toolbar {
+	position: absolute;
+	right: 0.5em;
+	top: 0;
+	height: 2.5em;
+}
