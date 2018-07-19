@@ -210,7 +210,11 @@ class DocState {
 					break;
 
 				case "createNode":
-					let newNode = this.nodeMap.createNewNode(action.text);
+					let newNode = this.nodeMap.createNewNode(
+						action.text,
+						action.templateHTML,
+						action.templateCSS
+					);
 					if (action.x || action.y) {
 						// this.nodeMap.setNodePositionById(newNode.id, action.x, action.y);
 						this.setNodePosition(newNode.id, action.x, action.y);
@@ -302,7 +306,13 @@ class DocState {
 				case "updateNodeText":
 					if (this.editingNodeId === null) return;
 
-					this.nodeMap.editNode(this.editingNodeId, action.text);
+					this.nodeMap.editNode(
+						this.editingNodeId,
+						action.text,
+						action.templateHTML,
+						action.templateCSS
+					);
+
 					break;
 
 				case "stopEditingNode":
@@ -383,6 +393,9 @@ class DocState {
 							inConnection = this.connecting;
 							outConnection = action;
 							break;
+
+						default:
+							return false;
 					}
 
 					//console.log('CON', this.connecting, action);
@@ -397,6 +410,9 @@ class DocState {
 					this.connecting = null;
 
 					break;
+
+				default:
+					return false;
 			}
 
 			// this.stateHistory.push(this.toSerializeable())

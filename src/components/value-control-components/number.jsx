@@ -1,6 +1,6 @@
 import "./number.css";
 
-import React, { Component } from "react";
+import React from "react";
 
 export default class Number extends React.Component {
 	constructor(props) {

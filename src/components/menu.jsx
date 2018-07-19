@@ -1,6 +1,6 @@
 import "./menu.css";
 
-import React, { Component } from "react";
+import React from "react";
 
 export default class Menu extends React.Component {
 	static get defaultProps() {

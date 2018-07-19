@@ -3,10 +3,6 @@ import "./node-port.css";
 import React, { Component } from "react";
 
 export default class NodeOutput extends Component {
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
 		return (
 			<div className="node-output node-port">

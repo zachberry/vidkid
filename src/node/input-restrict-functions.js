@@ -3,6 +3,12 @@ class NumberInput {
 		this.min = min !== -Infinity ? min : null;
 		this.max = max !== Infinity ? max : null;
 		this.numberType = numberType;
+
+		if (Number.isFinite(min) && Number.isFinite(max)) {
+			this.controlType = "range";
+		} else {
+			this.controlType = "number";
+		}
 	}
 
 	transformValue(value) {
@@ -24,4 +30,28 @@ const int = (min = -Infinity, max = Infinity) => {
 	return new NumberInput(NumberInput.TYPE_INT, min, max);
 };
 
-export { float, int };
+class SetInput {
+	constructor(possibleValuesArray = [null]) {
+		this.values = {};
+		this.valuesList = possibleValuesArray;
+		possibleValuesArray.forEach(s => {
+			this.values[s] = s;
+		});
+		this.controlType = "select";
+	}
+
+	transformValue(value) {
+		if (typeof value === "number") {
+			return typeof this.valuesList[value] !== "undefined" ? this.valuesList[value] : null;
+		} else {
+			value = "" + value;
+			return typeof this.values[value] !== "undefined" ? this.values[value] : null;
+		}
+	}
+}
+
+const set = possibleValuesArray => {
+	return new SetInput(possibleValuesArray);
+};
+
+export { float, int, set };

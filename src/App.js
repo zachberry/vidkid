@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
-import logo from "./logo.svg";
+// import ReactDOM from "react-dom";
+// import logo from "./logo.svg";
 import "./App.css";
 
 import Events from "./events";
-import NodeMap from "./node/node-map";
+// import NodeMap from "./node/node-map";
 import NodeBoard from "./components/node-board";
 import ConnectionsBoard from "./components/connections-board";
 import MainMenu from "./components/main-menu";
@@ -14,6 +14,10 @@ import EditNode from "./components/edit-node";
 import Screen from "./components/screen";
 import EditPage from "./components/edit-page";
 import ImportExportDialog from "./components/import-export-dialog";
+
+// window.addEventListener("gamepadconnected", e => {
+// 	console.log("oh shit", e);
+// });
 
 // let _wc = `() => { return class WordCount extends HTMLElement {
 // 	static get observedAttributes() {
@@ -132,15 +136,36 @@ class App extends Component {
 	}
 
 	fromSerializeable(newState) {
+		//@TODO: Can these two methods be combined?
+		this.docState.fromSerializeableNodeMap(newState);
 		this.docState.fromSerializeable(newState);
+
 		this.forceUpdate(() => {
-			this.docState.fromSerializeableNodeMap(newState);
 			this.onUpdate();
 
 			setTimeout(() => {
 				this.forceUpdate();
+
+				//@TODO:
+				// let gamepad = require("./library/css-hue-rotate").default;
+				// console.log("gp", gamepad);
+				// this.docState.doAction({
+				// 	type: "createNode",
+				// 	text: gamepad.text
+				// 	// templateHTML: gamepad.templateHTML,
+				// 	// templateCSS: gamepad.templateCSS
+				// });
 			});
 		});
+
+		// this.forceUpdate(() => {
+		// 	// this.docState.fromSerializeableNodeMap(newState);
+		// 	this.onUpdate();
+
+		// 	setTimeout(() => {
+		// 		this.forceUpdate();
+		// 	});
+		// });
 	}
 
 	onDialogImport(newState) {
@@ -169,7 +194,6 @@ class App extends Component {
 						getAttribute={this.docState.nodeMap.getAttribute.bind(this.docState.nodeMap)}
 						docState={this.docState}
 						nodeMap={this.docState.nodeMap}
-						nodeMapAdapter={this.docState.nodeMap.nodeMapAdapter}
 					/>
 					<Screen
 						pageHTML={this.docState.pageHTML}

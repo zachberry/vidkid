@@ -13,7 +13,7 @@
 	border-radius: 0.25em;
 }
 
-.edit-page .main {
+.edit-page .edit-html {
 	position: absolute;
 	left: 1em;
 	right: 1em;
@@ -24,65 +24,6 @@
 .edit-page .container {
 	background: rgba(0, 0, 0, 0.9);
 	border-radius: 0.25em;
-}
-
-.edit-page .container.html {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	width: calc(50% - 0.5em);
-	height: calc(50% - 1em);
-}
-.edit-page .container.css {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	width: calc(50% - 0.5em);
-	left: calc(50% + 0.5em);
-	height: 100%;
-}
-
-.edit-page .container.preview {
-	position: absolute;
-	top: 50%;
-	bottom: 0;
-	width: calc(50% - 0.5em);
-	height: 50%;
-}
-
-.edit-page .container h1 {
-	margin: 0;
-	padding: 0;
-	font-size: 1em;
-	margin-left: 0.4em;
-	margin-top: 0.4em;
-}
-
-.edit-page .ace_editor {
-	position: absolute;
-	left: 0;
-	top: 2.2em;
-	right: 0;
-	bottom: 0;
-	border-radius: 0.25em;
-	border-top-left-radius: 0;
-	border-top-right-radius: 0;
-	height: auto !important;
-}
-
-.edit-page iframe {
-	position: absolute;
-	left: 0;
-	top: 2em;
-	border-radius: 0.25em;
-	border-top-left-radius: 0;
-	border-top-right-radius: 0;
-	right: 0;
-	bottom: 0;
-	width: 100%;
-	height: calc(100% - 2em);
-	border: none;
-	background: white;
 }
 
 .edit-page .save-and-close-button {

@@ -22,6 +22,7 @@ export default class NodeInput extends Component {
 	render() {
 		let ValueControlComponent = getValueControlComponent(
 			this.props.input.control ? this.props.input.control.type : null,
+			this.props.input.restrict,
 			typeof this.props.value
 		);
 		let component = (
@@ -44,7 +45,7 @@ export default class NodeInput extends Component {
 					className={"expand" + (this.props.isControlOpen ? " is-expanded" : " is-not-expanded")}
 					onClick={this.boundOnClickExpand}
 				>
-					...
+					{this.props.isControlOpen ? "-" : "+"}
 				</span>
 				<div className="label" onClick={this.props.onClickPort}>
 					{this.props.input.name + ":" + this.props.value}

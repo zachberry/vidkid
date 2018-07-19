@@ -1,6 +1,6 @@
 import "./node-board.css";
 
-import React, { Component } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 
 import Node from "./node";
@@ -35,6 +35,8 @@ class NodeBoard extends React.Component {
 	}
 
 	onContextMenu(event) {
+		if (event.target !== this.refs.board) return;
+
 		event.preventDefault();
 
 		this.setState({
@@ -56,9 +58,12 @@ class NodeBoard extends React.Component {
 	}
 
 	onSearchMenuItemSelect(menuItem) {
+		console.log("osm", menuItem);
 		this.props.docState.doAction({
 			type: "createNode",
 			text: menuItem.text,
+			templateHTML: menuItem.templateHTML,
+			templateCSS: menuItem.templateCSS,
 			x: this.state.contextMenuCoords.x + this.state.newNodeOffset,
 			y: this.state.contextMenuCoords.y + this.state.newNodeOffset
 		});
@@ -187,12 +192,18 @@ class NodeBoard extends React.Component {
 		});
 	}
 
+	componentDidUpdate() {
+		console.log("NODE BOARD CDU");
+		Events.emit("connections:update");
+	}
+
 	render() {
 		return (
 			<div
 				className="node-board"
 				onContextMenu={this.boundOnContextMenu}
 				onClick={this.boundOnClick}
+				ref="board"
 			>
 				{this.props.nodeOrder.map(nodeId => {
 					let node = this.props.nodes[nodeId];
@@ -203,7 +214,6 @@ class NodeBoard extends React.Component {
 							ref={node.id}
 							key={node.id + "-" + node.rev}
 							nodeMap={this.props.nodeMap}
-							nodeMapAdapter={this.props.nodeMapAdapter}
 							getAttribute={this.props.getAttribute}
 							onStartDrag={this.onStartDragNode.bind(this, node)}
 							onClickEdit={this.onEditNode.bind(this, node)}

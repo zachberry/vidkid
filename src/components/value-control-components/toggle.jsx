@@ -1,6 +1,6 @@
 import "./toggle.css";
 
-import React, { Component } from "react";
+import React from "react";
 // import ReactDOM from 'react-dom';
 
 // import drag from '../drag';
@@ -26,7 +26,7 @@ export default class Toggle extends React.Component {
 						checked={this.props.value}
 						onChange={this.boundOnChange}
 					/>
-					<span>{this.props.value ? "True" : "False"}</span>
+					<span>{this.props.value ? " - True" : " - False"}</span>
 				</label>
 			</div>
 		);

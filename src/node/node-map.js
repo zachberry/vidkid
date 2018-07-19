@@ -7,7 +7,8 @@ import Events from "../events";
 const DEFAULT_INPUT_OPTIONS = {
 	label: null,
 	restrict: null,
-	observe: false
+	observe: false,
+	visible: true
 };
 
 export default class NodeMap {
@@ -37,6 +38,8 @@ export default class NodeMap {
 				id: id,
 				rev: o.rev,
 				text: o.text,
+				templateHTML: o.templateHTML,
+				templateCSS: o.templateCSS,
 				transforms: clone(o.transforms)
 			};
 		}
@@ -60,29 +63,44 @@ export default class NodeMap {
 
 		// debugger;
 
-		for (let id in o.byId) {
-			let n = o.byId[id];
-			this.createNewNode(n.text, n.id, n.rev, n.transforms);
-		}
-
 		this.values = o.values;
 		this.nodeMap = o.nodeMap;
 		this.portMap = o.portMap;
 		this.inputsMap = o.inputsMap;
 		this.nextId = o.nextId;
+
+		for (let id in o.byId) {
+			let n = o.byId[id];
+			this.createNewNode(n.text, n.templateHTML, n.templateCSS, n.id, n.rev, n.transforms);
+		}
 	}
 
 	getNextId() {
 		return "n" + this.nextId++;
 	}
 
-	createNewNode(nodeText, setNodeId = null, setRevId = null, transforms = null) {
+	createNewNode(
+		nodeText,
+		templateHTML = null,
+		templateCSS = null,
+		setNodeId = null,
+		setRevId = null,
+		transforms = null
+	) {
 		let nodeId = setNodeId !== null ? setNodeId : this.getNextId();
 		let rev = setRevId !== null ? setRevId : 0;
 
 		let webComponentTagName = nodeId + "-" + rev + "-" + Date.now();
 
-		let webComponent = createNodeWebComponent(webComponentTagName, nodeText);
+		let created = createNodeWebComponent(webComponentTagName, nodeText, templateHTML, templateCSS);
+		if (created.isError) {
+			console.error(created.error);
+			return null;
+		}
+		let webComponent = created.component;
+		let templateEl = created.template;
+		let styleEl = created.style;
+		// debugger;
 
 		let inputs = {};
 		// debugger;
@@ -97,12 +115,15 @@ export default class NodeMap {
 			component: webComponent,
 			componentInstance: null,
 			text: nodeText,
+			templateHTML: templateHTML,
+			templateCSS: templateCSS,
 			inputs,
 			inputsList: Object.values(inputs),
 			outputs: webComponent.outputs || [],
 			tagName: webComponentTagName,
 			transforms: {},
-			transformFns: {}
+			transformFns: {},
+			initialValues: {}
 		};
 		this.nodeOrder.push(nodeId);
 
@@ -111,6 +132,13 @@ export default class NodeMap {
 			this.setUserTransform(nodeId, inputName, transforms[inputName]);
 		}
 
+		// Create web component:
+		let inst = new this.byId[nodeId].component();
+		inst.init(nodeId, this.nodeMapAdapter, templateEl, styleEl);
+		this.byId[nodeId].componentInstance = inst;
+
+		// this.refs.component.init(this.props.node.id, this.props.nodeMapAdapter, templateEl);
+
 		// let observer = new MutationObserver(this.onAttrMutation);
 		// observer.forNodeId = observer.observe(webComponent, {
 		// 	childList: false,
@@ -118,58 +146,108 @@ export default class NodeMap {
 		// 	subtree: false
 		// });
 
-		return webComponent;
-	}
-
-	// This is called from the React component wrapper once the component
-	// is actually created so that nodeMap has a reference to it
-	setComponentInstance(nodeId, componentInstance) {
-		let node = this.byId[nodeId];
-		if (!node) return;
-
-		node.componentInstance = componentInstance;
-
-		// Update values:
-		node.component.inputs.forEach(input => {
-			console.log(
-				"SET INPUT NOW",
-				"input.name=",
-				input.name,
-				"input.defaultValue=",
-				input.defaultValue,
-				"this.getAttribute=",
-				this.getAttribute(nodeId, input.name)
-			);
-			//Set the value
+		// Set values:
+		console.log("__setting values__", nodeId, JSON.stringify(this.values, null, 2));
+		webComponent.inputs.forEach(input => {
 			let value = undefined;
 			// If the value is already set (from a fromSerializable operation...)
 			if (this.isAttributeSet(nodeId, input.name)) {
+				console.log("attr already set");
 				value = this.getAttribute(nodeId, input.name);
 			}
 			// Else if there is a default value...
 			else if (typeof input.defaultValue !== "undefined") {
+				console.log("default value");
 				value = input.defaultValue;
 			}
 
+			console.log("value=", value);
 			if (value !== undefined) {
-				this.setAttribute(node.id, input.name, value, false);
+				//this.setAttribute(nodeId, input.name, value, false);
+				this.byId[nodeId].initialValues[input.name] = value;
 			}
 		});
 
-		// Default values:
-		//@TODO - SKRIP SKRIP SKIRP!!!!!!
-		// webComponent.inputs.forEach(input => {
-		// 	if (typeof input.defaultValue !== "undefined") {
-		// 		this.setAttribute(nodeId, input.name, input.defaultValue);
-		// 	}
-		// });
+		return this.byId[nodeId];
 	}
+
+	// This method should be called after the component has been
+	// attached to the DOM. Then any attributeChanged callbacks
+	// that would be fired can expect the readyCallback
+	// to have been called.
+	setInitialValues(nodeId) {
+		let node = this.byId[nodeId];
+
+		if (!node || !node.initialValues) return;
+
+		console.log("SIV", nodeId, node.initialValues);
+
+		delete this.values[nodeId];
+
+		for (let k in node.initialValues) {
+			console.log("set attr", nodeId, k, node.initialValues[k]);
+			this.setAttribute(nodeId, k, node.initialValues[k]);
+		}
+
+		Events.emit("app:update");
+	}
+
+	// This is called from the React component wrapper once the component
+	// is actually created so that nodeMap has a reference to it
+	// setComponentInstance(nodeId, componentInstance) {
+	// 	let node = this.byId[nodeId];
+	// 	if (!node) return;
+
+	// 	node.componentInstance = componentInstance;
+
+	// 	// Update values:
+	// 	node.component.inputs.forEach(input => {
+	// 		console.log(
+	// 			"SET INPUT NOW",
+	// 			"input.name=",
+	// 			input.name,
+	// 			"input.defaultValue=",
+	// 			input.defaultValue,
+	// 			"this.getAttribute=",
+	// 			this.getAttribute(nodeId, input.name)
+	// 		);
+	// 		//Set the value
+	// 		let value = undefined;
+	// 		// If the value is already set (from a fromSerializable operation...)
+	// 		if (this.isAttributeSet(nodeId, input.name)) {
+	// 			value = this.getAttribute(nodeId, input.name);
+	// 		}
+	// 		// Else if there is a default value...
+	// 		else if (typeof input.defaultValue !== "undefined") {
+	// 			value = input.defaultValue;
+	// 		}
+
+	// 		if (value !== undefined) {
+	// 			this.setAttribute(node.id, input.name, value, false);
+	// 		}
+	// 	});
+
+	// 	// Default values:
+	// 	//@TODO - SKRIP SKRIP SKIRP!!!!!!
+	// 	// webComponent.inputs.forEach(input => {
+	// 	// 	if (typeof input.defaultValue !== "undefined") {
+	// 	// 		this.setAttribute(nodeId, input.name, input.defaultValue);
+	// 	// 	}
+	// 	// });
+	// }
 
 	cloneNode(nodeId) {
 		let node = this.byId[nodeId];
 		if (!node) return;
 
-		return this.createNewNode(node.text, null, null, node.transforms);
+		return this.createNewNode(
+			node.text,
+			node.templateHTML,
+			node.templateCSS,
+			null,
+			null,
+			node.transforms
+		);
 	}
 
 	// onAttrMutation(mutationList, observer) {
@@ -184,23 +262,24 @@ export default class NodeMap {
 	// 	}
 	// }
 
-	editNode(nodeId, nodeText) {
-		// 1. Store connections and attrs and transforms
+	editNode(nodeId, nodeText, nodeTemplateHTML = null, nodeTemplateCSS = null) {
+		// 1. Store connections and values and transforms
 		// 2. Destroy old node
 		// 3. Recreate new node
-		// 4. Reconnect connections that are still there, restore attrs
+		// 4. Reconnect connections that are still there
+		// 5. Set attributes back to component
 
 		let rev = this.byId[nodeId].rev;
 		let inputConnections = this.getNodesInputConnections(nodeId);
 		let outputConnections = this.getNodesOutputConnections(nodeId);
-		let attrs = [];
-		for (let k in this.values[nodeId]) {
-			attrs[k] = this.values[nodeId][k];
-		}
+		// let values = [];
+		// for (let k in this.values[nodeId]) {
+		// 	values[k] = this.values[nodeId][k];
+		// }
 		let transforms = clone(this.byId[nodeId].transforms);
 
-		this.removeNode(nodeId);
-		this.createNewNode(nodeText, nodeId, rev + 1, transforms);
+		this.removeNode(nodeId, false);
+		this.createNewNode(nodeText, nodeTemplateHTML, nodeTemplateCSS, nodeId, rev + 1, transforms);
 
 		let node = this.byId[nodeId];
 
@@ -229,10 +308,9 @@ export default class NodeMap {
 			}
 		});
 
-		//@TODO: Need to clear out old values
-
-		// for (let k in attrs) {
-		// 	this.setAttribute(nodeId, k, attrs[k]);
+		// Send values back to component
+		// for (let k in values) {
+		// 	this.setAttribute(nodeId, k, values[k], false);
 		// }
 	}
 
@@ -249,8 +327,8 @@ export default class NodeMap {
 		}
 
 		try {
-			let fn = eval(`(x) => ${text}`);
-			if (typeof fn !== "function") throw "Not Function";
+			let fn = eval(/*eslint-disable-line no-eval*/ `(x) => ${text}`);
+			if (typeof fn !== "function") throw new Error("Not Function");
 
 			node.transforms[inputName] = text;
 			node.transformFns[inputName] = fn;
@@ -268,7 +346,10 @@ export default class NodeMap {
 		this.nodeOrder.push(nodeId);
 	}
 
-	removeNode(nodeId) {
+	// deleteValues = false is useful when editing a node.
+	// The node can be removed and recreated but the values
+	// can persist so that they can be used again.
+	removeNode(nodeId, deleteValues = true) {
 		let node = this.byId[nodeId];
 		if (!node) return;
 
@@ -281,6 +362,7 @@ export default class NodeMap {
 
 		delete this.byId[nodeId];
 		this.nodeOrder.splice(this.nodeOrder.indexOf(nodeId), 1);
+		if (deleteValues) delete this.values[nodeId];
 	}
 
 	getAddress(nodeId, attrName) {
@@ -337,8 +419,10 @@ export default class NodeMap {
 		this.portMap[output][input] = true;
 		this.inputsMap[input][output] = true;
 
-		this.byId[fromNodeId].componentInstance.outputConnectedCallback(fromOutputAttr);
-		this.byId[toNodeId].componentInstance.inputConnectedCallback(toInputAttr);
+		//@TODO: Can't enable these until connections are "reconnected"
+		//when restoring from state
+		// this.byId[fromNodeId].componentInstance.outputConnectedCallback(fromOutputAttr);
+		// this.byId[toNodeId].componentInstance.inputConnectedCallback(toInputAttr);
 	}
 
 	disconnect(fromAddr, toAddr) {
@@ -350,13 +434,29 @@ export default class NodeMap {
 		let toNodeId = to[0];
 		let toInput = to[1];
 
-		let numFromConnections = this.getInputsConnectedToOutput(fromNodeId, fromOutput);
-		let numToConnections = this.getOutputsConnectedToInput(toNodeId, toInput);
-		this.byId[fromNodeId].componentInstance.outputDisconnectedCallback(
+		let fromNode = this.byId[fromNodeId];
+		let toNode = this.byId[toNodeId];
+
+		if (!fromNode || !toNode) {
+			console.error("Missing node for disconnect action:", fromAddr, toAddr);
+			return false;
+		}
+
+		let numFromNodeConnections = this.getNodesOutputConnections(fromNodeId).length;
+		let numToNodeConnections = this.getNodesInputConnections(toNodeId).length;
+		let numFromConnections = this.getInputsConnectedToOutput(fromNodeId, fromOutput).length;
+		let numToConnections = this.getOutputsConnectedToInput(toNodeId, toInput).length;
+
+		fromNode.componentInstance.outputDisconnectedCallback(
 			fromOutput,
-			numFromConnections - 1
+			numFromConnections - 1,
+			numFromNodeConnections - 1
 		);
-		this.byId[toNodeId].componentInstance.inputDisconnectedCallback(toInput, numToConnections - 1);
+		toNode.componentInstance.inputDisconnectedCallback(
+			toInput,
+			numToConnections - 1,
+			numToNodeConnections - 1
+		);
 
 		let output = this.getAddress(fromNodeId, fromOutput);
 		let input = this.getAddress(toNodeId, toInput);
@@ -420,7 +520,14 @@ export default class NodeMap {
 	setAttribute(nodeId, attrName, value, applyUserTransformIfAvailable = true) {
 		if (!this.byId[nodeId]) return;
 
-		console.log("sa", nodeId, attrName, value, applyUserTransformIfAvailable);
+		// console.log("sa", nodeId, attrName, value, applyUserTransformIfAvailable);
+		// if (
+		// 	!this.values[nodeId] ||
+		// 	typeof this.values[nodeId][attrName] === "undefined" ||
+		// 	this.values[nodeId][attrName] === value
+		// ) {
+		// 	return;
+		// }
 
 		value = this.setInputValue(nodeId, attrName, value, applyUserTransformIfAvailable);
 
@@ -430,10 +537,10 @@ export default class NodeMap {
 	}
 
 	setAttributeFromComponent(nodeId, attrName, value) {
-		console.log("safc", nodeId, attrName, value);
+		// console.log("safc", nodeId, attrName, value);
 		if (!this.byId[nodeId]) return;
 
-		this.setAttribute(nodeId, attrName, value, false);
+		this.setAttribute(nodeId, attrName, value, true);
 		Events.emit("app:update");
 	}
 

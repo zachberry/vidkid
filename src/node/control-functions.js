@@ -53,4 +53,13 @@ const range = ({ editable, min, max, step } = {}) => {
 	};
 };
 
-export { text, number, color, range, toggle };
+const select = ({ editable } = {}) => {
+	if (typeof editable === "undefined") editable = true;
+
+	return {
+		type: "select",
+		editable
+	};
+};
+
+export { text, number, color, range, toggle, select };

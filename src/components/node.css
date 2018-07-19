@@ -90,6 +90,6 @@
 .node .component-container {
 	min-width: 15em;
 	clear: both;
-	padding: 1em;
 	box-sizing: border-box;
+	background: rgba(0, 0, 0, 0.1);
 }

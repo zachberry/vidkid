@@ -1,6 +1,6 @@
 import "./color.css";
 
-import React, { Component } from "react";
+import React from "react";
 // import ReactDOM from 'react-dom';
 
 // import drag from '../drag';

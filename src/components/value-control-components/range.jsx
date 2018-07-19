@@ -1,6 +1,6 @@
 import "./range.css";
 
-import React, { Component } from "react";
+import React from "react";
 
 export default class Range extends React.Component {
 	constructor(props) {
@@ -14,8 +14,10 @@ export default class Range extends React.Component {
 	}
 
 	render() {
-		let min = this.props.opts.min !== null ? this.props.opts.min : this.props.restrict.min;
-		let max = this.props.opts.max !== null ? this.props.opts.max : this.props.restrict.max;
+		let min =
+			typeof this.props.opts.min !== "undefined" ? this.props.opts.min : this.props.restrict.min;
+		let max =
+			typeof this.props.opts.max !== "undefined" ? this.props.opts.max : this.props.restrict.max;
 		let step = this.props.opts.step;
 
 		return (

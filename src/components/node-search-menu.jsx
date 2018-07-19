@@ -1,6 +1,6 @@
 import "./node-search-menu.css";
 
-import React, { Component } from "react";
+import React from "react";
 import Menu from "./menu";
 
 export default class NodeSearchMenu extends React.Component {

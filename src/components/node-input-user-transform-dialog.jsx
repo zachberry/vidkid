@@ -24,6 +24,9 @@ export default class NodeInputUserTransformDialog extends Component {
 			case 27:
 				this.props.onCloseUserTransform();
 				break;
+
+			default:
+				break;
 		}
 	}
 

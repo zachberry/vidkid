@@ -1,20 +1,17 @@
-import { float, int } from "../node/input-restrict-functions";
-import { range, color, toggle, text, number } from "../node/control-functions";
+import { float, int, set } from "../node/input-restrict-functions";
+import { range, color, toggle, text, number, select } from "../node/control-functions";
 
 export default class N extends HTMLElement {
 	static float = float;
 	static int = int;
+	static set = set;
+
 	static range = range;
 	static color = color;
 	static toggle = toggle;
 	static text = text;
 	static number = number;
-
-	// templateEl contains the HTML written when the component was created.
-	// Note that in the constructor the element is not attached to the DOM.
-	constructor() {
-		super();
-	}
+	static select = select;
 
 	//connectedCallback()
 	//disconnectedCallback()
@@ -34,11 +31,14 @@ export default class N extends HTMLElement {
 		console.log("on destroy!");
 	}
 
-	init(id, nodeMapAdapter, templateEl = null) {
+	init(id, nodeMapAdapter, templateEl = null, styleEl = null) {
 		this.id = id;
 		this.nodeMapAdapter = nodeMapAdapter;
 		this.root = this.attachShadow({ mode: "open" });
+
 		if (templateEl) this.root.appendChild(templateEl.content);
+		if (templateEl && styleEl) this.root.appendChild(styleEl);
+
 		this.screen = window.document.getElementById("--app--screen").contentDocument;
 	}
 

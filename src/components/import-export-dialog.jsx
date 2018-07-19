@@ -33,6 +33,8 @@ class ImportExportDialog extends Component {
 				return this.renderImport();
 			case "export":
 				return this.renderExport();
+			default:
+				return null;
 		}
 	}
 

@@ -1,25 +1,26 @@
 import valueControlComponents from "./value-control-components/all";
 
-export default (controlType, typeOfInputValue) => {
+export default (controlType, restrict, typeOfInputValue) => {
+	if (!controlType && restrict && restrict.controlType) controlType = restrict.controlType;
+
 	switch (controlType) {
 		case "number":
 			return valueControlComponents.Number;
-			break;
 
 		case "range":
 			return valueControlComponents.Range;
-			break;
 
 		case "toggle":
 			return valueControlComponents.Toggle;
-			break;
 
 		case "color":
 			return valueControlComponents.Color;
-			break;
 
 		case "text":
 			return valueControlComponents.Text;
+
+		case "select":
+			return valueControlComponents.Select;
 
 		// None set:
 		default:

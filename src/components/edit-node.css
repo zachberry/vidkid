@@ -1,4 +1,109 @@
 .edit-node {
-	width: 90vw;
-	height: 90vh;
+	width: 98vw;
+	height: 98vh;
+	position: relative;
+	/* color: black; */
+
+	background: rgba(0, 0, 0, 0.7);
+	background: #3a3a3a;
+	color: white;
+	/* padding: 0.5em 1em;
+	padding: 3em; */
+	box-sizing: border-box;
+	border-radius: 0.25em;
+}
+
+.edit-node header {
+	position: absolute;
+	left: 50%;
+	top: 0.5em;
+	transform: translate(-50%, 0);
+}
+
+.edit-node header button {
+	background: black;
+	border-radius: 0.25em;
+	font-family: "Work Sans";
+	font-weight: bold;
+	color: black;
+	font-size: 1em;
+	border: none;
+	background: gray;
+}
+
+.edit-node header button:disabled {
+	background: #ffe501;
+}
+
+.edit-node header button:focus {
+	position: relative;
+	z-index: 1;
+}
+
+.edit-node header .js-button {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.edit-node header .html-css-button {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.edit-node #ace-editor {
+	border-radius: 0.25em;
+}
+
+.edit-node .js,
+.edit-node .html-css {
+	position: absolute;
+	left: 1em;
+	right: 1em;
+	top: 2.5em;
+	bottom: 4em;
+}
+
+.edit-node .button-container {
+	position: absolute;
+	bottom: 1em;
+	left: 50%;
+	transform: translate(-50%, 0);
+	text-align: center;
+}
+
+.edit-node .save-and-close-button,
+.edit-node .save-button {
+	border-radius: 0.25em;
+	height: 2em;
+	padding: 0.25em 1.5em;
+	box-sizing: border-box;
+	border: none;
+	background: #ffe501;
+	color: black;
+	cursor: pointer;
+	font-size: 1em;
+	display: inline-block;
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+}
+
+.edit-node .cancel-button {
+	position: absolute;
+	right: 0;
+	top: 0;
+	transform: translate(0, 0px);
+	background: transparent;
+	border-radius: 0.25em;
+	width: 1.2em;
+	height: 1.2em;
+	padding: 0;
+	border: none;
+	cursor: pointer;
+	color: white;
+	font-size: 1em;
+}
+
+.edit-node .cancel-button:hover {
+	background: #ffe501;
+	color: black;
 }

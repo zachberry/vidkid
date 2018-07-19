@@ -1,10 +1,8 @@
 import "./screen.css";
 
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
 
 import Events from "../events";
-import App from "../App";
 import writeToIframe from "../util/write-to-iframe";
 
 class Screen extends Component {
@@ -45,7 +43,7 @@ class Screen extends Component {
 		);
 	}
 
-	componentWillReceiveProps(nextProps) {
+	UNSAFE_componentWillReceiveProps(nextProps) {
 		if (nextProps.pageHTML !== this.state.html || nextProps.pageCSS !== this.state.css) {
 			this.needsIframeUpdate = true;
 
@@ -69,7 +67,7 @@ class Screen extends Component {
 				ref="main"
 				className={"screen " + (this.props.fullscreen ? "fullscreen" : "mini")}
 			>
-				<iframe ref="iframe" id="--app--screen" />
+				<iframe title="preview" ref="iframe" id="--app--screen" />
 				<button onClick={this.boundsetFullscreen}>
 					{this.props.fullscreen ? "Minimize" : "Fullscreen"}
 				</button>

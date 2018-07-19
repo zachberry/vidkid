@@ -1,4 +1,4 @@
-const t = `class MIDIDevice extends N {
+const c = `class MIDIDevice extends N {
 	static get inputs() {
 		return [
 			{
@@ -6,7 +6,38 @@ const t = `class MIDIDevice extends N {
 				observe: true,
 				defaultValue: "",
 				restrict: String,
-				control: N.text({ editable: false })
+				visible: false
+			},
+			{
+				name: "channel",
+				observe: false,
+				defaultValue: 0,
+				restrict: N.int(0, 16),
+				control: N.range()
+			},
+			{
+				name: "clock",
+				observe: false,
+				defaultValue: true,
+				restrict: Boolean
+			},
+			{
+				name: "note-on",
+				observe: false,
+				defaultValue: true,
+				restrict: Boolean
+			},
+			{
+				name: "note-off",
+				observe: false,
+				defaultValue: true,
+				restrict: Boolean
+			},
+			{
+				name: "cc",
+				observe: false,
+				defaultValue: true,
+				restrict: Boolean
 			}
 		];
 	}
@@ -17,21 +48,27 @@ const t = `class MIDIDevice extends N {
 
 	constructor() {
 		super();
-		this.midiReady = false;
 	}
 
-	attributeChangedCallback(name, oldValue, newValue) {
-		if(!this.midiReady) return false;
+	setInput(id) {
+		console.log('SET INPUT', id);
+		if(!this.inputs) return;
 
 		this.removeMIDIListeners();
 
-		if (newValue !== "") {
-			let input = this.inputs.get(newValue);
+		if (id !== "") {
+			let input = this.inputs.get(id);
 			if (input) {
 				input.addEventListener("midimessage", this.boundOnMIDIMessage);
 			}
-			this.root.getElementById('select').value = newValue;
 		}
+
+		this.root.getElementById('select').value = id;
+	}
+
+	attributeChangedCallback(name, oldValue, newValue) {
+		console.log('ACC', name, oldValue, newValue);
+		this.setInput(newValue);
 	}
 
 	removeMIDIListeners() {
@@ -42,7 +79,32 @@ const t = `class MIDIDevice extends N {
 	}
 
 	onMIDIMessage(event) {
-		this.send('message', event.data.toString())
+		let data = event.data;
+		let channel = parseInt(this.getAttribute('channel'), 10) || 0;
+		let allowClock = this.getAttribute('clock') === "true";
+		let allowNoteOn = this.getAttribute('note-on') === "true";
+		let allowNoteOff = this.getAttribute('note-off') === "true";
+		let allowCC = this.getAttribute('cc') === "true";
+
+		console.log('got midi', data, channel, allowClock, allowNoteOn, allowNoteOff, allowCC)
+
+		// Clock:
+		if(data[0] === 0xF0 && allowClock) {
+			this.send('message', event.data.toString())
+		}
+
+		// Channel messages:
+		if(channel === 0 || channel === (data[0] & 0x0F) + 1) {
+			let type = data[0] >> 4;
+
+			if(
+				(type === 0x8 && allowNoteOn)
+				|| (type === 0x9 && allowNoteOff)
+				|| (type === 0xB && allowCC)
+			) {
+				this.send('message', event.data.toString());
+			}
+		}
 	}
 
 	onMIDISuccess(midiAccess) {
@@ -71,10 +133,8 @@ const t = `class MIDIDevice extends N {
 			this.setAttribute("device-id", event.target.value);
 		});
 
-		this.midiReady = true;
-
 		// Force listener to listen:
-		this.setAttribute('device-id', this.getAttribute('device-id'));
+		this.setInput(this.getAttribute('device-id'));
 	}
 
 	onMIDIFailure() {
@@ -96,7 +156,12 @@ const t = `class MIDIDevice extends N {
 	}
 }`;
 
+const t = `<div>
+	<select id="select"></select>
+</div>`;
+
 export default {
 	label: "MIDI Device",
-	text: t
+	text: c,
+	templateHTML: t
 };

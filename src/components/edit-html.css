@@ -1,0 +1,63 @@
+.edit-html .container {
+	background: rgba(0, 0, 0, 0.9);
+	border-radius: 0.25em;
+}
+
+.edit-html .container.html {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: calc(50% - 0.5em);
+	height: calc(50% - 1em);
+}
+.edit-html .container.css {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: calc(50% - 0.5em);
+	left: calc(50% + 0.5em);
+	height: 100%;
+}
+
+.edit-html .container.preview {
+	position: absolute;
+	top: 50%;
+	bottom: 0;
+	width: calc(50% - 0.5em);
+	height: 50%;
+}
+
+.edit-html .container h1 {
+	margin: 0;
+	padding: 0;
+	font-size: 1em;
+	margin-left: 0.4em;
+	margin-top: 0.4em;
+}
+
+.edit-html .ace_editor {
+	position: absolute;
+	left: 0;
+	top: 2.2em;
+	right: 0;
+	bottom: 0;
+	border-radius: 0.25em;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+	height: auto !important;
+}
+
+.edit-html iframe {
+	position: absolute;
+	left: 0;
+	top: 2em;
+	border-radius: 0.25em;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+	right: 0;
+	bottom: 0;
+	width: 100%;
+	height: calc(100% - 2em);
+	border: none;
+	background: white;
+}

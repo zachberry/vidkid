@@ -16,36 +16,15 @@ const t = `class Node extends N {
 	}
 
 	readyCallback() {
-		let p = document.createElement('p');
-		p.id = 'p'
-		p.innerText = Date.now();
-		this.root.appendChild(p);
-	}
-
-	fn() {
-		console.log('beep')
-		this.root.getElementById('p').innerText = Date.now()
+		// Called when component is on the DOM
 	}
 
 	destroyCallback() {
-		clearInterval(this.intervalId)
+		// Called when component will be removed from the DOM
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
 	  this.send('my-output', newValue);
-	}
-
-	connectedCallback() {
-		// Ran when component created
-		console.log('CONN' + this.id);
-		// let p = document.createElement('p');
-		// p.innerText = Date.now();
-		// this.root.appendChild(p);
-	}
-
-	disconnectedCallback() {
-		// Ran when component destroyed
-		console.error('DISCON' + this.id);
 	}
 }`;
 

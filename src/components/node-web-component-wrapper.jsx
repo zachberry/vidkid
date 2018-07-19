@@ -1,26 +1,21 @@
-import "./node.css";
+import "./node-web-component-wrapper.css";
 
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
 
 export default class NodeWebComponentWrapper extends Component {
-	constructor(props) {
-		super(props);
-
-		// this.state = {
-		// 	name: "MyComp"
-		// };
-	}
-
 	componentDidMount() {
-		this.props.nodeMap.setComponentInstance(this.props.node.id, this.refs.component);
+		// 		this.props.nodeMap.setComponentInstance(this.props.node.id, this.refs.component);
 
-		let templateEl = document.createElement("template");
-		templateEl.innerHTML = `<div>
-	<select id="select"></select><button>Press me</button>
-</div>`;
-		this.refs.component.init(this.props.node.id, this.props.nodeMapAdapter, templateEl);
-		this.refs.component.readyCallback();
+		// 		let templateEl = document.createElement("template");
+		// 		templateEl.innerHTML = `<div>
+		// 	<select id="select"></select><button>Press me</button>
+		// </div>`;
+		// 		this.refs.component.init(this.props.node.id, this.props.nodeMapAdapter, templateEl);
+		// 		this.refs.component.readyCallback();
+
+		this.refs.self.appendChild(this.props.node.componentInstance);
+		this.props.node.componentInstance.readyCallback();
+		this.props.nodeMap.setInitialValues(this.props.node.id);
 	}
 
 	componentWillUnmount() {
@@ -28,7 +23,7 @@ export default class NodeWebComponentWrapper extends Component {
 		// if (this.componentEl && this.componentEl.parentElement) {
 		// 	this.componentEl.parentElement.removeChild(this.componentEl);
 		// }
-		this.refs.component.destroyCallback();
+		this.props.node.componentInstance.destroyCallback();
 	}
 
 	// onClick(event) {
@@ -38,14 +33,22 @@ export default class NodeWebComponentWrapper extends Component {
 	// }
 
 	render() {
-		console.error("WRAPPER RENDER", this.props);
-		let C = this.props.node.tagName;
+		// console.log("WRAPPER RENDER", this.props);
+		// let C = this.props.node.tagName;
 		// debugger;
 		// let c = this.props.node.component;
 		// let C = new c();
 		// let T = this.props.node.tagName;
 		// return <div>{<T />}</div>;
-		return <div>{<C ref="component" />}</div>;
+		return (
+			<div
+				className={
+					"node-web-component-wrapper" +
+					(this.props.isTemplated ? " is-templated" : " is-not-templated")
+				}
+				ref="self"
+			/>
+		);
 	}
 
 	// renderFAIL() {

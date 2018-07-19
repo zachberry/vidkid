@@ -8,14 +8,6 @@ import NodeOutput from "./node-output";
 import NodeWebComponentWrapper from "./node-web-component-wrapper";
 
 export default class Node extends Component {
-	constructor(props) {
-		super(props);
-
-		// this.state = {
-		// 	name: "MyComp"
-		// };
-	}
-
 	// componentDidMount() {
 	// 	this.componentEl = this.props.node.component;
 	// 	ReactDOM.findDOMNode(this.refs.container).appendChild(this.componentEl);
@@ -39,7 +31,7 @@ export default class Node extends Component {
 	// }
 
 	render() {
-		console.log("NODE RENDER", this.props.node.id);
+		// console.log("NODE RENDER", this.props.node);
 		let pos = this.props.docState.getNodePosition(this.props.node.id);
 		let x = pos[0];
 		let y = pos[1];
@@ -90,6 +82,7 @@ export default class Node extends Component {
 				</span> */}
 				<span className="inputs ports">
 					{this.props.node.inputsList.map(input => {
+						if (!input.visible) return null;
 						return (
 							<NodeInput
 								node={this.props.node}
@@ -132,8 +125,8 @@ export default class Node extends Component {
 				<div key={this.props.node.tagName} ref="container" className="component-container">
 					<NodeWebComponentWrapper
 						node={this.props.node}
-						nodeMap={this.props.nodeMap}
-						nodeMapAdapter={this.props.nodeMapAdapter}
+						isTemplated={this.props.node.templateHTML}
+						nodeMap={this.props.docState.nodeMap}
 					/>
 				</div>
 			</div>

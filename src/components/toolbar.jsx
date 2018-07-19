@@ -6,10 +6,6 @@ import Events from "../events";
 // import App from '../App';
 
 class Toolbar extends Component {
-	constructor() {
-		super();
-	}
-
 	onClickInitState() {
 		Events.emit("toolbar:initState");
 	}

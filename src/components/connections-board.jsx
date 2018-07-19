@@ -19,7 +19,7 @@ class ConnectionsBoard extends Component {
 		// this.boundOnNodeMoved = this.onNodeMoved.bind(this);
 		this.boundOnCableClick = this.onCableClick.bind(this);
 
-		// Events.on("nodeBoard:nodeMoved", this.boundOnNodeMoved);
+		Events.on("connections:update", this.forceUpdate.bind(this, null));
 	}
 
 	onCableClick(connection) {
