@@ -14,16 +14,19 @@ export default class Range extends React.Component {
 	}
 
 	render() {
-		let min =
-			typeof this.props.opts.min !== "undefined" ? this.props.opts.min : this.props.restrict.min;
-		let max =
-			typeof this.props.opts.max !== "undefined" ? this.props.opts.max : this.props.restrict.max;
-		let step = this.props.opts.step;
+		let opts = this.props.opts;
+		let restrict = this.props.restrict;
+
+		let min = opts.min || opts.min === 0 ? opts.min : restrict.min;
+		let max = opts.max || opts.max === 0 ? opts.max : restrict.max;
+		let step = opts.step;
+
+		console.log("min", min, "max", max, this.props);
 
 		return (
 			<div className={"range"}>
 				<input
-					disabled={!this.props.opts.editable}
+					disabled={!opts.editable}
 					className="slider"
 					type="range"
 					value={this.props.value}
@@ -34,7 +37,7 @@ export default class Range extends React.Component {
 				/>
 
 				<input
-					disabled={!this.props.opts.editable}
+					disabled={!opts.editable}
 					className="input"
 					type="number"
 					value={this.props.value}

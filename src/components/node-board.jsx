@@ -200,7 +200,11 @@ class NodeBoard extends React.Component {
 	render() {
 		return (
 			<div
-				className="node-board"
+				className={
+					"node-board is-connecting-type-" +
+					this.props.connectingType +
+					(this.props.connectingType === null ? " is-not-connecting" : " is-connecting")
+				}
 				onContextMenu={this.boundOnContextMenu}
 				onClick={this.boundOnClick}
 				ref="board"

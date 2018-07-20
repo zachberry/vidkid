@@ -16,10 +16,32 @@ class ConnectionsBoard extends Component {
 	constructor() {
 		super();
 
+		this.state = {
+			mouseX: -1,
+			mouseY: -1
+		};
 		// this.boundOnNodeMoved = this.onNodeMoved.bind(this);
 		this.boundOnCableClick = this.onCableClick.bind(this);
+		this.boundOnMouseMove = this.onMouseMove.bind(this);
+		this.boundOnKeyUp = this.onKeyUp.bind(this);
 
 		Events.on("connections:update", this.forceUpdate.bind(this, null));
+	}
+
+	onKeyUp(event) {
+		if (event.keyCode === 27) {
+			this.props.docState.doAction({
+				type: "abortConnection"
+			});
+		}
+	}
+
+	onMouseMove(event) {
+		this.setState({
+			mouseX: event.clientX,
+			mouseY: event.clientY
+		});
+		//Events.emit("cable:update");
 	}
 
 	onCableClick(connection) {
@@ -34,19 +56,37 @@ class ConnectionsBoard extends Component {
 		Events.emit("cable:update");
 	}
 
+	componentWillReceiveProps(nextProps) {
+		if (nextProps.isConnecting !== this.props.isConnecting) {
+			if (nextProps.isConnecting) {
+				window.addEventListener("mousemove", this.boundOnMouseMove);
+				window.addEventListener("keyup", this.boundOnKeyUp);
+			} else {
+				window.removeEventListener("mousemove", this.boundOnMouseMove);
+				window.removeEventListener("keyup", this.boundOnKeyUp);
+				this.setState({
+					mouseX: -1,
+					mouseY: -1
+				});
+			}
+		}
+	}
+
 	render() {
+		let docState = this.props.docState;
 		this.connections = [];
 
-		let selectedConnection = this.props.docState.selectedConnection || {};
+		let selectedConnection = docState.selectedConnection || {};
 
-		for (let from in this.props.docState.nodeMap.portMap) {
+		for (let from in docState.nodeMap.portMap) {
 			let fromEl = getDOMElement("output", from);
-			let toConnections = this.props.docState.nodeMap.portMap[from];
+			let toConnections = docState.nodeMap.portMap[from];
 
 			for (let to in toConnections) {
 				let toEl = getDOMElement("input", to);
 
 				this.connections.push({
+					isComplete: true,
 					fromEl,
 					toEl,
 					fromPort: from,
@@ -73,6 +113,26 @@ class ConnectionsBoard extends Component {
 						/>
 					);
 				})}
+				{/* {this.props.isConnecting ? (
+					<Cable
+						isSelected={false}
+						key="connecting-cable"
+						index={-1}
+						connection={{
+							isComplete: false,
+							fromEl: getDOMElement(
+								docState.connecting.portType,
+								docState.nodeMap.getAddress(docState.connecting.id, docState.connecting.name)
+							),
+							fromPort: docState.connecting.id,
+							toEl: null,
+							toPort: null
+						}}
+						connectingMouseX={this.state.mouseX}
+						connectingMouseY={this.state.mouseY}
+						boardEl={ReactDOM.findDOMNode(this)}
+					/>
+				) : null} */}
 			</div>
 		);
 	}

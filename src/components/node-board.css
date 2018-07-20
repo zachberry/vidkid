@@ -2,6 +2,32 @@
 	background: url("./grid-bg.png");
 }
 
+.node-board.is-connecting {
+	/* cursor: none; */
+}
+
+.node-board.is-connecting .node,
+.node-board.is-connecting .node * {
+	/* cursor: none; */
+	pointer-events: none;
+}
+
+.node-board.is-connecting-type-output .node .node-input .label {
+	border-bottom: 1px solid #ffe501;
+}
+
+.node-board.is-connecting-type-output .node .node-input .label {
+	pointer-events: all;
+}
+
+.node-board.is-connecting-type-input .node .node-output .label {
+	border-bottom: 1px solid #ffe501;
+}
+
+.node-board.is-connecting-type-input .node .node-output .label {
+	pointer-events: all;
+}
+
 .node-board .node {
 	position: absolute;
 	border: 1px solid rgba(0, 0, 0, 0.2);

@@ -5,6 +5,7 @@ import clone from "clone";
 import NodeMap from "./node/node-map";
 // import HardwareMap from './hardware-map';
 // import Node from "./node";
+import Events from "./events";
 
 class DocState {
 	constructor(hardware) {
@@ -32,7 +33,9 @@ class DocState {
 		this.editingPage = false;
 		this.selectedConnection = null;
 		this.nodeUIMap = {};
-		this.pageHTML = `<body></body>`;
+		this.pageHTML = `<body>
+
+</body>`;
 		this.pageCSS = `body {
 	width: 100%;
 	height: 100%;
@@ -411,6 +414,10 @@ class DocState {
 
 					break;
 
+				case "abortConnection":
+					this.connecting = null;
+					break;
+
 				default:
 					return false;
 			}
@@ -421,6 +428,8 @@ class DocState {
 			console.error(e);
 
 			error = e;
+
+			Events.emit("app:error", e.message);
 
 			this.fromSerializeable(backup);
 		}

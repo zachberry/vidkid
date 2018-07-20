@@ -1,6 +1,12 @@
 .App {
 }
 
+.App .error-message {
+	position: fixed;
+	bottom: 1em;
+	left: 1em;
+}
+
 #todo-create-node {
 	position: absolute;
 	left: 0;

@@ -47,6 +47,7 @@
 
 .import-export-dialog .close-button:hover {
 	background: #ffe501;
+	color: black;
 }
 
 .import-export-dialog .ok-button,
@@ -57,7 +58,7 @@
 	box-sizing: border-box;
 	border: none;
 	background: #ffe501;
-	color: white;
+	color: black;
 	cursor: pointer;
 	font-size: 1em;
 	margin: 0 auto;

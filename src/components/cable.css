@@ -32,3 +32,8 @@
 	cursor: pointer;
 	pointer-events: all;
 }
+
+.cable.is-not-complete .path-bg,
+.cable.is-not-complete circle {
+	pointer-events: none;
+}

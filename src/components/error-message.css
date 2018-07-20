@@ -1,0 +1,17 @@
+.error-message {
+	background: #b50000;
+	color: #ffd9d9;
+	padding: 1em;
+	border-radius: 0.25em;
+	width: 25em;
+	cursor: pointer;
+	font-size: 0.9em;
+}
+
+.error-message:hover {
+	background: #520000;
+}
+
+.error-message span {
+	display: block;
+}

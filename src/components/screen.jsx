@@ -32,6 +32,8 @@ class Screen extends Component {
 		if (this.needsIframeUpdate) {
 			delete this.needsIframeUpdate;
 			this.updateIframe();
+
+			this.props.docState.nodeMap.runScreenUpdatedCallbacks();
 		}
 	}
 
@@ -46,6 +48,8 @@ class Screen extends Component {
 	UNSAFE_componentWillReceiveProps(nextProps) {
 		if (nextProps.pageHTML !== this.state.html || nextProps.pageCSS !== this.state.css) {
 			this.needsIframeUpdate = true;
+
+			this.props.docState.nodeMap.runScreenDestroyCallbacks();
 
 			this.setState({
 				html: nextProps.pageHTML,

@@ -1,3 +1,7 @@
+// Included libraries:
+var THREE = require("three");
+var TWEEN = require("@tweenjs/tween.js");
+
 var N = require("../web-components/base-node").default; // eslint-disable-line no-unused-vars
 // var { int, float } = require("./input-restrict-functions").default;
 
@@ -31,9 +35,22 @@ export default (elementName, classText, templateHTML = null, templateCSS = null)
 	// Dynamically create and add the webcomponent observedAttributes
 	// getter:
 	let observedAttributes = [];
-	inputs.forEach(input => {
+	let testEl = document.createElement("div");
+	for (let i = 0, len = inputs.length; i < len; i++) {
+		let input = inputs[i];
+
+		// Check if this is a valid name:
+		try {
+			testEl.setAttribute(input.name, 1);
+		} catch (e) {
+			return {
+				isError: true,
+				error: e
+			};
+		}
 		if (input.observe === true) observedAttributes.push(input.name);
-	});
+	}
+
 	if (observedAttributes.length > 0) {
 		Object.defineProperty(EvaledClass, "observedAttributes", {
 			get: () => observedAttributes

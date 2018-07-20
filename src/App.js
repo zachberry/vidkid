@@ -14,6 +14,7 @@ import EditNode from "./components/edit-node";
 import Screen from "./components/screen";
 import EditPage from "./components/edit-page";
 import ImportExportDialog from "./components/import-export-dialog";
+import ErrorMessage from "./components/error-message";
 
 // window.addEventListener("gamepadconnected", e => {
 // 	console.log("oh shit", e);
@@ -126,8 +127,19 @@ class App extends Component {
 			this.setState.bind(this, { importExportMode: null }, null)
 		);
 		Events.on("importExportDialog:import", this.onDialogImport.bind(this));
+		Events.on("app:error", this.onErrorMessage.bind(this));
 		// Events.on("screen:iframeUpdated", this.restoreNodeMap.bind(this));
 		// Events.on("toolbar:initState", this.initState.bind(this));
+	}
+
+	onErrorMessage(message) {
+		console.error("App:error");
+		console.error(message);
+		this.setState({ errorMessage: message });
+	}
+
+	onDismissError() {
+		this.setState({ errorMessage: null });
 	}
 
 	onToolbarInitState() {
@@ -147,7 +159,7 @@ class App extends Component {
 				this.forceUpdate();
 
 				//@TODO:
-				// let gamepad = require("./library/css-hue-rotate").default;
+				// let gamepad = require("./library/video").default;
 				// console.log("gp", gamepad);
 				// this.docState.doAction({
 				// 	type: "createNode",
@@ -181,12 +193,21 @@ class App extends Component {
 		this.forceUpdate();
 	}
 
+	componentDidCatch(error, info) {
+		this.setState({
+			errorMessage: error.message
+		});
+	}
+
 	render() {
 		return (
 			<div className="App">
 				<MainMenu />
 				<div className="edit-board">
-					<ConnectionsBoard docState={this.docState} />
+					<ConnectionsBoard
+						docState={this.docState}
+						isConnecting={this.docState.connecting !== null}
+					/>
 					<NodeBoard
 						nodeOrder={this.docState.nodeMap.nodeOrder}
 						nodes={this.docState.nodeMap.byId}
@@ -194,12 +215,14 @@ class App extends Component {
 						getAttribute={this.docState.nodeMap.getAttribute.bind(this.docState.nodeMap)}
 						docState={this.docState}
 						nodeMap={this.docState.nodeMap}
+						connectingType={this.docState.connecting ? this.docState.connecting.portType : null}
 					/>
 					<Screen
 						pageHTML={this.docState.pageHTML}
 						pageCSS={this.docState.pageCSS}
 						fullscreen={this.docState.fullscreen}
 						setFullscreen={this.boundSetFullscreen}
+						docState={this.docState}
 					/>
 				</div>
 				{this.docState.editingNodeId !== null ? (
@@ -227,6 +250,12 @@ class App extends Component {
 							}
 						/>
 					</Modal>
+				) : null}
+				{this.state.errorMessage ? (
+					<ErrorMessage
+						message={this.state.errorMessage}
+						onDismiss={this.onDismissError.bind(this)}
+					/>
 				) : null}
 			</div>
 		);

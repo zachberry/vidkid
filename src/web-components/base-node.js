@@ -1,5 +1,14 @@
 import { float, int, set } from "../node/input-restrict-functions";
-import { range, color, toggle, text, number, select } from "../node/control-functions";
+import {
+	range,
+	color,
+	toggle,
+	text,
+	number,
+	select,
+	file,
+	button
+} from "../node/control-functions";
 
 export default class N extends HTMLElement {
 	static float = float;
@@ -12,6 +21,8 @@ export default class N extends HTMLElement {
 	static text = text;
 	static number = number;
 	static select = select;
+	static file = file;
+	static button = button;
 
 	//connectedCallback()
 	//disconnectedCallback()
@@ -22,6 +33,8 @@ export default class N extends HTMLElement {
 	outputConnectedCallback() {}
 	inputDisconnectedCallback() {}
 	outputDisconnectedCallback() {}
+	screenDestroyCallback() {}
+	screenUpdatedCallback() {}
 
 	readyCallback() {
 		console.log("on ready!");
@@ -44,6 +57,14 @@ export default class N extends HTMLElement {
 
 	send(outputName, outputValue) {
 		this.nodeMapAdapter.send(this.id, outputName, outputValue);
+	}
+
+	getAttribute(attrName) {
+		return this.nodeMapAdapter.getAttribute(this.id, attrName);
+	}
+
+	native_getAttribute(attrName) {
+		return HTMLElement.prototype.getAttribute.call(this, attrName);
 	}
 
 	setAttribute(attrName, value) {

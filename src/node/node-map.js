@@ -95,7 +95,7 @@ export default class NodeMap {
 		let created = createNodeWebComponent(webComponentTagName, nodeText, templateHTML, templateCSS);
 		if (created.isError) {
 			console.error(created.error);
-			return null;
+			throw created.error;
 		}
 		let webComponent = created.component;
 		let templateEl = created.template;
@@ -263,55 +263,73 @@ export default class NodeMap {
 	// }
 
 	editNode(nodeId, nodeText, nodeTemplateHTML = null, nodeTemplateCSS = null) {
-		// 1. Store connections and values and transforms
-		// 2. Destroy old node
-		// 3. Recreate new node
-		// 4. Reconnect connections that are still there
-		// 5. Set attributes back to component
+		// Create a backup:
+		let backup = this.toSerializeable();
 
-		let rev = this.byId[nodeId].rev;
-		let inputConnections = this.getNodesInputConnections(nodeId);
-		let outputConnections = this.getNodesOutputConnections(nodeId);
-		// let values = [];
-		// for (let k in this.values[nodeId]) {
-		// 	values[k] = this.values[nodeId][k];
-		// }
-		let transforms = clone(this.byId[nodeId].transforms);
+		try {
+			// 1. Store connections and values and transforms
+			// 2. Destroy old node
+			// 3. Recreate new node
+			// 4. Reconnect connections that are still there
+			// 5. Set attributes back to component
 
-		this.removeNode(nodeId, false);
-		this.createNewNode(nodeText, nodeTemplateHTML, nodeTemplateCSS, nodeId, rev + 1, transforms);
+			let rev = this.byId[nodeId].rev;
+			let inputConnections = this.getNodesInputConnections(nodeId);
+			let outputConnections = this.getNodesOutputConnections(nodeId);
+			// let values = [];
+			// for (let k in this.values[nodeId]) {
+			// 	values[k] = this.values[nodeId][k];
+			// }
+			let transforms = clone(this.byId[nodeId].transforms);
 
-		let node = this.byId[nodeId];
+			this.removeNode(nodeId, false);
+			this.createNewNode(nodeText, nodeTemplateHTML, nodeTemplateCSS, nodeId, rev + 1, transforms);
 
-		inputConnections.forEach(connection => {
-			let from = this.getParsedAddress(connection[0]);
-			let to = this.getParsedAddress(connection[1]);
-			if (to[0] === nodeId && node.inputs[to[1]]) {
-				this.connect(
-					from[0],
-					from[1],
-					to[0],
-					to[1]
-				);
-			}
-		});
-		outputConnections.forEach(connection => {
-			let from = this.getParsedAddress(connection[0]);
-			let to = this.getParsedAddress(connection[1]);
-			if (from[0] === nodeId && node.outputs.indexOf(from[1]) > -1) {
-				this.connect(
-					from[0],
-					from[1],
-					to[0],
-					to[1]
-				);
-			}
-		});
+			let node = this.byId[nodeId];
 
-		// Send values back to component
-		// for (let k in values) {
-		// 	this.setAttribute(nodeId, k, values[k], false);
-		// }
+			inputConnections.forEach(connection => {
+				let from = this.getParsedAddress(connection[0]);
+				let to = this.getParsedAddress(connection[1]);
+				if (to[0] === nodeId && node.inputs[to[1]]) {
+					this.connect(
+						from[0],
+						from[1],
+						to[0],
+						to[1]
+					);
+				}
+			});
+			outputConnections.forEach(connection => {
+				let from = this.getParsedAddress(connection[0]);
+				let to = this.getParsedAddress(connection[1]);
+				if (from[0] === nodeId && node.outputs.indexOf(from[1]) > -1) {
+					this.connect(
+						from[0],
+						from[1],
+						to[0],
+						to[1]
+					);
+				}
+			});
+		} catch (e) {
+			console.log("BACKING UP!");
+			this.fromSerializeable(backup);
+			Events.emit("app:error", e.message);
+		}
+	}
+
+	runScreenDestroyCallbacks() {
+		for (let nodeId in this.byId) {
+			let node = this.byId[nodeId];
+			node.componentInstance.screenDestroyCallback();
+		}
+	}
+
+	runScreenUpdatedCallbacks() {
+		for (let nodeId in this.byId) {
+			let node = this.byId[nodeId];
+			node.componentInstance.screenUpdatedCallback();
+		}
 	}
 
 	setUserTransform(nodeId, inputName, text) {
@@ -328,11 +346,12 @@ export default class NodeMap {
 
 		try {
 			let fn = eval(/*eslint-disable-line no-eval*/ `(x) => ${text}`);
-			if (typeof fn !== "function") throw new Error("Not Function");
+			if (typeof fn !== "function") throw new Error(`"${text}" was unable to be parsed!`);
 
 			node.transforms[inputName] = text;
 			node.transformFns[inputName] = fn;
 		} catch (e) {
+			Events.emit("app:error", e.message);
 			return false;
 		}
 
@@ -400,10 +419,17 @@ export default class NodeMap {
 		return false;
 	}
 
+	isPortsConnected(fromNodeId, fromOutputAttr, toNodeId, toInputAttr) {
+		let output = this.getAddress(fromNodeId, fromOutputAttr);
+		let input = this.getAddress(toNodeId, toInputAttr);
+
+		return this.portMap[output] && this.portMap[output][input];
+	}
+
 	connect(fromNodeId, fromOutputAttr, toNodeId, toInputAttr) {
 		// prevent infinite feedback loop:
 		if (this.isConnected(toNodeId, fromNodeId)) throw new Error("Would cause cycle!");
-
+		if (this.isPortsConnected(fromNodeId, fromOutputAttr, toNodeId, toInputAttr)) return;
 		// this.getNodeById(fromNodeId).onConnect('output', fromOutputIndex)
 		// this.getNodeById(toNodeId).onConnect('input', toInputIndex)
 
@@ -507,7 +533,11 @@ export default class NodeMap {
 
 			if (transforms[attrName]) {
 				// debugger;
-				value = transforms[attrName](value);
+				try {
+					value = transforms[attrName](value);
+				} catch (e) {
+					Events.emit("app:error", e.message);
+				}
 			}
 		}
 
@@ -533,6 +563,7 @@ export default class NodeMap {
 
 		let node = this.byId[nodeId];
 		let targetComponentInstance = node.componentInstance;
+
 		targetComponentInstance.native_setAttribute(attrName, value);
 	}
 
@@ -549,6 +580,7 @@ export default class NodeMap {
 	}
 
 	getAttribute(nodeId, attrName) {
+		console.log("nm ga", nodeId, attrName);
 		if (!this.isAttributeSet(nodeId, attrName)) return null;
 		return this.values[nodeId][attrName];
 	}

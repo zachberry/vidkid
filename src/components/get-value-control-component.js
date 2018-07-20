@@ -22,6 +22,12 @@ export default (controlType, restrict, typeOfInputValue) => {
 		case "select":
 			return valueControlComponents.Select;
 
+		case "file":
+			return valueControlComponents.File;
+
+		case "button":
+			return valueControlComponents.Button;
+
 		// None set:
 		default:
 			switch (typeOfInputValue) {

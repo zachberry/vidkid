@@ -43,13 +43,27 @@ class Cable extends Component {
 		let top;
 		let transform = "";
 
-		if (!this.props.connection.fromEl || !this.props.connection.toEl || !this.refs.path) return;
+		if (
+			!this.props.connection.fromEl ||
+			(this.props.connection.isComplete && !this.props.connection.toEl) ||
+			!this.refs.path
+		)
+			return;
 
 		let boardBBox = this.props.boardEl.getBoundingClientRect();
 		let fromBBox = this.props.connection.fromEl.getBoundingClientRect();
-		let toBBox = this.props.connection.toEl.getBoundingClientRect();
+		let toBBox;
 
-		// console.log("um", boardBBox, fromBBox, toBBox);
+		if (this.props.connection.isComplete) {
+			toBBox = this.props.connection.toEl.getBoundingClientRect();
+		} else {
+			toBBox = {
+				left: this.props.connectingMouseX - 5,
+				top: this.props.connectingMouseY - 5,
+				width: 0,
+				height: 0
+			};
+		}
 
 		if (fromBBox.left < toBBox.left && fromBBox.top < toBBox.top) {
 			/*
@@ -130,6 +144,8 @@ class Cable extends Component {
 
 	render() {
 		// console.log(this.props.connection)
+		if (!this.props.connection.isComplete && (this.props.mouseX === -1 || this.props.mouseY === -1))
+			return null;
 
 		return (
 			<svg
@@ -138,7 +154,8 @@ class Cable extends Component {
 				className={
 					"cable" +
 					(this.props.isSelected ? " is-selected" : " is-not-selected") +
-					(this.state.hover ? " is-hover" : " is-not-hover")
+					(this.state.hover ? " is-hover" : " is-not-hover") +
+					(this.props.connection.isComplete ? " is-complete" : " is-not-complete")
 				}
 				preserveAspectRatio="none"
 			>

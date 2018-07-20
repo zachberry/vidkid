@@ -7,6 +7,10 @@ export default class NodeMapAdapter {
 		this.nodeMap.setAttributeFromComponent(nodeId, attrName, value);
 	}
 
+	getAttribute(nodeId, attrName) {
+		return this.nodeMap.getAttribute(nodeId, attrName);
+	}
+
 	send(nodeId, outputName, value) {
 		let connections = this.nodeMap.getInputsConnectedToOutput(nodeId, outputName);
 

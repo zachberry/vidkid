@@ -62,4 +62,18 @@ const select = ({ editable } = {}) => {
 	};
 };
 
-export { text, number, color, range, toggle, select };
+const file = () => {
+	return {
+		type: "file",
+		editable: false
+	};
+};
+
+const button = () => {
+	return {
+		type: "button",
+		editable: false
+	};
+};
+
+export { text, number, color, range, toggle, select, file, button };
