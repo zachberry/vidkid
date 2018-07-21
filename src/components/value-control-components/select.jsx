@@ -18,7 +18,6 @@ export default class Select extends React.Component {
 
 	render() {
 		let value = this.props.value !== null ? this.props.value : "";
-		console.log("uhhh", this.props, value);
 		return (
 			<div className="select">
 				<select value={value} onChange={this.boundOnChange}>

@@ -193,7 +193,7 @@ class NodeBoard extends React.Component {
 	}
 
 	componentDidUpdate() {
-		console.log("NODE BOARD CDU");
+		// console.log("NODE BOARD CDU");
 		Events.emit("connections:update");
 	}
 

@@ -26,9 +26,9 @@ export default class Node extends Component {
 	// 	});
 	// }
 
-	// shouldComponentUpdate() {
-	// 	return false;
-	// }
+	shouldComponentUpdate() {
+		return this.props.docState.shouldDisplayUpdate;
+	}
 
 	render() {
 		// console.log("NODE RENDER", this.props.node);

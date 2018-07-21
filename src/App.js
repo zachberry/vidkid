@@ -89,6 +89,10 @@ class App extends Component {
 		document.addEventListener("keyup", this.onKeyUp.bind(this));
 	}
 
+	shouldComponentUpdate() {
+		return this.docState.shouldDisplayUpdate;
+	}
+
 	onKeyUp(event) {
 		if (this.docState.editingNodeId !== null || this.docState.editingPage) return;
 		if (!this.docState.selectedConnection) return;
@@ -108,6 +112,7 @@ class App extends Component {
 	}
 
 	onUpdate() {
+		console.log("upendaten");
 		localStorage.saved = JSON.stringify(this.docState.toSerializeable());
 		this.forceUpdate();
 	}

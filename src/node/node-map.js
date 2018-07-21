@@ -580,7 +580,6 @@ export default class NodeMap {
 	}
 
 	getAttribute(nodeId, attrName) {
-		console.log("nm ga", nodeId, attrName);
 		if (!this.isAttributeSet(nodeId, attrName)) return null;
 		return this.values[nodeId][attrName];
 	}

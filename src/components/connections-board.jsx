@@ -28,6 +28,10 @@ class ConnectionsBoard extends Component {
 		Events.on("connections:update", this.forceUpdate.bind(this, null));
 	}
 
+	shouldComponentUpdate() {
+		return this.props.docState.shouldDisplayUpdate;
+	}
+
 	onKeyUp(event) {
 		if (event.keyCode === 27) {
 			this.props.docState.doAction({

@@ -82,9 +82,9 @@ const t = `class Video extends N {
 	updateVideo() {
 		console.log('--V-->updating video')
 		this.el.currentTime = parseFloat(this.getAttribute('time')) * this.el.duration;
-		this.el.loop = Boolean(this.getAttribute('loop') === "true");
-		this.el.muted = Boolean(this.getAttribute('muted') === "true");
-		Boolean(this.getAttribute('play') === "true") ? this.el.play() : this.el.pause()
+		this.el.loop = this.getAttribute('loop');
+		this.el.muted = this.getAttribute('muted');
+		this.getAttribute('play') ? this.el.play() : this.el.pause()
 	}
 
 	onLoadedVideo(event) {

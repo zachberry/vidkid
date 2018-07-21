@@ -27,6 +27,7 @@ class DocState {
 	}
 
 	init() {
+		this.shouldDisplayUpdate = true;
 		this.view = DocState.VIEW_EDIT;
 		// this.modal = null;
 		this.editingNodeId = null;
@@ -210,6 +211,7 @@ class DocState {
 
 				case "setFullscreen":
 					this.fullscreen = action.value;
+					this.shouldDisplayUpdate = !action.value;
 					break;
 
 				case "createNode":

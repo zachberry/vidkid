@@ -19,6 +19,16 @@
 
 * get rid of all that cable node that deals with mouse pointers if i don't end up using it
 
+BUGS:
+
+create a tween
+
+refresh
+
+this line causes bugs:
+console.log('tweeeeeen', this.tween, TWEEN)
+window.requestAnimationFrame(this.boundOnUpdate);
+
 PROBLEMS:
 
 - Unable to catch custom element exceptions

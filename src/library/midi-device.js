@@ -98,13 +98,13 @@ const c = `class MIDIDevice extends N {
 
 	onMIDIMessage(event) {
 		let data = event.data;
-		let channel = parseInt(this.getAttribute('channel'), 10) || 0;
-		let allowMessage = this.getAttribute('message') === "true";
-		let allowRealTime = this.getAttribute('realtime') === "true";
-		let allowNoteOn = this.getAttribute('note-on') === "true";
-		let allowNoteOff = this.getAttribute('note-off') === "true";
-		let allowCC = this.getAttribute('cc') === "true";
-		let transformNoteOnVelocityZeroAsNoteOff = this.getAttribute('zero-as-off') === "true";
+		let channel = this.getAttribute('channel');
+		let allowMessage = this.getAttribute('message');
+		let allowRealTime = this.getAttribute('realtime');
+		let allowNoteOn = this.getAttribute('note-on');
+		let allowNoteOff = this.getAttribute('note-off');
+		let allowCC = this.getAttribute('cc');
+		let transformNoteOnVelocityZeroAsNoteOff = this.getAttribute('zero-as-off');
 		let sendClockPerBeat = this.getAttribute('beat');
 
 		if(allowMessage) this.send("message", data.toString())

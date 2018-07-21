@@ -20,7 +20,7 @@ const t = `class ThreeJSTwoCubes extends N {
 	}
 
 	getTweenTime() {
-		return parseFloat(this.getAttribute('tween-time'));
+		return this.getAttribute('tween-time');
 	}
 
 	moveCube() {
