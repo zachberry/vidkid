@@ -2,7 +2,7 @@ const t = `class CSStransform extends N {
 	static get inputs() {
 	  return [
 			{
-				name: 'transform-string',
+				name: 'chain-id',
 				observe: true,
 				defaultValue: '',
 				restrict: String
@@ -23,33 +23,7 @@ const t = `class CSStransform extends N {
 	}
 
 	static get outputs() {
-	  return ['transform-string']
-	}
-
-	cssTransformStringToArray(css) {
-		if (css.length === 0) return []
-
-		return css.split('|').map(pair => {
-			let tokens = pair.split(':')
-			return {
-				id: tokens[0],
-				style: tokens[1]
-			}
-		})
-	}
-
-	cssArrayToTransformString(array) {
-		return array.map(o => o.id + ':' + o.style).join('|')
-	}
-
-	getStyleIndex(array) {
-		for (let i = 0, len = array.length; i < len; i++) {
-			if (array[i].id === this.id) {
-				return i;
-			}
-		}
-
-		return null;
+	  return ['chain-id']
 	}
 
 	getCSSRule(type, amount) {
@@ -66,29 +40,25 @@ const t = `class CSStransform extends N {
 	}
 
 	inputDisconnectedCallback(name) {
-		if(name === 'transform-string')
+		if(name === 'chain-id')
 		{
-			this.setAttribute('transform-string', '')
+			this.releaseChain(this.getAttribute('chain-id'))
+			this.setAttribute('chain-id', '')
 		}
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
-		let arr = this.cssTransformStringToArray(this.getAttribute('transform-string'))
-		let index = this.getStyleIndex(arr);
-		if(index === null) index = arr.length;
-
 		let rule = this.getCSSRule(this.getAttribute('type'), this.getAttribute('amount'))
-
 		if(!rule) return
 
-		arr[index] = {
-			id: this.id,
-			style: rule
-		}
+		let chain = this.getChain(this.getAttribute('chain-id'))
+		chain.set(this.id, rule);
 
-		let transformString = this.cssArrayToTransformString(arr);
+		this.send('chain-id', chain.id);
+	}
 
-		this.send('transform-string', transformString);
+	destroyCallback() {
+		this.releaseChain(this.getAttribute('chain-id'))
 	}
 }`;
 

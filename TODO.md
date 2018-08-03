@@ -4,20 +4,11 @@
 
 })
 
-- sucks that you have to do this for select:
-  {
-  ...
-  type: N.set(),
-  control: N.select() //<-- dont want to have to specify this!
-  }
+- gifs: https://github.com/CaptainCodeman/gif-player/blob/master/src/gif-player.js
 
-* When you edit the screen that detaches any dom elements (like from three.js!)
+- get rid of all that cable node that deals with mouse pointers if i don't end up using it
 
-* handle bad input names
-
-* gifs
-
-* get rid of all that cable node that deals with mouse pointers if i don't end up using it
+- allow you to change a connection
 
 BUGS:
 
@@ -28,6 +19,11 @@ refresh
 this line causes bugs:
 console.log('tweeeeeen', this.tween, TWEEN)
 window.requestAnimationFrame(this.boundOnUpdate);
+
+add in web animations api
+https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API/Using_the_Web_Animations_API
+
+audio device doesn't stop listening when you change device to ''
 
 PROBLEMS:
 

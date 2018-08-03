@@ -93,3 +93,20 @@
 	box-sizing: border-box;
 	background: rgba(0, 0, 0, 0.1);
 }
+
+.node.is-type-hardware {
+	/* border: 1px solid #37212d; */
+	background: #6f425a;
+}
+
+.node.is-type-hardware header {
+	background: rgba(0, 0, 0, 0.5);
+}
+
+.node.is-type-screen {
+	background: #234556;
+}
+
+.node.is-type-screen header {
+	background: rgba(0, 0, 0, 0.5);
+}

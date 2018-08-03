@@ -44,6 +44,7 @@ export default class Range extends React.Component {
 					onChange={this.boundOnChange}
 					min={min}
 					max={max}
+					step={step}
 				/>
 			</div>
 		);

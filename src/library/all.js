@@ -2,6 +2,8 @@ export default [
 	require("./new").default,
 	require("./mouse").default,
 	require("./midi-device").default,
+	require("./audio-device").default,
+	require("./tr-8s-drum-map").default,
 	require("./gamepad").default,
 	require("./css-filter").default,
 	require("./css-filter-element").default,
@@ -11,5 +13,9 @@ export default [
 	require("./video").default,
 	require("./css-transform").default,
 	require("./css-transform-element").default,
-	require("./iframe").default
+	require("./iframe").default,
+	require("./delay").default,
+	require("./value-number").default,
+	require("./value-string").default,
+	require("./value-boolean").default
 ];

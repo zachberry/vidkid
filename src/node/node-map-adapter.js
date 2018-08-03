@@ -24,4 +24,12 @@ export default class NodeMapAdapter {
 			this.nodeMap.setAttributeFromComponent(connectedNodeId, inputName, value);
 		}
 	}
+
+	getChain(nodeId, chainId) {
+		return this.nodeMap.chainPool.get(nodeId, chainId);
+	}
+
+	releaseChain(nodeId, chainId) {
+		this.nodeMap.chainPool.release(nodeId, chainId);
+	}
 }

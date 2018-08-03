@@ -1,4 +1,6 @@
 const t = `class Video extends N {
+	static get type() { return N.SCREEN }
+
 	static get inputs() {
 		return [
 			{

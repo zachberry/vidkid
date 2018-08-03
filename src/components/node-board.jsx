@@ -32,6 +32,9 @@ class NodeBoard extends React.Component {
 
 	onClick(event) {
 		this.unselectConnectionIfNeeded();
+		this.props.docState.doAction({
+			type: "abortConnection"
+		});
 	}
 
 	onContextMenu(event) {
@@ -166,7 +169,10 @@ class NodeBoard extends React.Component {
 		});
 	}
 
-	onClickPort(node, portType, portName) {
+	onClickPort(node, portType, portName, event) {
+		event.preventDefault();
+		event.stopPropagation();
+
 		this.props.docState.doAction({
 			type: "connect",
 			portType: portType,

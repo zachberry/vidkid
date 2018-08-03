@@ -1,9 +1,11 @@
 .node-board {
 	background: url("./grid-bg.png");
+	transition: background-color 0.2s;
 }
 
 .node-board.is-connecting {
 	/* cursor: none; */
+	background-color: black;
 }
 
 .node-board.is-connecting .node,
@@ -13,7 +15,11 @@
 }
 
 .node-board.is-connecting-type-output .node .node-input .label {
-	border-bottom: 1px solid #ffe501;
+	color: #ffe501;
+	font-weight: bold;
+}
+.node-board.is-connecting-type-output .node .node-input .label:hover {
+	color: black;
 }
 
 .node-board.is-connecting-type-output .node .node-input .label {
@@ -21,7 +27,11 @@
 }
 
 .node-board.is-connecting-type-input .node .node-output .label {
-	border-bottom: 1px solid #ffe501;
+	color: #ffe501;
+	font-weight: bold;
+}
+.node-board.is-connecting-type-input .node .node-output .label:hover {
+	color: black;
 }
 
 .node-board.is-connecting-type-input .node .node-output .label {

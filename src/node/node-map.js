@@ -3,6 +3,7 @@ import clone from "clone";
 import NodeMapAdapter from "./node-map-adapter";
 import createNodeWebComponent from "../node/create-node-web-component";
 import Events from "../events";
+import ChainPool from "../util/chain-pool";
 
 const DEFAULT_INPUT_OPTIONS = {
 	label: null,
@@ -25,9 +26,10 @@ export default class NodeMap {
 		this.nextId = 0;
 		this.byId = {};
 		this.nodeOrder = [];
+		this.chainPool = new ChainPool();
 	}
 
-	toSerializeable() {
+	toSerializable() {
 		let byIdClone = {};
 		for (let id in this.byId) {
 			let o = this.byId[id];
@@ -54,15 +56,15 @@ export default class NodeMap {
 		});
 
 		o.byId = byIdClone;
+		o.chainPool = this.chainPool.toSerializable();
 
 		return o;
 	}
 
-	fromSerializeable(o) {
+	fromSerializable(o) {
 		this.init();
 
-		// debugger;
-
+		this.chainPool.fromSerializable(o.chainPool);
 		this.values = o.values;
 		this.nodeMap = o.nodeMap;
 		this.portMap = o.portMap;
@@ -121,6 +123,7 @@ export default class NodeMap {
 			inputsList: Object.values(inputs),
 			outputs: webComponent.outputs || [],
 			tagName: webComponentTagName,
+			type: webComponent.type,
 			transforms: {},
 			transformFns: {},
 			initialValues: {}
@@ -132,10 +135,61 @@ export default class NodeMap {
 			this.setUserTransform(nodeId, inputName, transforms[inputName]);
 		}
 
+		let origAttrChangedCallback = webComponent.prototype.attributeChangedCallback;
+		if (origAttrChangedCallback) {
+			webComponent.prototype.attributeChangedCallback = (name, oldValue, newValue) => {
+				console.log("runrun");
+				try {
+					origAttrChangedCallback(name, oldValue, newValue);
+				} catch (e) {
+					Events.emit(
+						"app:error",
+						webComponent.name + " attributeChangedCallback error: " + e.message
+					);
+				}
+			};
+		}
+
 		// Create web component:
 		let inst = new this.byId[nodeId].component();
 		inst.init(nodeId, this.nodeMapAdapter, templateEl, styleEl);
 		this.byId[nodeId].componentInstance = inst;
+
+		// debugger;
+
+		const methodsToWrap = ["attributeChangedCallback"];
+
+		//@TODO - How much slower is this?
+
+		// for (let methodName of methodsToWrap) {
+		// 	let origMethod = this.byId[nodeId].component.prototype[methodName];
+		// 	console.log("haha2", origMethod);
+
+		// 	if (origMethod) {
+		// 		console.log("haha override");
+		// 		this.byId[nodeId].component.prototype[methodName] = (...args) => {
+		// 			try {
+		// 				origMethod.apply(inst, args);
+		// 			} catch (e) {
+		// 				Events.emit("app:error", "yo yo shit");
+		// 			}
+		// 		};
+		// 	}
+		// }
+
+		// let prox = new Proxy(inst, {
+		// 	get(target, value) {
+		// 		console.log("hahaha");
+		// 		return target[value];
+		// 	}
+		// });
+		// inst = prox;
+		// this.byId[nodeId].componentInstance = new Proxy(inst, {
+		// 	get(target, name, receiver) {
+		// 		console.info(`proxy: property ${name} for <${target.localName}> is "${target[name]}"`);
+		// 		return Reflect.get(target, name, receiver);
+		// 	}
+		// });
 
 		// this.refs.component.init(this.props.node.id, this.props.nodeMapAdapter, templateEl);
 
@@ -240,14 +294,7 @@ export default class NodeMap {
 		let node = this.byId[nodeId];
 		if (!node) return;
 
-		return this.createNewNode(
-			node.text,
-			node.templateHTML,
-			node.templateCSS,
-			null,
-			null,
-			node.transforms
-		);
+		return this.createNewNode(node.text, node.templateHTML, node.templateCSS);
 	}
 
 	// onAttrMutation(mutationList, observer) {
@@ -264,7 +311,7 @@ export default class NodeMap {
 
 	editNode(nodeId, nodeText, nodeTemplateHTML = null, nodeTemplateCSS = null) {
 		// Create a backup:
-		let backup = this.toSerializeable();
+		let backup = this.toSerializable();
 
 		try {
 			// 1. Store connections and values and transforms
@@ -313,7 +360,7 @@ export default class NodeMap {
 			});
 		} catch (e) {
 			console.log("BACKING UP!");
-			this.fromSerializeable(backup);
+			this.fromSerializable(backup);
 			Events.emit("app:error", e.message);
 		}
 	}
@@ -321,14 +368,28 @@ export default class NodeMap {
 	runScreenDestroyCallbacks() {
 		for (let nodeId in this.byId) {
 			let node = this.byId[nodeId];
-			node.componentInstance.screenDestroyCallback();
+			try {
+				node.componentInstance.screenDestroyCallback();
+			} catch (e) {
+				Events.emit(
+					"app:error",
+					node.componentInstance.id + " screenDestroyCallback error: " + e.message
+				);
+			}
 		}
 	}
 
 	runScreenUpdatedCallbacks() {
 		for (let nodeId in this.byId) {
 			let node = this.byId[nodeId];
-			node.componentInstance.screenUpdatedCallback();
+			try {
+				node.componentInstance.screenUpdatedCallback();
+			} catch (e) {
+				Events.emit(
+					"app:error",
+					node.componentInstance.id + " screenUpdatedCallback error: " + e.message
+				);
+			}
 		}
 	}
 
@@ -473,16 +534,30 @@ export default class NodeMap {
 		let numFromConnections = this.getInputsConnectedToOutput(fromNodeId, fromOutput).length;
 		let numToConnections = this.getOutputsConnectedToInput(toNodeId, toInput).length;
 
-		fromNode.componentInstance.outputDisconnectedCallback(
-			fromOutput,
-			numFromConnections - 1,
-			numFromNodeConnections - 1
-		);
-		toNode.componentInstance.inputDisconnectedCallback(
-			toInput,
-			numToConnections - 1,
-			numToNodeConnections - 1
-		);
+		try {
+			fromNode.componentInstance.outputDisconnectedCallback(
+				fromOutput,
+				numFromConnections - 1,
+				numFromNodeConnections - 1
+			);
+		} catch (e) {
+			Events.emit(
+				"app:error",
+				fromNode.componentInstance.id + " outputDisconnectedCallback error: " + e.message
+			);
+		}
+		try {
+			toNode.componentInstance.inputDisconnectedCallback(
+				toInput,
+				numToConnections - 1,
+				numToNodeConnections - 1
+			);
+		} catch (e) {
+			Events.emit(
+				"app:error",
+				toNode.componentInstance.id + " inputDisconnectedCallback error: " + e.message
+			);
+		}
 
 		let output = this.getAddress(fromNodeId, fromOutput);
 		let input = this.getAddress(toNodeId, toInput);

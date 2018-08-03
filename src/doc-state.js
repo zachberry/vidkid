@@ -20,7 +20,7 @@ class DocState {
 		// this.hardwareMap = new HardwareMap(hardware, this.nodeMap)
 
 		this.init();
-		// this.stateHistory = [this.toSerializeable()]
+		// this.stateHistory = [this.toSerializable()]
 		// this.historyPtr = null
 
 		this._onUpdateCallback = () => {};
@@ -68,16 +68,16 @@ class DocState {
 
 	// 	this.historyPtr--
 
-	// 	this.fromSerializeable
+	// 	this.fromSerializable
 	// }
 
 	update() {
 		this._onUpdateCallback();
 	}
 
-	toSerializeable() {
+	toSerializable() {
 		let o = clone({
-			nodeMap: this.nodeMap.toSerializeable(),
+			nodeMap: this.nodeMap.toSerializable(),
 			editingNodeId: this.editingNodeId,
 			editingPage: this.editingPage,
 			selectedConnection: this.selectedConnection,
@@ -91,7 +91,7 @@ class DocState {
 		return o;
 	}
 
-	fromSerializeable(o) {
+	fromSerializable(o) {
 		console.log("STATE FS", o);
 		this.editingNodeId = o.editingNodeId;
 		this.connecting = o.connecting;
@@ -101,7 +101,7 @@ class DocState {
 		this.pageCSS = o.pageCSS;
 		this.nodeUIMap = o.nodeUIMap;
 		this.fullscreen = o.fullscreen;
-		//this.nodeMap.fromSerializeable(o.nodeMap);
+		//this.nodeMap.fromSerializable(o.nodeMap);
 		// this.hardwareMap.fromSerializable(o.hardwareMap)
 
 		// console.log('new state', this.nodeMap)
@@ -112,8 +112,9 @@ class DocState {
 	// This function is split off since nodes could reference page elements
 	// and the page may not be built by the time this is being recreated
 	// from a saved state!
-	fromSerializeableNodeMap(o) {
-		this.nodeMap.fromSerializeable(o.nodeMap);
+	fromSerializableNodeMap(o) {
+		console.log("FSNM", o);
+		this.nodeMap.fromSerializable(o.nodeMap);
 	}
 
 	set onUpdateCallback(fn) {
@@ -192,7 +193,7 @@ class DocState {
 		console.log("DO ACTION", action);
 		let error = null;
 
-		let backup = this.toSerializeable();
+		let backup = this.toSerializable();
 		// console.log('BACK BE ALL', backup)
 
 		this.updatingNodeId = null;
@@ -424,7 +425,7 @@ class DocState {
 					return false;
 			}
 
-			// this.stateHistory.push(this.toSerializeable())
+			// this.stateHistory.push(this.toSerializable())
 		} catch (e) {
 			console.error("CAUGHT ERROR");
 			console.error(e);
@@ -433,7 +434,7 @@ class DocState {
 
 			Events.emit("app:error", e.message);
 
-			this.fromSerializeable(backup);
+			this.fromSerializable(backup);
 		}
 
 		this.update(error || true);

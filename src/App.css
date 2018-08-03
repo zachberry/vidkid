@@ -5,6 +5,7 @@
 	position: fixed;
 	bottom: 1em;
 	left: 1em;
+	z-index: 999999;
 }
 
 #todo-create-node {

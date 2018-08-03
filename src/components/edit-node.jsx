@@ -30,11 +30,17 @@ class EditNode extends Component {
 		this.nodeText = node.text;
 	}
 
+	isEditorReportingErrors() {
+		let annotations = this.refs.aceEditor.editor.getSession().$annotations;
+		for (let i = 0, len = annotations.length; i < len; i++) {
+			if (annotations[i].type === "error") return true;
+		}
+
+		return false;
+	}
+
 	onChange(s) {
-		//console.log('change', s, this.props.modelId)
-		//@TODO - instead of onChange just get it when we save and close?
 		this.nodeText = s;
-		// console.log(this.refs.aceEditor.editor.getSession().$annotations)
 	}
 
 	cancel() {
@@ -45,6 +51,11 @@ class EditNode extends Component {
 
 	save() {
 		if (this.nodeText === null) return true;
+
+		if (this.isEditorReportingErrors()) {
+			Events.emit("app:error", "Unable to save: Check JS code");
+			return false;
+		}
 
 		let successOrError = this.props.docState.doAction({
 			type: "updateNodeText",

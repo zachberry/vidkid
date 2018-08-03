@@ -1,4 +1,6 @@
 const c = `class MIDIDevice extends N {
+	static get type() { return N.HARDWARE };
+
 	static get inputs() {
 		return [
 			{

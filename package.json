@@ -28,9 +28,7 @@
 			"last 1 chrome versions"
 		],
 		"production": [
-			">0.25%",
-			"not op_mini all",
-			"ie 11"
+			"last 1 chrome versions"
 		]
 	}
 }

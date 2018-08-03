@@ -16,6 +16,8 @@ import EditPage from "./components/edit-page";
 import ImportExportDialog from "./components/import-export-dialog";
 import ErrorMessage from "./components/error-message";
 
+// import Audio from "./library/audio-device";
+
 // window.addEventListener("gamepadconnected", e => {
 // 	console.log("oh shit", e);
 // });
@@ -87,6 +89,23 @@ class App extends Component {
 		this.boundSetFullscreen = this.setFullscreen.bind(this);
 
 		document.addEventListener("keyup", this.onKeyUp.bind(this));
+		window.addEventListener("error", this.onGlobalError.bind(this));
+	}
+
+	onGlobalError(event) {
+		console.error(event);
+		Events.emit("app:error", event.message);
+	}
+
+	getImportFromHash() {
+		const h = "" + window.location.hash.replace("#", "");
+		if (h.length === 0) return null;
+		try {
+			const doc = JSON.parse(atob(h));
+			return doc;
+		} catch (e) {}
+
+		return null;
 	}
 
 	shouldComponentUpdate() {
@@ -113,13 +132,16 @@ class App extends Component {
 
 	onUpdate() {
 		console.log("upendaten");
-		localStorage.saved = JSON.stringify(this.docState.toSerializeable());
+		localStorage.saved = JSON.stringify(this.docState.toSerializable());
 		this.forceUpdate();
 	}
 
 	componentDidMount() {
-		if (localStorage.saved) {
-			this.fromSerializeable(JSON.parse(localStorage.saved));
+		let docFromHash = this.getImportFromHash();
+		if (docFromHash) {
+			this.fromSerializable(docFromHash);
+		} else if (localStorage.saved) {
+			this.fromSerializable(JSON.parse(localStorage.saved));
 		}
 
 		Events.on("app:update", this.forceUpdate.bind(this, null));
@@ -140,7 +162,7 @@ class App extends Component {
 	onErrorMessage(message) {
 		console.error("App:error");
 		console.error(message);
-		this.setState({ errorMessage: message });
+		this.setState({ errorMessage: message, errorMessageTime: Date.now() });
 	}
 
 	onDismissError() {
@@ -152,31 +174,34 @@ class App extends Component {
 		this.onUpdate();
 	}
 
-	fromSerializeable(newState) {
-		//@TODO: Can these two methods be combined?
-		this.docState.fromSerializeableNodeMap(newState);
-		this.docState.fromSerializeable(newState);
+	fromSerializable(newState) {
+		// This will restore screen
+		this.docState.fromSerializable(newState);
 
 		this.forceUpdate(() => {
+			// Need to defer this until this point since only here
+			// can we ensure that screen has been rendered and nodes
+			// can call screen in any attributeChangedCallbacks
+			this.docState.fromSerializableNodeMap(newState);
 			this.onUpdate();
 
 			setTimeout(() => {
 				this.forceUpdate();
 
 				//@TODO:
-				// let gamepad = require("./library/video").default;
-				// console.log("gp", gamepad);
+				let gamepad = require("./library/audio-device").default;
+				console.log("gp", gamepad);
 				// this.docState.doAction({
 				// 	type: "createNode",
-				// 	text: gamepad.text
-				// 	// templateHTML: gamepad.templateHTML,
+				// 	text: gamepad.text,
+				// 	templateHTML: gamepad.templateHTML
 				// 	// templateCSS: gamepad.templateCSS
 				// });
 			});
 		});
 
 		// this.forceUpdate(() => {
-		// 	// this.docState.fromSerializeableNodeMap(newState);
+		// 	// this.docState.fromSerializableNodeMap(newState);
 		// 	this.onUpdate();
 
 		// 	setTimeout(() => {
@@ -186,11 +211,11 @@ class App extends Component {
 	}
 
 	onDialogImport(newState) {
-		// this.docState.fromSerializeable(newState)
+		// this.docState.fromSerializable(newState)
 		this.setState({
 			importExportMode: null
 		});
-		this.fromSerializeable(newState);
+		this.fromSerializable(newState);
 	}
 
 	init() {
@@ -250,7 +275,7 @@ class App extends Component {
 							mode={this.state.importExportMode}
 							text={
 								this.state.importExportMode === "export"
-									? JSON.stringify(this.docState.toSerializeable())
+									? JSON.stringify(this.docState.toSerializable())
 									: null
 							}
 						/>
@@ -259,6 +284,7 @@ class App extends Component {
 				{this.state.errorMessage ? (
 					<ErrorMessage
 						message={this.state.errorMessage}
+						time={this.state.errorMessageTime}
 						onDismiss={this.onDismissError.bind(this)}
 					/>
 				) : null}

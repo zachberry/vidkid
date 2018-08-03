@@ -1,3 +1,5 @@
+import Events from "../events";
+
 import { float, int, set } from "../node/input-restrict-functions";
 import {
 	range,
@@ -11,6 +13,10 @@ import {
 } from "../node/control-functions";
 
 export default class N extends HTMLElement {
+	static GENERIC = "generic";
+	static HARDWARE = "hardware";
+	static SCREEN = "screen";
+
 	static float = float;
 	static int = int;
 	static set = set;
@@ -29,20 +35,8 @@ export default class N extends HTMLElement {
 	//adoptedCallback()
 	//attributeChangedCallback(name, oldValue, newValue)
 
-	inputConnectedCallback() {}
-	outputConnectedCallback() {}
-	inputDisconnectedCallback() {}
-	outputDisconnectedCallback() {}
-	screenDestroyCallback() {}
-	screenUpdatedCallback() {}
-
-	readyCallback() {
-		console.log("on ready!");
-	}
-
-	destroyCallback() {
-		console.log("on destroy!");
-	}
+	// inputConnectedCallback() {}
+	// outputConnectedCallback() {}
 
 	init(id, nodeMapAdapter, templateEl = null, styleEl = null) {
 		this.id = id;
@@ -57,6 +51,14 @@ export default class N extends HTMLElement {
 
 	send(outputName, outputValue) {
 		this.nodeMapAdapter.send(this.id, outputName, outputValue);
+	}
+
+	getChain(chainId) {
+		return this.nodeMapAdapter.getChain(this.id, chainId);
+	}
+
+	releaseChain(chainId) {
+		return this.nodeMapAdapter.releaseChain(this.id, chainId);
 	}
 
 	getAttribute(attrName) {
@@ -74,4 +76,20 @@ export default class N extends HTMLElement {
 	native_setAttribute(attrName, value) {
 		HTMLElement.prototype.setAttribute.call(this, attrName, value);
 	}
+
+	attributeChangedCallback(attrName, oldValue, newValue) {
+		try {
+			this.onAttrChanged(attrName, oldValue, newValue);
+		} catch (e) {
+			Events.emit("app:error", this.id + " attrChangedCallback error: " + e.message);
+		}
+	}
+
+	onAttrChanged() {}
+	onInputDisconnected() {}
+	onOutputDisconnected() {}
+	onScreenDestroy() {}
+	onScreenUpdated() {}
+	onReady() {}
+	onDestroy() {}
 }

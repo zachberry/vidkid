@@ -1,4 +1,6 @@
 const t = `class ThreeJS extends N {
+	static get type() { return N.SCREEN }
+
 	static get inputs() {
 		return [
 			{

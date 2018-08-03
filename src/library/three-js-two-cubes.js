@@ -1,4 +1,6 @@
 const t = `class ThreeJSTwoCubes extends N {
+	static get type() { return N.SCREEN }
+
 	static get inputs() {
 		return [
 			{

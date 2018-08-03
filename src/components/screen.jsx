@@ -60,8 +60,9 @@ class Screen extends Component {
 
 	updateIframe() {
 		console.log("UPDOOT IFRAME");
-		writeToIframe(this.refs.iframe, this.state.html, this.state.css);
-		Events.emit("screen:iframeUpdated");
+		writeToIframe(this.refs.iframe, this.state.html, this.state.css, () => {
+			Events.emit("screen:iframeUpdated");
+		});
 	}
 
 	render() {

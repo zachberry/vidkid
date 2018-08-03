@@ -42,7 +42,7 @@ export default class Node extends Component {
 		return (
 			<div
 				data-node-id={this.props.node.id}
-				className="node"
+				className={"node is-type-" + this.props.node.type}
 				onMouseOver={this.boundOnMouseOver}
 				onMouseOut={this.boundOnMouseOut}
 				onClick={this.props.onClick}

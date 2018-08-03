@@ -1,8 +1,10 @@
 const t = `class CSSTransformElement extends N {
+	static get type() { return N.SCREEN }
+
 	static get inputs() {
 		return [
 			{
-				name: "transform-string",
+				name: "chain-id",
 				observe: true,
 				defaultValue: "",
 				restrict: String
@@ -24,41 +26,34 @@ const t = `class CSSTransformElement extends N {
 		}
 	}
 
-	readyCallback() {
-		// Called when component is on the DOM
-	}
-
-	destroyCallback() {
-		// Called when component will be removed from the DOM
-	}
-
-	getCSSTransformString(s) {
-		return s
-			.split("|")
-			.map(pair => pair.split(":")[1])
-			.join(" ");
-	}
-
 	setTransform(selector, transformText) {
+		console.log('__set trans__', selector, transformText)
 		let el = this.getEl(selector);
 		if (el) el.style.transform = transformText;
 	}
 
 	inputDisconnectedCallback(name) {
-		if(name === 'transform-string')
+		if(name === 'chain-id')
 		{
-			this.setTransform(this.getAttribute('selector'), '')
+			this.setAttribute('chain-id', '')
 		}
+	}
+
+	getCSSTransformString(chainId) {
+		let chain = this.getChain(chainId);
+		if(!chain) return ''
+
+		return chain.get().join(' ')
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
 		switch (name) {
 			case "selector":
 				this.setTransform(oldValue, '');
-				this.setTransform(newValue, this.getCSSTransformString(this.getAttribute("transform-string")));
+				this.setTransform(newValue, this.getCSSTransformString(this.getAttribute("chain-id")));
 				break;
 
-			case "transform-string":
+			case "chain-id":
 				this.setTransform(this.getAttribute('selector'), this.getCSSTransformString(newValue));
 				break;
 		}

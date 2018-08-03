@@ -2,7 +2,7 @@ const t = `class CSSFilter extends N {
 	static get inputs() {
 	  return [
 			{
-				name: 'filter-string',
+				name: 'chain-id',
 				observe: true,
 				defaultValue: '',
 				restrict: String
@@ -23,33 +23,7 @@ const t = `class CSSFilter extends N {
 	}
 
 	static get outputs() {
-	  return ['filter-string']
-	}
-
-	cssFilterStringToArray(css) {
-		if (css.length === 0) return []
-
-		return css.split('|').map(pair => {
-			let tokens = pair.split(':')
-			return {
-				id: tokens[0],
-				style: tokens[1]
-			}
-		})
-	}
-
-	cssArrayToFilterString(array) {
-		return array.map(o => o.id + ':' + o.style).join('|')
-	}
-
-	getStyleIndex(array) {
-		for (let i = 0, len = array.length; i < len; i++) {
-			if (array[i].id === this.id) {
-				return i;
-			}
-		}
-
-		return null;
+	  return ['chain-id']
 	}
 
 	getCSSRule(type, amount) {
@@ -69,29 +43,25 @@ const t = `class CSSFilter extends N {
 	}
 
 	inputDisconnectedCallback(name) {
-		if(name === 'filter-string')
+		if(name === 'chain-id')
 		{
-			this.setAttribute('filter-string', '')
+			this.releaseChain(this.getAttribute('chain-id'))
+			this.setAttribute('chain-id', '')
 		}
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
-		let arr = this.cssFilterStringToArray(this.getAttribute('filter-string'))
-		let index = this.getStyleIndex(arr);
-		if(index === null) index = arr.length;
-
 		let rule = this.getCSSRule(this.getAttribute('type'), this.getAttribute('amount'))
-
 		if(!rule) return
 
-		arr[index] = {
-			id: this.id,
-			style: rule
-		}
+		let chain = this.getChain(this.getAttribute('chain-id'))
+		chain.set(this.id, rule);
 
-		let filterString = this.cssArrayToFilterString(arr);
+		this.send('chain-id', chain.id);
+	}
 
-		this.send('filter-string', filterString);
+	destroyCallback() {
+		this.releaseChain(this.getAttribute('chain-id'))
 	}
 }`;
 

@@ -1,3 +1,20 @@
+@keyframes error-message-pulse {
+	0% {
+		transform: translate(0, 0);
+	}
+	40% {
+		transform: translate(0, -2px);
+	}
+	80% {
+		transform: translate(0, 0);
+	}
+	90% {
+		transform: translate(0, 1px);
+	}
+	100% {
+		transform: translate(0, 0);
+	}
+}
 .error-message {
 	background: #b50000;
 	color: #ffd9d9;
@@ -6,6 +23,7 @@
 	width: 25em;
 	cursor: pointer;
 	font-size: 0.9em;
+	animation: error-message-pulse 0.2s ease-in-out 1;
 }
 
 .error-message:hover {
