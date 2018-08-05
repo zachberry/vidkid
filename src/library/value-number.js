@@ -14,7 +14,7 @@ const t = `class ValueNumber extends N {
 		return ['value']
 	  }
 
-	  attributeChangedCallback(name, oldValue, newValue) {
+	  onAttrChanged(name, oldValue, newValue) {
 		this.send('value', newValue);
 	  }
 }`;

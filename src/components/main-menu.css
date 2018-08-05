@@ -1,11 +1,14 @@
 .main-menu {
 	height: 2.5em;
+	vertical-align: middle;
 }
 
-.main-menu .logo {
+.main-menu img {
 	display: inline-block;
-	/* color: #ffe501; */
-	/* color: black; */
+	height: 1.3em;
+	vertical-align: middle;
+	margin-right: 0.5em;
+	opacity: 0.6;
 }
 
 .main-menu .toolbar {

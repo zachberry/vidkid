@@ -7,7 +7,7 @@ const TWEEN = require("@tweenjs/tween.js");
 const N = require("../web-components/base-node").default; // eslint-disable-line no-unused-vars
 // var { int, float } = require("./input-restrict-functions").default;
 
-// const methodsToWrap = ["attributeChangedCallback"];
+// const methodsToWrap = ["onAttrChanged"];
 // const wrapMethods = C => {
 // 	//@TODO - How much slower is this?
 
@@ -24,13 +24,13 @@ const N = require("../web-components/base-node").default; // eslint-disable-line
 // 			};
 // 		}
 // 	}
-// 	// let origAttrChangedCallback = C.prototype.attributeChangedCallback;
+// 	// let origAttrChangedCallback = C.prototype.onAttrChanged;
 // 	// if (origAttrChangedCallback) {
-// 	// 	C.prototype.attributeChangedCallback = (name, oldValue, newValue) => {
+// 	// 	C.prototype.onAttrChanged = (name, oldValue, newValue) => {
 // 	// 		try {
 // 	// 			origAttrChangedCallback(name, oldValue, newValue);
 // 	// 		} catch (e) {
-// 	// 			Events.emit("app:error", C.name + " attributeChangedCallback error: " + e.message);
+// 	// 			Events.emit("app:error", C.name + " onAttrChanged error: " + e.message);
 // 	// 		}
 // 	// 	};
 // 	// }
@@ -89,9 +89,9 @@ export default (elementName, classText, templateHTML = null, templateCSS = null)
 			get: () => observedAttributes
 		});
 	}
-	// let origAttrChangedCallback = EvaledClass.prototype.attributeChangedCallback;
+	// let origAttrChangedCallback = EvaledClass.prototype.onAttrChanged;
 	// if (origAttrChangedCallback) {
-	// 	EvaledClass.prototype.attributeChangedCallback = (name, oldValue, newValue) => {
+	// 	EvaledClass.prototype.onAttrChanged = (name, oldValue, newValue) => {
 	// 		try {
 	// 			console.log("runrunrun time");
 	// 			debugger;
@@ -99,7 +99,7 @@ export default (elementName, classText, templateHTML = null, templateCSS = null)
 	// 		} catch (e) {
 	// 			Events.emit(
 	// 				"app:error",
-	// 				EvaledClass.name + " attributeChangedCallback error: " + e.message
+	// 				EvaledClass.name + " onAttrChanged error: " + e.message
 	// 			);
 	// 		}
 	// 	};

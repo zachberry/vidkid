@@ -3,6 +3,10 @@ export default [
 	require("./mouse").default,
 	require("./midi-device").default,
 	require("./audio-device").default,
+	require("./video-device").default,
+	require("./canvas").default,
+	require("./pixel-canvas").default,
+	require("./button").default,
 	require("./tr-8s-drum-map").default,
 	require("./gamepad").default,
 	require("./css-filter").default,
@@ -15,7 +19,9 @@ export default [
 	require("./css-transform-element").default,
 	require("./iframe").default,
 	require("./delay").default,
+	require("./delay-value").default,
 	require("./value-number").default,
 	require("./value-string").default,
-	require("./value-boolean").default
+	require("./value-boolean").default,
+	require("./lazer-grid").default
 ];

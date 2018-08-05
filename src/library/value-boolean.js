@@ -14,7 +14,7 @@ const t = `class ValueBoolean extends N {
 		return ['value']
 	  }
 
-	  attributeChangedCallback(name, oldValue, newValue) {
+	  onAttrChanged(name, oldValue, newValue) {
 		this.send('value', this.getAttribute('value'));
 	  }
 }`;

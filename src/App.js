@@ -53,7 +53,7 @@ import ErrorMessage from "./components/error-message";
 // 		this.setAttribute("barf", x);
 // 	}
 
-// 	attributeChangedCallback(name, oldValue, newValue) {
+// 	onAttrChanged(name, oldValue, newValue) {
 // 		console.log("P ATTR CHANGED", name, oldValue, newValue);
 // 	}
 
@@ -181,7 +181,7 @@ class App extends Component {
 		this.forceUpdate(() => {
 			// Need to defer this until this point since only here
 			// can we ensure that screen has been rendered and nodes
-			// can call screen in any attributeChangedCallbacks
+			// can call screen in any onAttrChangeds
 			this.docState.fromSerializableNodeMap(newState);
 			this.onUpdate();
 

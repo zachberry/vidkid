@@ -31,7 +31,7 @@ const t = `class CSSFilterElement extends N {
 		if (el) el.style.filter = filterText;
 	}
 
-	inputDisconnectedCallback(name) {
+	onInputDisconnected(name) {
 		if(name === 'chain-id')
 		{
 			this.setAttribute('chain-id', '')
@@ -45,7 +45,7 @@ const t = `class CSSFilterElement extends N {
 		return chain.get().join(' ')
 	}
 
-	attributeChangedCallback(name, oldValue, newValue) {
+	onAttrChanged(name, oldValue, newValue) {
 		switch (name) {
 			case "selector":
 				this.setFilter(oldValue, '');

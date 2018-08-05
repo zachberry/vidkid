@@ -77,7 +77,6 @@ class DocState {
 
 	toSerializable() {
 		let o = clone({
-			nodeMap: this.nodeMap.toSerializable(),
 			editingNodeId: this.editingNodeId,
 			editingPage: this.editingPage,
 			selectedConnection: this.selectedConnection,
@@ -87,6 +86,8 @@ class DocState {
 			nodeUIMap: this.nodeUIMap,
 			fullscreen: this.fullscreen
 		});
+
+		o.nodeMap = this.nodeMap.toSerializable();
 
 		return o;
 	}

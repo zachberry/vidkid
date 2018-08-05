@@ -1,4 +1,4 @@
-const t = `class Delay extends N {
+const t = `class DelayValue extends N {
 	static get inputs() {
 	  return [
 			{
@@ -7,6 +7,18 @@ const t = `class Delay extends N {
 				defaultValue: null,
 				restrict: null,
 				control: N.button()
+			},
+			{
+				name: 'high-value',
+				observe: false,
+				defaultValue: 1,
+				restrict: Number
+			},
+			{
+				name: 'low-value',
+				observe: false,
+				defaultValue: 0,
+				restrict: Number
 			},
 			{
 				name: 'delay',
@@ -27,16 +39,20 @@ const t = `class Delay extends N {
 	}
 
 	onAttrChanged(name, oldValue, newValue) {
+		let high = this.getAttribute('high-value')
+		let low = this.getAttribute('low-value')
 		let delay = this.getAttribute('delay')
-		let out = this.getAttribute('in');
 
+		window.clearTimeout(this.timeoutId);
+
+		this.send('out', high);
 		this.timeoutId = setTimeout(() => {
-			this.send('out', out)
+			this.send('out', low)
 		}, delay)
 	}
 }`;
 
 export default {
-	label: "Delay",
+	label: "Delay Value",
 	text: t
 };

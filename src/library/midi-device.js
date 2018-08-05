@@ -63,7 +63,7 @@ const c = `class MIDIDevice extends N {
 	}
 
 	static get outputs() {
-		return ["message", "start", "stop", "continue", "clock", "note-on", "note-off", "cc"];
+		return ["message", "start", "stop", "continue", "clock", "note-on", "note-off", "cc", "bpm"];
 	}
 
 	constructor() {
@@ -86,7 +86,7 @@ const c = `class MIDIDevice extends N {
 		this.root.getElementById('select').value = id;
 	}
 
-	attributeChangedCallback(name, oldValue, newValue) {
+	onAttrChanged(name, oldValue, newValue) {
 		console.log('ACC', name, oldValue, newValue);
 		this.setInput(newValue);
 	}
@@ -128,6 +128,12 @@ const c = `class MIDIDevice extends N {
 			return this.send('continue', data.toString());
 		}
 		if(data[0] === 0xF8 && allowRealTime && this.sendClock) {
+			if(this.clock % 24 === 0) {
+				let now = Date.now()
+				if(this.lastClock) this.send('bpm', 60000 / (now - this.lastClock))
+				this.lastClock = now;
+			}
+
 			let shouldSendBeat = false;
 			switch(sendClockPerBeat) {
 				case "24ppqn":
@@ -199,7 +205,7 @@ const c = `class MIDIDevice extends N {
 		alert("Unable to obtain MIDI access!");
 	}
 
-	readyCallback() {
+	onReady() {
 		console.log("MIDIDEVICE READY!");
 
 		this.boundOnMIDIMessage = this.onMIDIMessage.bind(this);
@@ -208,7 +214,7 @@ const c = `class MIDIDevice extends N {
 			.then(this.onMIDISuccess.bind(this), this.onMIDIFailure.bind(this));
 	}
 
-	destroyCallback() {
+	onDestroy() {
 		console.error("MIDIDEVICE DESTROY!");
 		this.removeMIDIListeners();
 	}

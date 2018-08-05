@@ -32,7 +32,7 @@ const t = `class CSSTransformElement extends N {
 		if (el) el.style.transform = transformText;
 	}
 
-	inputDisconnectedCallback(name) {
+	onInputDisconnected(name) {
 		if(name === 'chain-id')
 		{
 			this.setAttribute('chain-id', '')
@@ -46,7 +46,7 @@ const t = `class CSSTransformElement extends N {
 		return chain.get().join(' ')
 	}
 
-	attributeChangedCallback(name, oldValue, newValue) {
+	onAttrChanged(name, oldValue, newValue) {
 		switch (name) {
 			case "selector":
 				this.setTransform(oldValue, '');

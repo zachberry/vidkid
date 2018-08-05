@@ -39,7 +39,7 @@ const t = `class CSStransform extends N {
 		}
 	}
 
-	inputDisconnectedCallback(name) {
+	onInputDisconnected(name) {
 		if(name === 'chain-id')
 		{
 			this.releaseChain(this.getAttribute('chain-id'))
@@ -47,7 +47,7 @@ const t = `class CSStransform extends N {
 		}
 	}
 
-	attributeChangedCallback(name, oldValue, newValue) {
+	onAttrChanged(name, oldValue, newValue) {
 		let rule = this.getCSSRule(this.getAttribute('type'), this.getAttribute('amount'))
 		if(!rule) return
 
@@ -57,7 +57,7 @@ const t = `class CSStransform extends N {
 		this.send('chain-id', chain.id);
 	}
 
-	destroyCallback() {
+	onDestroy() {
 		this.releaseChain(this.getAttribute('chain-id'))
 	}
 }`;

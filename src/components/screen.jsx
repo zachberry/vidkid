@@ -33,7 +33,7 @@ class Screen extends Component {
 			delete this.needsIframeUpdate;
 			this.updateIframe();
 
-			this.props.docState.nodeMap.runScreenUpdatedCallbacks();
+			this.props.docState.nodeMap.runOnScreenUpdatedCallbacks();
 		}
 	}
 
@@ -49,7 +49,7 @@ class Screen extends Component {
 		if (nextProps.pageHTML !== this.state.html || nextProps.pageCSS !== this.state.css) {
 			this.needsIframeUpdate = true;
 
-			this.props.docState.nodeMap.runScreenDestroyCallbacks();
+			this.props.docState.nodeMap.runOnScreenDestroyCallbacks();
 
 			this.setState({
 				html: nextProps.pageHTML,

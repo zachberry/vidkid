@@ -42,7 +42,7 @@ const t = `class CSSFilter extends N {
 		}
 	}
 
-	inputDisconnectedCallback(name) {
+	onInputDisconnected(name) {
 		if(name === 'chain-id')
 		{
 			this.releaseChain(this.getAttribute('chain-id'))
@@ -50,7 +50,7 @@ const t = `class CSSFilter extends N {
 		}
 	}
 
-	attributeChangedCallback(name, oldValue, newValue) {
+	onAttrChanged(name, oldValue, newValue) {
 		let rule = this.getCSSRule(this.getAttribute('type'), this.getAttribute('amount'))
 		if(!rule) return
 
@@ -60,7 +60,7 @@ const t = `class CSSFilter extends N {
 		this.send('chain-id', chain.id);
 	}
 
-	destroyCallback() {
+	onDestroy() {
 		this.releaseChain(this.getAttribute('chain-id'))
 	}
 }`;

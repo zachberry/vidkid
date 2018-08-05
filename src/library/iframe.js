@@ -18,12 +18,12 @@ const t = `class IFrame extends N {
 		];
 	}
 
-	destroyCallback() {
+	onDestroy() {
 		if(this.el) this.el.src = 'about:blank';
 		this.el = null;
 	}
 
-	screenUpdatedCallback() {
+	onScreenUpdated() {
 		let el = this.getVideoEl(this.getAttribute('selector'));
 		if(el) {
 			this.el = el;
@@ -42,7 +42,7 @@ const t = `class IFrame extends N {
 		return null;
 	}
 
-	attributeChangedCallback(name, oldValue, newValue) {
+	onAttrChanged(name, oldValue, newValue) {
 		switch(name)
 		{
 			case "src":

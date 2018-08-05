@@ -26,11 +26,11 @@ const t = `class Tween extends N {
 		return ["out"];
 	}
 
-	readyCallback() {
+	onReady() {
 		this.boundOnUpdate = this.onUpdate.bind(this);
 	}
 
-	destroyCallback() {
+	onDestroy() {
 		if (this.tween) this.tween.stop();
 	}
 
@@ -41,7 +41,7 @@ const t = `class Tween extends N {
 		if(this.tween.isPlaying()) window.requestAnimationFrame(this.boundOnUpdate);
 	}
 
-	attributeChangedCallback(name, oldValue, newValue) {
+	onAttrChanged(name, oldValue, newValue) {
 		if (name !== "in") return;
 
 		let tweenMethod = this.getAttribute("fn");

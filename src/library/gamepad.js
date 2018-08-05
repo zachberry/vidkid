@@ -17,7 +17,7 @@ const c = `class Gamepad extends N {
 		return ["axis-1", "axis-2", "axis-3", "axis-4", "button-1", "button-2", "button-3", "button-4"];
 	}
 
-	attributeChangedCallback(name, oldValue, newValue) {
+	onAttrChanged(name, oldValue, newValue) {
 		console.log("ACC", name, oldValue, newValue);
 		//this.setInput(newValue);
 		this.updateList();
@@ -140,7 +140,7 @@ const c = `class Gamepad extends N {
 		window.requestAnimationFrame(this.boundPoll);
 	}
 
-	readyCallback() {
+	onReady() {
 		console.log("GP READY!");
 		this.active = true;
 		this.gamepads = [];
@@ -166,7 +166,7 @@ const c = `class Gamepad extends N {
 		window.requestAnimationFrame(this.boundPoll)
 	}
 
-	destroyCallback() {
+	onDestroy() {
 		this.active = false;
 		window.removeEventListener("gamepadconnected", this.boundOnGamepadConnected);
 		window.removeEventListener("gamepaddisconnected", this.boundOnGamepadDisconnected);

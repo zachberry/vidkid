@@ -15,7 +15,7 @@ const c = `class TR8SDrumMap extends N {
 		return ["BD", "SD", "LT", "MT", "HT", "RS", "HC", "CH", "OH", "CC", "RC"];
 	}
 
-	attributeChangedCallback(name, oldValue, newValue) {
+	onAttrChanged(name, oldValue, newValue) {
 		console.log('ACC', name, oldValue, newValue);
 
 		let midiData = newValue;

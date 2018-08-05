@@ -159,7 +159,7 @@ const t = `class AudioDevice extends N {
 		if(this.node) this.node.removeEventListener('audioprocess', this.boundOnAudioProcess)
 	}
 
-	readyCallback() {
+	onReady() {
 		this.context = null;
 		this.analyser = null;
 		this.node = null;
@@ -172,11 +172,11 @@ const t = `class AudioDevice extends N {
 		this.getAudioDevices()
 	}
 
-	destroyCallback() {
+	onDestroy() {
 		this.stopAudioProcessing()
 	}
 
-	attributeChangedCallback(name, oldValue, newValue) {
+	onAttrChanged(name, oldValue, newValue) {
 		console.log("ACC", name, oldValue, newValue);
 
 		switch(name) {

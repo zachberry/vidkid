@@ -54,6 +54,8 @@
 .node-search-menu .menu {
 	width: 100%;
 	color: white;
+	max-height: 13.3em;
+	overflow: scroll;
 }
 
 .node-search-menu .menu li {

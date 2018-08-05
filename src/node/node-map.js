@@ -50,10 +50,22 @@ export default class NodeMap {
 			nodeMap: this.nodeMap,
 			portMap: this.portMap,
 			inputsMap: this.inputsMap,
-			values: this.values,
+			// values: this.values,
 			nextId: this.nextId,
 			nodeOrder: this.nodeOrder
 		});
+
+		// Copying of values is a shallow copy
+		o.values = {};
+		for (let nodeId in this.values) {
+			o.values[nodeId] = {};
+			Object.assign(o.values[nodeId], this.values[nodeId]);
+			// let val = this.values[v];
+			// if (typeof val !== "object" || val.constructor === Object) {
+			// 	debugger;
+			// 	o.values[v] = clone(val);
+			// }
+		}
 
 		o.byId = byIdClone;
 		o.chainPool = this.chainPool.toSerializable();
@@ -135,20 +147,20 @@ export default class NodeMap {
 			this.setUserTransform(nodeId, inputName, transforms[inputName]);
 		}
 
-		let origAttrChangedCallback = webComponent.prototype.attributeChangedCallback;
-		if (origAttrChangedCallback) {
-			webComponent.prototype.attributeChangedCallback = (name, oldValue, newValue) => {
-				console.log("runrun");
-				try {
-					origAttrChangedCallback(name, oldValue, newValue);
-				} catch (e) {
-					Events.emit(
-						"app:error",
-						webComponent.name + " attributeChangedCallback error: " + e.message
-					);
-				}
-			};
-		}
+		// let origAttrChangedCallback = webComponent.prototype.onAttrChanged;
+		// if (origAttrChangedCallback) {
+		// 	webComponent.prototype.onAttrChanged = (name, oldValue, newValue) => {
+		// 		console.log("runrun");
+		// 		try {
+		// 			origAttrChangedCallback(name, oldValue, newValue);
+		// 		} catch (e) {
+		// 			Events.emit(
+		// 				"app:error",
+		// 				webComponent.name + " onAttrChanged error: " + e.message
+		// 			);
+		// 		}
+		// 	};
+		// }
 
 		// Create web component:
 		let inst = new this.byId[nodeId].component();
@@ -157,7 +169,7 @@ export default class NodeMap {
 
 		// debugger;
 
-		const methodsToWrap = ["attributeChangedCallback"];
+		const methodsToWrap = ["onAttrChanged"];
 
 		//@TODO - How much slower is this?
 
@@ -201,21 +213,21 @@ export default class NodeMap {
 		// });
 
 		// Set values:
-		console.log("__setting values__", nodeId, JSON.stringify(this.values, null, 2));
+		console.log("PC__setting values__", nodeId, JSON.stringify(this.values, null, 2));
 		webComponent.inputs.forEach(input => {
 			let value = undefined;
 			// If the value is already set (from a fromSerializable operation...)
 			if (this.isAttributeSet(nodeId, input.name)) {
-				console.log("attr already set");
+				console.log("PCattr already set", nodeId, input.name);
 				value = this.getAttribute(nodeId, input.name);
 			}
 			// Else if there is a default value...
 			else if (typeof input.defaultValue !== "undefined") {
-				console.log("default value");
+				console.log("PCdefault value", nodeId, input.name);
 				value = input.defaultValue;
 			}
 
-			console.log("value=", value);
+			console.log("PCvalue=", value, nodeId, input.name);
 			if (value !== undefined) {
 				//this.setAttribute(nodeId, input.name, value, false);
 				this.byId[nodeId].initialValues[input.name] = value;
@@ -227,7 +239,7 @@ export default class NodeMap {
 
 	// This method should be called after the component has been
 	// attached to the DOM. Then any attributeChanged callbacks
-	// that would be fired can expect the readyCallback
+	// that would be fired can expect the onReady
 	// to have been called.
 	setInitialValues(nodeId) {
 		let node = this.byId[nodeId];
@@ -239,7 +251,7 @@ export default class NodeMap {
 		delete this.values[nodeId];
 
 		for (let k in node.initialValues) {
-			console.log("set attr", nodeId, k, node.initialValues[k]);
+			console.log("PCset attr", nodeId, k, node.initialValues[k]);
 			this.setAttribute(nodeId, k, node.initialValues[k]);
 		}
 
@@ -365,29 +377,29 @@ export default class NodeMap {
 		}
 	}
 
-	runScreenDestroyCallbacks() {
+	runOnScreenDestroyCallbacks() {
 		for (let nodeId in this.byId) {
 			let node = this.byId[nodeId];
 			try {
-				node.componentInstance.screenDestroyCallback();
+				node.componentInstance.onScreenDestroy();
 			} catch (e) {
 				Events.emit(
 					"app:error",
-					node.componentInstance.id + " screenDestroyCallback error: " + e.message
+					node.componentInstance.id + " onScreenDestroy error: " + e.message
 				);
 			}
 		}
 	}
 
-	runScreenUpdatedCallbacks() {
+	runOnScreenUpdatedCallbacks() {
 		for (let nodeId in this.byId) {
 			let node = this.byId[nodeId];
 			try {
-				node.componentInstance.screenUpdatedCallback();
+				node.componentInstance.onScreenUpdated();
 			} catch (e) {
 				Events.emit(
 					"app:error",
-					node.componentInstance.id + " screenUpdatedCallback error: " + e.message
+					node.componentInstance.id + " onScreenUpdated error: " + e.message
 				);
 			}
 		}
@@ -508,8 +520,10 @@ export default class NodeMap {
 
 		//@TODO: Can't enable these until connections are "reconnected"
 		//when restoring from state
-		// this.byId[fromNodeId].componentInstance.outputConnectedCallback(fromOutputAttr);
-		// this.byId[toNodeId].componentInstance.inputConnectedCallback(toInputAttr);
+		// Maybe okay. Just note that when restored these are not called again.
+		// Responsible for a node to send
+		this.byId[fromNodeId].componentInstance.onOutputConnected(fromOutputAttr);
+		this.byId[toNodeId].componentInstance.onInputConnected(toInputAttr);
 	}
 
 	disconnect(fromAddr, toAddr) {
@@ -535,7 +549,7 @@ export default class NodeMap {
 		let numToConnections = this.getOutputsConnectedToInput(toNodeId, toInput).length;
 
 		try {
-			fromNode.componentInstance.outputDisconnectedCallback(
+			fromNode.componentInstance.onOutputDisconnected(
 				fromOutput,
 				numFromConnections - 1,
 				numFromNodeConnections - 1
@@ -543,11 +557,11 @@ export default class NodeMap {
 		} catch (e) {
 			Events.emit(
 				"app:error",
-				fromNode.componentInstance.id + " outputDisconnectedCallback error: " + e.message
+				fromNode.componentInstance.id + " onOutputDisconnected error: " + e.message
 			);
 		}
 		try {
-			toNode.componentInstance.inputDisconnectedCallback(
+			toNode.componentInstance.onInputDisconnected(
 				toInput,
 				numToConnections - 1,
 				numToNodeConnections - 1
@@ -555,7 +569,7 @@ export default class NodeMap {
 		} catch (e) {
 			Events.emit(
 				"app:error",
-				toNode.componentInstance.id + " inputDisconnectedCallback error: " + e.message
+				toNode.componentInstance.id + " onInputDisconnected error: " + e.message
 			);
 		}
 

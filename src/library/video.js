@@ -12,7 +12,7 @@ const t = `class Video extends N {
 			{
 				name: "selector",
 				observe: true,
-				defaultValue: "video",
+				defaultValue: "",
 				restrict: String
 			},
 			{
@@ -43,43 +43,60 @@ const t = `class Video extends N {
 		];
 	}
 
-	readyCallback() {
-		//this.el = document.createElement('video');
-		//this.screen.body.appendChild(this.el);
+	static get outputs() {
+		return ['video-el']
+	}
+
+	onReady() {
 		this.boundOnLoadedVideo = this.onLoadedVideo.bind(this);
 		this.videoReady = false;
+
+		this.el = this.root.getElementById('video');
+		this.el.addEventListener('loadeddata', this.boundOnLoadedVideo)
+		let src = this.getAttribute('file');
+		if(src) this.el.src = this.getAttribute('file');
+
+		this.send('video-el', this.el);
 	}
 
-	destroyCallback() {
-		//this.screen.body.removeChild(this.el);
-		if(this.el) this.clearEl(this.el);
-	}
-
-	screenDestroyCallback() {
-		//this.screen.body.removeChild(this.el);
-		console.log('--V-->screenDestroy', this.el)
-		if(this.el) this.clearEl(this.el);
-	}
-
-	screenUpdatedCallback() {
-		//this.screen.body.appendChild(this.el);
-		console.log('--V-->screenUpdated')
-		let el = this.getVideoEl(this.getAttribute('selector'));
-		if(el) {
-			this.setEl(el);
+	onOutputConnected(name) {
+		if(name === 'video-el') {
+			this.send('video-el', this.el)
 		}
 	}
 
-	getVideoEl(selector) {
-		try {
-			let el = this.screen.querySelector(selector);
-			if(el && el.tagName && el.tagName.toLowerCase() === 'video') return el;
-		} catch(e) {
-			return null;
-		}
-
-		return null;
+	onDestroy() {
+		this.videoReady = false;
+		this.el.removeEventListener('loadeddata', this.boundOnLoadedVideo);
+		this.el.src = null;
+		this.el = null;
 	}
+
+	onScreenUpdated() {
+		this.onSelectorUpdated()
+	}
+
+	onScreenDestroy() {
+		if(this.el) this.clearEl(this.el);
+	}
+
+	// onScreenUpdated() {
+	// 	let el = this.getVideoEl(this.getAttribute('selector'));
+	// 	if(el) {
+	// 		this.setEl(el);
+	// 	}
+	// }
+
+	// getVideoEl(selector) {
+	// 	try {
+	// 		let el = this.screen.querySelector(selector);
+	// 		if(el && el.tagName && el.tagName.toLowerCase() === 'video') return el;
+	// 	} catch(e) {
+	// 		return null;
+	// 	}
+
+	// 	return null;
+	// }
 
 	updateVideo() {
 		console.log('--V-->updating video')
@@ -95,24 +112,40 @@ const t = `class Video extends N {
 		this.videoReady = true;
 	}
 
-	setEl(el) {
-		this.videoReady = false;
-		console.log('--V-->setEl', el)
-					this.el = el;
-					this.el.addEventListener('loadeddata', this.boundOnLoadedVideo)
-					let src = this.getAttribute('file');
-					if(src) this.el.src = this.getAttribute('file');
+	// setEl(el) {
+	// 	this.videoReady = false;
+	// 	console.log('--V-->setEl', el)
+	// 	this.el = el;
+	// 	this.el.addEventListener('loadeddata', this.boundOnLoadedVideo)
+	// 	let src = this.getAttribute('file');
+	// 	if(src) this.el.src = this.getAttribute('file');
+	// }
+
+	// clearEl(el) {
+	// 	this.videoReady = false;
+	// 	console.log('--V-->clearEl', el)
+	// 	el.removeEventListener('loadeddata', this.boundOnLoadedVideo);
+	// 	el.src = null;
+	// 	this.el = null;
+	// }
+
+	onSelectorUpdated() {
+		let sel = this.getAttribute('selector');
+
+		try {
+			let el = this.screen.querySelector(sel);
+			if(el) {
+				el.appendChild(this.el)
+			} else {
+				this.root.getElementById('container').appendChild(this.el);
+			}
+		}
+		catch(e) {
+			this.root.getElementById('container').appendChild(this.el);
+		}
 	}
 
-	clearEl(el) {
-		this.videoReady = false;
-		console.log('--V-->clearEl', el)
-					el.removeEventListener('loadeddata', this.boundOnLoadedVideo);
-					el.src = null;
-					this.el = null;
-	}
-
-	attributeChangedCallback(name, oldValue, newValue) {
+	onAttrChanged(name, oldValue, newValue) {
 		console.log('--V-->VIDEO ATTR', name, oldValue, newValue)
 		switch(name)
 		{
@@ -144,26 +177,41 @@ const t = `class Video extends N {
 				break;
 
 			case "selector":
-				console.log('--V-->selector update', oldValue, newValue)
+				this.onSelectorUpdated();
+				// console.log('--V-->selector update', oldValue, newValue)
 
-				let oldEl = this.getVideoEl(oldValue);
-				console.log('--V-->oldEl', oldEl)
-				if(oldEl) {
+				// let oldEl = this.getVideoEl(oldValue);
+				// console.log('--V-->oldEl', oldEl)
+				// if(oldEl) {
 
-					this.clearEl(oldEl);
-				}
+				// 	this.clearEl(oldEl);
+				// }
 
-				let newEl = this.getVideoEl(newValue);
-				if(newEl) {
-					this.setEl(newEl);
-				}
+				// let newEl = this.getVideoEl(newValue);
+				// if(newEl) {
+				// 	this.setEl(newEl);
+				// }
 
-				console.log('selector', oldValue, newValue, oldEl, newEl)
+				// console.log('selector', oldValue, newValue, oldEl, newEl)
 		}
 	}
 }`;
 
+const template = `<div id="container">
+	<video id="video"></video>
+</div>`;
+
+const css = `#container {
+	width: 13em;
+}
+#container > video {
+	width: 100%;
+	background: black;
+}`;
+
 export default {
 	label: "Video",
-	text: t
+	text: t,
+	templateHTML: template,
+	templateCSS: css
 };

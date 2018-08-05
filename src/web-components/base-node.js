@@ -30,6 +30,10 @@ export default class N extends HTMLElement {
 	static file = file;
 	static button = button;
 
+	static get inputs() {
+		return [];
+	}
+
 	//connectedCallback()
 	//disconnectedCallback()
 	//adoptedCallback()
@@ -86,6 +90,8 @@ export default class N extends HTMLElement {
 	}
 
 	onAttrChanged() {}
+	onInputConnected() {}
+	onOutputConnected() {}
 	onInputDisconnected() {}
 	onOutputDisconnected() {}
 	onScreenDestroy() {}

@@ -25,6 +25,12 @@ https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API/Using_the_We
 
 audio device doesn't stop listening when you change device to ''
 
+For nodes who can pop off their components into the screen:
+
+onDestroy they need to return home
+onReady they need to put them back
+
 PROBLEMS:
 
-- Unable to catch custom element exceptions
+- create vid device node, refresh, now move the node - it freezes
+- Edit a node, refresh - system crashes because nodeMap not populated yet

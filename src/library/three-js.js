@@ -47,7 +47,7 @@ const t = `class ThreeJS extends N {
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 	}
 
-	readyCallback() {
+	onReady() {
 		this.scene = new THREE.Scene();
 		this.camera = new THREE.PerspectiveCamera(
 			75,
@@ -77,21 +77,21 @@ const t = `class ThreeJS extends N {
 		window.addEventListener('resize', this.boundResize);
 	}
 
-	destroyCallback() {
+	onDestroy() {
 		this.active = false;
 		this.screen.body.removeChild(this.domElement);
 		window.removeEventListener('resize', this.boundResize);
 	}
 
-	screenDestroyCallback() {
+	onScreenDestroy() {
 		this.screen.body.removeChild(this.domElement);
 	}
 
-	screenUpdatedCallback() {
+	onScreenUpdated() {
 		this.screen.body.appendChild(this.domElement);
 	}
 
-	attributeChangedCallback(name, oldValue, newValue) {
+	onAttrChanged(name, oldValue, newValue) {
 		switch (name) {
 			case "camera-z":
 				this.camera.position.z = newValue;

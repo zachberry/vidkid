@@ -132,7 +132,7 @@ const t = `class ThreeJSTwoCubes extends N {
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 	}
 
-	readyCallback() {
+	onReady() {
 		this.active = true
 		this.boundAnimate = this.animate.bind(this)
 		this.boundMoveCube = this.moveCube.bind(this)
@@ -163,21 +163,21 @@ const t = `class ThreeJSTwoCubes extends N {
 		this.animate()
 	}
 
-	destroyCallback() {
+	onDestroy() {
 		this.active = false;
 		this.screen.body.removeChild(this.renderer.domElement);
 		window.removeEventListener('resize', this.boundResize);
 	}
 
-	screenDestroyCallback() {
+	onScreenDestroy() {
 		this.screen.body.removeChild(this.renderer.domElement);
 	}
 
-	screenUpdatedCallback() {
+	onScreenUpdated() {
 		this.screen.body.appendChild(this.renderer.domElement);
 	}
 
-	attributeChangedCallback(name, oldValue, newValue) {
+	onAttrChanged(name, oldValue, newValue) {
 		switch (name) {
 			case "step":
 				this.moveCube();

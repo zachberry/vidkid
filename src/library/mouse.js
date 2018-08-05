@@ -27,7 +27,7 @@ const t = `class Mouse extends N {
 		this.setAttribute("y", event.clientY);
 	}
 
-	attributeChangedCallback(name, oldValue, newValue) {
+	onAttrChanged(name, oldValue, newValue) {
 		switch (name) {
 			case "x":
 				this.send("x", newValue);

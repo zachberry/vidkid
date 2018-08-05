@@ -12,15 +12,15 @@ export default class NodeWebComponentWrapper extends Component {
 		// 	<select id="select"></select><button>Press me</button>
 		// </div>`;
 		// 		this.refs.component.init(this.props.node.id, this.props.nodeMapAdapter, templateEl);
-		// 		this.refs.component.readyCallback();
+		// 		this.refs.component.onReady();
 
 		this.refs.self.appendChild(this.props.node.componentInstance);
 		try {
-			this.props.node.componentInstance.readyCallback();
+			this.props.node.componentInstance.onReady();
 		} catch (e) {
 			Events.emit(
 				"app:error",
-				this.props.node.componentInstance.id + " readyCallback error: " + e.message
+				this.props.node.componentInstance.id + " onReady error: " + e.message
 			);
 		}
 		this.props.nodeMap.setInitialValues(this.props.node.id);
@@ -32,11 +32,11 @@ export default class NodeWebComponentWrapper extends Component {
 		// 	this.componentEl.parentElement.removeChild(this.componentEl);
 		// }
 		try {
-			this.props.node.componentInstance.destroyCallback();
+			this.props.node.componentInstance.onDestroy();
 		} catch (e) {
 			Events.emit(
 				"app:error",
-				this.props.node.componentInstance.id + " destroyCallback error: " + e.message
+				this.props.node.componentInstance.id + " onDestroy error: " + e.message
 			);
 		}
 	}
