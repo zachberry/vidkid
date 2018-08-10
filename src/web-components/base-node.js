@@ -16,6 +16,7 @@ export default class N extends HTMLElement {
 	static GENERIC = "generic";
 	static HARDWARE = "hardware";
 	static SCREEN = "screen";
+	static INFO = "info";
 
 	static float = float;
 	static int = int;
@@ -57,12 +58,32 @@ export default class N extends HTMLElement {
 		this.nodeMapAdapter.send(this.id, outputName, outputValue);
 	}
 
+	sendTo(outputName, inputAddr, outputValue) {
+		this.nodeMapAdapter.sendTo(this.id, outputName, inputAddr, outputValue);
+	}
+
 	getChain(chainId) {
 		return this.nodeMapAdapter.getChain(this.id, chainId);
 	}
 
 	releaseChain(chainId) {
 		return this.nodeMapAdapter.releaseChain(this.id, chainId);
+	}
+
+	registerEl(name, el) {
+		return this.nodeMapAdapter.registerEl(this.id, name, el);
+	}
+
+	getEl(elId) {
+		return this.nodeMapAdapter.getEl(elId);
+	}
+
+	releaseEl(elId) {
+		return this.nodeMapAdapater.releaseEl(elId);
+	}
+
+	releaseAllEls() {
+		return this.nodeMapAdapter.releaseAllEls(this.id);
 	}
 
 	getAttribute(attrName) {
@@ -92,6 +113,8 @@ export default class N extends HTMLElement {
 	onAttrChanged() {}
 	onInputConnected() {}
 	onOutputConnected() {}
+	onInputWillDisconnect() {}
+	onOutputWillDisconnect() {}
 	onInputDisconnected() {}
 	onOutputDisconnected() {}
 	onScreenDestroy() {}

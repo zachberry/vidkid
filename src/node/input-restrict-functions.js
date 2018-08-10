@@ -11,6 +11,10 @@ class NumberInput {
 		}
 	}
 
+	castValue(value) {
+		return Number(value);
+	}
+
 	transformValue(value) {
 		if (this.min !== null) value = Math.max(this.min, value);
 		if (this.max !== null) value = Math.min(this.max, value);
@@ -38,6 +42,14 @@ class SetInput {
 			this.values[s] = s;
 		});
 		this.controlType = "select";
+	}
+
+	castValue(value) {
+		if (typeof value === "number" || typeof value === "string") {
+			return value;
+		}
+
+		return String(value);
 	}
 
 	transformValue(value) {

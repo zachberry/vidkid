@@ -1,37 +1,39 @@
-const t = `class Node extends N {
+const N = require("../web-components/base-node").default;
+class Node extends N {
 	static get inputs() {
-	  return [
+		return [
 			{
-				name: 'my-input',
-				observe: true,
-				defaultValue: null,
-				restrict: null,
-				control: null
+				name: "in",
+				observe: true
 			}
-		]
+		];
 	}
 
 	static get outputs() {
-	  return ['my-output']
+		return ["out"];
 	}
 
-	onReady() {
-		// Called when component is on the DOM
-	}
-
-	onDestroy() {
-		// Called when component will be removed from the DOM
-	}
-
-	// oldValue and newValue are always strings as these are
-	// attributes on the component. Use this.getAttribute
-	// to get the typed value
 	onAttrChanged(name, oldValue, newValue) {
-	  this.send('my-output', newValue);
+		switch (name) {
+			case "in":
+				this.send("out", newValue);
+				break;
+		}
 	}
-}`;
+
+	onReady() {}
+	onDestroy() {}
+	onScreenDestroy() {}
+	onScreenUpdated() {}
+	onInputConnected(name, toAddress) {}
+	onOutputConnected(name, fromAddress) {}
+	onInputWillDisconnect(name, fromAddress) {}
+	onOutputWillDisconnect(name, toAddress) {}
+	onInputDisconnected(name, numConnections, numNodeConnections) {}
+	onOutputDisconnected(name, numConnections, numNodeConnections) {}
+}
 
 export default {
 	label: "New Node",
-	text: t
+	text: Node.toString()
 };

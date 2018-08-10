@@ -22,6 +22,8 @@
 	color: #7b7b7b;
 	padding: 0.5em 1em;
 	box-sizing: border-box;
+	z-index: 1;
+	position: relative;
 }
 
 .App .edit-board {
@@ -30,6 +32,7 @@
 	top: 2.5em;
 	right: 0;
 	bottom: 0;
+	background: url("./components/grid-bg.png");
 }
 
 .App .edit-board .connections-board,
@@ -43,4 +46,15 @@
 
 .App .screen {
 	z-index: 9999;
+}
+
+.App .zoom-controls {
+	z-index: 9999;
+	position: absolute;
+	left: 1.2em;
+	top: 3em;
+}
+
+.App .modal {
+	z-index: 999999;
 }

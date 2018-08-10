@@ -1,5 +1,8 @@
-const t = `class CSSTransformElement extends N {
-	static get type() { return N.SCREEN }
+const N = require("../web-components/base-node").default;
+class CSSTransformElement extends N {
+	static get type() {
+		return N.SCREEN;
+	}
 
 	static get inputs() {
 		return [
@@ -27,40 +30,39 @@ const t = `class CSSTransformElement extends N {
 	}
 
 	setTransform(selector, transformText) {
-		console.log('__set trans__', selector, transformText)
+		console.log("__set trans__", selector, transformText);
 		let el = this.getEl(selector);
 		if (el) el.style.transform = transformText;
 	}
 
 	onInputDisconnected(name) {
-		if(name === 'chain-id')
-		{
-			this.setAttribute('chain-id', '')
+		if (name === "chain-id") {
+			this.setAttribute("chain-id", "");
 		}
 	}
 
 	getCSSTransformString(chainId) {
 		let chain = this.getChain(chainId);
-		if(!chain) return ''
+		if (!chain) return "";
 
-		return chain.get().join(' ')
+		return chain.get().join(" ");
 	}
 
 	onAttrChanged(name, oldValue, newValue) {
 		switch (name) {
 			case "selector":
-				this.setTransform(oldValue, '');
+				this.setTransform(oldValue, "");
 				this.setTransform(newValue, this.getCSSTransformString(this.getAttribute("chain-id")));
 				break;
 
 			case "chain-id":
-				this.setTransform(this.getAttribute('selector'), this.getCSSTransformString(newValue));
+				this.setTransform(this.getAttribute("selector"), this.getCSSTransformString(newValue));
 				break;
 		}
 	}
-}`;
+}
 
 export default {
 	label: "CSS Transform Element",
-	text: t
+	text: CSSTransformElement.toString()
 };

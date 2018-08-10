@@ -1,5 +1,8 @@
-const c = `class Gamepad extends N {
-	static get type() { return N.HARDWARE };
+const N = require("../web-components/base-node").default;
+class Gamepad extends N {
+	static get type() {
+		return N.HARDWARE;
+	}
 
 	static get inputs() {
 		return [
@@ -33,18 +36,14 @@ const c = `class Gamepad extends N {
 
 		let gamepads = navigator.getGamepads();
 
-		for(let i = 0, len = gamepads.length; i < len; i++) {
+		for (let i = 0, len = gamepads.length; i < len; i++) {
 			let gamepad = gamepads[i];
 			let option = document.createElement("option");
 
-			if(gamepad === null)
-			{
-				option.innerText = '--';
-			}
-			else
-			{
+			if (gamepad === null) {
+				option.innerText = "--";
+			} else {
 				option.innerText = gamepad.id;
-
 			}
 
 			option.value = i;
@@ -88,13 +87,12 @@ const c = `class Gamepad extends N {
 	}
 
 	poll() {
-		if(!this.active) return
+		if (!this.active) return;
 
-		let gamepad = navigator.getGamepads()[this.getAttribute('gamepad-num')]
+		let gamepad = navigator.getGamepads()[this.getAttribute("gamepad-num")];
 
-		if(gamepad) {
-			if(!this.lastValues)
-			{
+		if (gamepad) {
+			if (!this.lastValues) {
 				this.lastValues = {
 					ax0: null,
 					ax1: null,
@@ -104,26 +102,26 @@ const c = `class Gamepad extends N {
 					btn1: null,
 					btn2: null,
 					btn3: null
-				}
+				};
 			}
 
-			let ax0 = gamepad.axes[0]
-			let ax1 = gamepad.axes[1]
-			let ax2 = gamepad.axes[2]
-			let ax3 = gamepad.axes[3]
-			let btn0 = gamepad.buttons[0] ? gamepad.buttons[0].value : null
-			let btn1 = gamepad.buttons[1] ? gamepad.buttons[1].value : null
-			let btn2 = gamepad.buttons[2] ? gamepad.buttons[2].value : null
-			let btn3 = gamepad.buttons[3] ? gamepad.buttons[3].value : null
+			let ax0 = gamepad.axes[0];
+			let ax1 = gamepad.axes[1];
+			let ax2 = gamepad.axes[2];
+			let ax3 = gamepad.axes[3];
+			let btn0 = gamepad.buttons[0] ? gamepad.buttons[0].value : null;
+			let btn1 = gamepad.buttons[1] ? gamepad.buttons[1].value : null;
+			let btn2 = gamepad.buttons[2] ? gamepad.buttons[2].value : null;
+			let btn3 = gamepad.buttons[3] ? gamepad.buttons[3].value : null;
 
-			if((ax0 || ax0 === 0) && this.lastValues.ax0 !== ax0) this.send('axis-1', ax0)
-			if((ax1 || ax1 === 0) && this.lastValues.ax1 !== ax1) this.send('axis-2', ax1)
-			if((ax2 || ax2 === 0) && this.lastValues.ax2 !== ax2) this.send('axis-3', ax2)
-			if((ax3 || ax3 === 0) && this.lastValues.ax3 !== ax3) this.send('axis-4', ax3)
-			if((btn0 || btn0 === 0) && this.lastValues.btn0 !== btn0) this.send('button-1', btn0)
-			if((btn1 || btn1 === 0) && this.lastValues.btn1 !== btn1) this.send('button-2', btn1)
-			if((btn2 || btn2 === 0) && this.lastValues.btn2 !== btn2) this.send('button-3', btn2)
-			if((btn3 || btn3 === 0) && this.lastValues.btn3 !== btn3) this.send('button-4', btn3)
+			if ((ax0 || ax0 === 0) && this.lastValues.ax0 !== ax0) this.send("axis-1", ax0);
+			if ((ax1 || ax1 === 0) && this.lastValues.ax1 !== ax1) this.send("axis-2", ax1);
+			if ((ax2 || ax2 === 0) && this.lastValues.ax2 !== ax2) this.send("axis-3", ax2);
+			if ((ax3 || ax3 === 0) && this.lastValues.ax3 !== ax3) this.send("axis-4", ax3);
+			if ((btn0 || btn0 === 0) && this.lastValues.btn0 !== btn0) this.send("button-1", btn0);
+			if ((btn1 || btn1 === 0) && this.lastValues.btn1 !== btn1) this.send("button-2", btn1);
+			if ((btn2 || btn2 === 0) && this.lastValues.btn2 !== btn2) this.send("button-3", btn2);
+			if ((btn3 || btn3 === 0) && this.lastValues.btn3 !== btn3) this.send("button-4", btn3);
 
 			this.lastValues = {
 				ax0,
@@ -134,7 +132,7 @@ const c = `class Gamepad extends N {
 				btn1,
 				btn2,
 				btn3
-			}
+			};
 		}
 
 		window.requestAnimationFrame(this.boundPoll);
@@ -162,8 +160,8 @@ const c = `class Gamepad extends N {
 		//this.setInput(this.getAttribute('device-id'));
 
 		//@TODO: Move this
-		this.boundPoll = this.poll.bind(this)
-		window.requestAnimationFrame(this.boundPoll)
+		this.boundPoll = this.poll.bind(this);
+		window.requestAnimationFrame(this.boundPoll);
 	}
 
 	onDestroy() {
@@ -171,7 +169,7 @@ const c = `class Gamepad extends N {
 		window.removeEventListener("gamepadconnected", this.boundOnGamepadConnected);
 		window.removeEventListener("gamepaddisconnected", this.boundOnGamepadDisconnected);
 	}
-}`;
+}
 
 const t = `<div id="container">
 	<select id="select"></select>
@@ -187,7 +185,7 @@ const css = `#container {
 
 export default {
 	label: "Gamepad",
-	text: c,
+	text: Gamepad.toString(),
 	templateHTML: t,
 	templateCSS: css
 };

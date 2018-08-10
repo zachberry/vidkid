@@ -1,5 +1,8 @@
-const t = `class Mouse extends N {
-	static get type() { return N.HARDWARE }
+const N = require("../web-components/base-node").default;
+class Mouse extends N {
+	static get type() {
+		return N.HARDWARE;
+	}
 
 	static get inputs() {
 		return [
@@ -7,19 +10,21 @@ const t = `class Mouse extends N {
 				name: "x",
 				observe: true,
 				defaultValue: 0,
-				restrict: Number
+				restrict: Number,
+				visible: false
 			},
 			{
 				name: "y",
 				observe: true,
 				defaultValue: 0,
-				restrict: Number
+				restrict: Number,
+				visible: false
 			}
 		];
 	}
 
 	static get outputs() {
-		return ["x", "y", "x%", "y%"];
+		return ["x", "y", "x%", "y%", "dx", "dy"];
 	}
 
 	onMouseMove(event) {
@@ -32,11 +37,13 @@ const t = `class Mouse extends N {
 			case "x":
 				this.send("x", newValue);
 				this.send("x%", newValue / window.innerWidth);
+				this.send("dx", parseInt(newValue, 10) - (parseInt(oldValue, 10) || 0));
 				break;
 
 			case "y":
 				this.send("y", newValue);
 				this.send("y%", newValue / window.innerHeight);
+				this.send("dy", parseInt(newValue, 10) - (parseInt(oldValue, 10) || 0));
 				break;
 		}
 	}
@@ -49,9 +56,9 @@ const t = `class Mouse extends N {
 	disconnectedCallback() {
 		document.removeEventListener("mousemove", this.boundOnMouseMove);
 	}
-}`;
+}
 
 export default {
 	label: "Mouse",
-	text: t
+	text: Mouse.toString()
 };

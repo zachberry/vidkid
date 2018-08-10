@@ -1,4 +1,6 @@
-const t = `class Tween extends N {
+const TWEEN = require("@tweenjs/tween.js");
+const N = require("../web-components/base-node").default;
+class Tween extends N {
 	static get inputs() {
 		return [
 			{
@@ -17,7 +19,39 @@ const t = `class Tween extends N {
 				name: "fn",
 				observe: false,
 				defaultValue: "Quadratic.InOut",
-				restrict: N.set(["Linear", "Quadratic.In", "Quadratic.Out", "Quadratic.InOut", "Cubic.In", "Cubic.Out", "Cubic.InOut", "Quartic.In", "Quartic.Out", "Quartic.InOut", "Quintic.In", "Quintic.Out", "Quintic.InOut", "Sinusoidal.In", "Sinusoidal.Out", "Sinusoidal.InOut", "Exponential.In", "Exponential.Out", "Exponential.InOut", "Circular.In", "Circular.Out", "Circular.InOut", "Elastic.In", "Elastic.Out", "Elastic.InOut", "Back.In", "Back.Out", "Back.InOut", "Bounce.In", "Bounce.Out", "Bounce.InOut"])
+				restrict: N.set([
+					"Linear",
+					"Quadratic.In",
+					"Quadratic.Out",
+					"Quadratic.InOut",
+					"Cubic.In",
+					"Cubic.Out",
+					"Cubic.InOut",
+					"Quartic.In",
+					"Quartic.Out",
+					"Quartic.InOut",
+					"Quintic.In",
+					"Quintic.Out",
+					"Quintic.InOut",
+					"Sinusoidal.In",
+					"Sinusoidal.Out",
+					"Sinusoidal.InOut",
+					"Exponential.In",
+					"Exponential.Out",
+					"Exponential.InOut",
+					"Circular.In",
+					"Circular.Out",
+					"Circular.InOut",
+					"Elastic.In",
+					"Elastic.Out",
+					"Elastic.InOut",
+					"Back.In",
+					"Back.Out",
+					"Back.InOut",
+					"Bounce.In",
+					"Bounce.Out",
+					"Bounce.InOut"
+				])
 			}
 		];
 	}
@@ -38,7 +72,7 @@ const t = `class Tween extends N {
 		TWEEN.update();
 		this.send("out", this.target.v);
 
-		if(this.tween.isPlaying()) window.requestAnimationFrame(this.boundOnUpdate);
+		if (this.tween.isPlaying()) window.requestAnimationFrame(this.boundOnUpdate);
 	}
 
 	onAttrChanged(name, oldValue, newValue) {
@@ -52,12 +86,12 @@ const t = `class Tween extends N {
 			.to({ v: newValue }, this.getAttribute("time"))
 			.easing(TWEEN.Easing[tokens[0]][tokens[1]])
 			.start();
-			console.log('tweeeeeen', this.tween, TWEEN)
+		console.log("tweeeeeen", this.tween, TWEEN);
 		window.requestAnimationFrame(this.boundOnUpdate);
 	}
-}`;
+}
 
 export default {
 	label: "Tween",
-	text: t
+	text: Tween.toString()
 };

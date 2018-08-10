@@ -1,25 +1,26 @@
-const t = `class ValueBoolean extends N {
+const N = require("../web-components/base-node").default;
+class ValueBoolean extends N {
 	static get inputs() {
 		return [
-			  {
-				  name: 'value',
-				  observe: true,
-				  defaultValue: false,
-				  restrict: Boolean
-			  }
-		  ]
-	  }
+			{
+				name: "value",
+				observe: true,
+				defaultValue: false,
+				restrict: Boolean
+			}
+		];
+	}
 
-	  static get outputs() {
-		return ['value']
-	  }
+	static get outputs() {
+		return ["value"];
+	}
 
-	  onAttrChanged(name, oldValue, newValue) {
-		this.send('value', this.getAttribute('value'));
-	  }
-}`;
+	onAttrChanged(name, oldValue, newValue) {
+		this.send("value", this.getAttribute("value"));
+	}
+}
 
 export default {
 	label: "Value Boolean",
-	text: t
+	text: ValueBoolean.toString()
 };

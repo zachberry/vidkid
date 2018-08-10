@@ -1,25 +1,26 @@
-const t = `class Delay extends N {
+const N = require("../web-components/base-node").default;
+class Delay extends N {
 	static get inputs() {
-	  return [
+		return [
 			{
-				name: 'in',
+				name: "in",
 				observe: true,
 				defaultValue: null,
 				restrict: null,
 				control: N.button()
 			},
 			{
-				name: 'delay',
+				name: "delay",
 				observe: false,
 				defaultValue: 200,
 				restrict: N.int(0),
-				control: N.range({ min:0, max:10000, step:10})
+				control: N.range({ min: 0, max: 10000, step: 10 })
 			}
-		]
+		];
 	}
 
 	static get outputs() {
-	  return ['out']
+		return ["out"];
 	}
 
 	onDestroy() {
@@ -27,16 +28,16 @@ const t = `class Delay extends N {
 	}
 
 	onAttrChanged(name, oldValue, newValue) {
-		let delay = this.getAttribute('delay')
-		let out = this.getAttribute('in');
+		let delay = this.getAttribute("delay");
+		let out = this.getAttribute("in");
 
 		this.timeoutId = setTimeout(() => {
-			this.send('out', out)
-		}, delay)
+			this.send("out", out);
+		}, delay);
 	}
-}`;
+}
 
 export default {
 	label: "Delay",
-	text: t
+	text: Delay.toString()
 };

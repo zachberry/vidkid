@@ -1,5 +1,8 @@
-const t = `class VideoDevice extends N {
-	static get type() { return N.HARDWARE };
+const N = require("../web-components/base-node").default;
+class VideoDevice extends N {
+	static get type() {
+		return N.HARDWARE;
+	}
 
 	static get inputs() {
 		return [
@@ -20,7 +23,7 @@ const t = `class VideoDevice extends N {
 	}
 
 	static get outputs() {
-		return ["stream", "video-el"];
+		return ["el-id"];
 	}
 
 	getVideoDevices() {
@@ -42,13 +45,13 @@ const t = `class VideoDevice extends N {
 	}
 
 	createDeviceList() {
-		let select = this.root.getElementById('select')
+		let select = this.root.getElementById("select");
 		let option = document.createElement("option");
 		option.innerText = "Select device...";
 		option.value = "";
 		select.appendChild(option);
 
-		console.log('ACC CDL', this.getAttribute('device-id'))
+		console.log("ACC CDL", this.getAttribute("device-id"));
 
 		navigator.mediaDevices.enumerateDevices().then(devices => {
 			devices.forEach(device => {
@@ -66,24 +69,23 @@ const t = `class VideoDevice extends N {
 				this.setAttribute("device-id", event.target.value);
 			});
 
-			let deviceId = this.getAttribute('device-id')
-			console.log('ACC gotem', deviceId, select.value)
-			if(deviceId) select.value = deviceId
+			let deviceId = this.getAttribute("device-id");
+			console.log("ACC gotem", deviceId, select.value);
+			if (deviceId) select.value = deviceId;
 
-			if(deviceId === 'default' && Object.keys(this.devices).length > 0) {
-				this.setAttribute('device-id', Object.keys(this.devices)[0])
+			if (deviceId === "default" && Object.keys(this.devices).length > 0) {
+				this.setAttribute("device-id", Object.keys(this.devices)[0]);
 			}
 		});
 	}
 
 	onGetDeviceSuccess(stream) {
 		console.log("GROT", stream);
-		this.stream = stream
-		this.root.getElementById('video').srcObject = stream
-		this.root.getElementById('video').play()
-		this.root.getElementById('select').value = this.getAttribute('device-id')
-		this.send('stream', this.stream)
-		this.send('video-el', this.root.getElementById('video'))
+		this.stream = stream;
+		this.root.getElementById("video").srcObject = stream;
+		this.root.getElementById("video").play();
+		this.root.getElementById("select").value = this.getAttribute("device-id");
+		this.send("el-id", this.elId);
 	}
 
 	onGetDeviceError() {
@@ -92,10 +94,10 @@ const t = `class VideoDevice extends N {
 	}
 
 	selectDevice(id) {
-		if(!id) return
+		if (!id) return;
 
 		var constraints = { deviceId: { exact: id } };
-		console.log('select', constraints)
+		console.log("select", constraints);
 		navigator.getUserMedia(
 			{ video: constraints },
 			this.onGetDeviceSuccess.bind(this),
@@ -106,36 +108,42 @@ const t = `class VideoDevice extends N {
 	onReady() {
 		this.stream = null;
 		this.devices = {};
+		this.elId = this.registerEl("video", this.root.getElementById("video"));
 
-		this.getVideoDevices()
+		this.getVideoDevices();
 	}
 
 	onOutputConnected(name) {
-		if(name === 'video-el') {
-			this.send('video-el', this.root.getElementById('video'))
+		if (name === "el-id") {
+			this.send("el-id", this.elId);
+		}
+	}
+
+	onOutputWillDisconnect(name, toAddr) {
+		if (name === "el-id") {
+			this.sendTo("el-id", toAddr, null);
 		}
 	}
 
 	onAttrChanged(name, oldValue, newValue) {
 		console.log("ACC", name, oldValue, newValue);
 
-		switch(name) {
-			case 'device-id':
+		switch (name) {
+			case "device-id":
 				this.selectDevice(newValue);
 				break;
 
-			case 'preview':
-				if(this.getAttribute('preview')) {
-					this.root.getElementById('video').style.display = 'block';
+			case "preview":
+				if (this.getAttribute("preview")) {
+					this.root.getElementById("video").style.display = "block";
 				} else {
-					this.root.getElementById('video').style.display = 'none';
+					this.root.getElementById("video").style.display = "none";
 				}
-				this.selectDevice(this.getAttribute('device-id'));
+				this.selectDevice(this.getAttribute("device-id"));
 				break;
 		}
-
 	}
-}`;
+}
 
 const template = `<div id="container">
 	<select id="select"></select>
@@ -158,7 +166,7 @@ video {
 
 export default {
 	label: "Video Device",
-	text: t,
+	text: VideoDevice.toString(),
 	templateHTML: template,
 	templateCSS: css
 };

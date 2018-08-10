@@ -13,6 +13,7 @@ class ElementRegistry {
 	init() {
 		this.nextId = 0;
 		this.els = {};
+		this.elIdsByNodeId = {};
 	}
 
 	// toSerializable() {
@@ -36,25 +37,41 @@ class ElementRegistry {
 	registerEl(nodeId, name, el) {
 		let elId = nodeId + "." + name;
 		this.els[elId] = el;
+		if (!this.elIdsByNodeId[nodeId]) {
+			this.elIdsByNodeId[nodeId] = {};
+		}
+		this.elIdsByNodeId[nodeId][elId] = true;
 
 		return elId;
+	}
+
+	releaseEl(nodeId, name) {
+		delete this.els[nodeId + "." + name];
+	}
+
+	releaseAllEls(nodeId) {
+		for (let elId in this.elIdsByNodeId[nodeId]) {
+			delete this.els[elId];
+		}
+
+		delete this.elIdsByNodeId[nodeId];
 	}
 
 	getEl(elId) {
 		return this.els[elId] || null;
 	}
 
-	example() {
-		let elId = this.registerEl(this.id, name, this.root.getElementById("video"));
+	// example() {
+	// 	let elId = this.registerEl(this.id, name, this.root.getElementById("video"));
 
-		//-------
+	// 	//-------
 
-		let el = this.getEl(this.id, elId);
+	// 	let el = this.getEl(this.id, elId);
 
-		//-------
-	}
-	onElRevoked(elId, el) {}
-	onAskForEl(name) {}
+	// 	//-------
+	// }
+	// onElRevoked(elId, el) {}
+	// onAskForEl(name) {}
 }
 
 export default ElementRegistry;

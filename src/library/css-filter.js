@@ -1,71 +1,90 @@
-const t = `class CSSFilter extends N {
+const N = require("../web-components/base-node").default;
+class CSSFilter extends N {
 	static get inputs() {
-	  return [
+		return [
 			{
-				name: 'chain-id',
+				name: "chain-id",
 				observe: true,
-				defaultValue: '',
+				defaultValue: "",
 				restrict: String
 			},
 			{
-				name: 'type',
+				name: "type",
 				observe: true,
-				defaultValue: 'grayscale',
-				restrict: N.set(['blur', 'brightness', 'contrast', 'grayscale', 'hue-rotate', 'invert', 'opacity', 'saturate', 'sepia'])
+				defaultValue: "grayscale",
+				restrict: N.set([
+					"blur",
+					"brightness",
+					"contrast",
+					"grayscale",
+					"hue-rotate",
+					"invert",
+					"opacity",
+					"saturate",
+					"sepia"
+				])
 			},
 			{
-				name: 'amount',
+				name: "amount",
 				observe: true,
 				defaultValue: 0,
 				restrict: Number
 			}
-		]
+		];
 	}
 
 	static get outputs() {
-	  return ['chain-id']
+		return ["chain-id"];
 	}
 
 	getCSSRule(type, amount) {
-		switch(type)
-		{
-			case 'blur': return "blur(" + amount + "px)"
-			case 'brightness': return "brightness(" + amount + "%)"
-			case 'contrast': return "contrast(" + amount + "%)"
-			case 'grayscale': return "grayscale(" + amount + "%)"
-			case 'hue-rotate': return "hue-rotate(" + amount + "deg)"
-			case 'invert': return "invert(" + amount + "%)"
-			case 'opacity': return "opacity(" + amount + "%)"
-			case 'saturate': return "saturate(" + amount + "%)"
-			case 'sepia': return "sepia(" + amount + "%)"
-			default: return null
+		switch (type) {
+			case "blur":
+				return "blur(" + amount + "px)";
+			case "brightness":
+				return "brightness(" + amount + "%)";
+			case "contrast":
+				return "contrast(" + amount + "%)";
+			case "grayscale":
+				return "grayscale(" + amount + "%)";
+			case "hue-rotate":
+				return "hue-rotate(" + amount + "deg)";
+			case "invert":
+				return "invert(" + amount + "%)";
+			case "opacity":
+				return "opacity(" + amount + "%)";
+			case "saturate":
+				return "saturate(" + amount + "%)";
+			case "sepia":
+				return "sepia(" + amount + "%)";
+			default:
+				return null;
 		}
 	}
 
 	onInputDisconnected(name) {
-		if(name === 'chain-id')
-		{
-			this.releaseChain(this.getAttribute('chain-id'))
-			this.setAttribute('chain-id', '')
+		if (name === "chain-id") {
+			this.releaseChain(this.getAttribute("chain-id"));
+			this.setAttribute("chain-id", "");
 		}
 	}
 
 	onAttrChanged(name, oldValue, newValue) {
-		let rule = this.getCSSRule(this.getAttribute('type'), this.getAttribute('amount'))
-		if(!rule) return
+		let rule = this.getCSSRule(this.getAttribute("type"), this.getAttribute("amount"));
+		if (!rule) return;
 
-		let chain = this.getChain(this.getAttribute('chain-id'))
+		let chain = this.getChain(this.getAttribute("chain-id"));
 		chain.set(this.id, rule);
 
-		this.send('chain-id', chain.id);
+		this.send("chain-id", chain.id);
 	}
 
 	onDestroy() {
-		this.releaseChain(this.getAttribute('chain-id'))
+		this.releaseChain(this.getAttribute("chain-id"));
 	}
-}`;
+}
 
 export default {
 	label: "CSS Filter",
-	text: t
+	text: CSSFilter.toString()
 };

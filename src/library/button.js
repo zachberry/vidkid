@@ -1,23 +1,26 @@
-const t = `class Button extends N {
-	static get type() { return N.HARDWARE };
+const N = require("../web-components/base-node").default;
+class Button extends N {
+	static get type() {
+		return N.HARDWARE;
+	}
 
 	static get outputs() {
 		return ["trigger"];
 	}
 
 	onClick() {
-		this.send('trigger', true);
+		this.send("trigger", true);
 	}
 
 	onReady() {
-		this.boundOnClick = this.onClick.bind(this)
-		this.root.getElementById('button').addEventListener('click', this.boundOnClick)
+		this.boundOnClick = this.onClick.bind(this);
+		this.root.getElementById("button").addEventListener("click", this.boundOnClick);
 	}
 
 	onDestroy() {
-		this.root.getElementById('button').removeEventListener('click', this.boundOnClick);
+		this.root.getElementById("button").removeEventListener("click", this.boundOnClick);
 	}
-}`;
+}
 
 const template = `<button id="button">Click</button>`;
 
@@ -36,7 +39,7 @@ button:hover {
 
 export default {
 	label: "Button",
-	text: t,
+	text: Button.toString(),
 	templateHTML: template,
 	templateCSS: css
 };

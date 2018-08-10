@@ -1,0 +1,38 @@
+.zoom-controls {
+	width: 2em;
+}
+
+.zoom-controls button {
+	background: #3e3e3e;
+	border: none;
+	color: rgba(255, 255, 255, 0.5);
+	font-family: "Open Sans";
+
+	width: 2em;
+	height: 2em;
+	font-weight: bold;
+	user-select: none;
+	cursor: pointer;
+
+	font-size: 0.7em;
+}
+
+.zoom-controls button:hover {
+	background: #ffe501;
+	color: black;
+}
+
+.zoom-controls button:focus {
+	outline: none;
+}
+
+.zoom-controls .zoom-in {
+	border-top-left-radius: 0.25em;
+	border-top-right-radius: 0.25em;
+	margin-bottom: 1px;
+}
+
+.zoom-controls .zoom-out {
+	border-bottom-left-radius: 0.25em;
+	border-bottom-right-radius: 0.25em;
+}

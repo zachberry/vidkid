@@ -15,64 +15,8 @@ import Screen from "./components/screen";
 import EditPage from "./components/edit-page";
 import ImportExportDialog from "./components/import-export-dialog";
 import ErrorMessage from "./components/error-message";
-
-// import Audio from "./library/audio-device";
-
-// window.addEventListener("gamepadconnected", e => {
-// 	console.log("oh shit", e);
-// });
-
-// let _wc = `() => { return class WordCount extends HTMLElement {
-// 	static get observedAttributes() {
-// 		return ["barf"];
-// 	}
-
-// 	static get bingBongs() {
-// 		return "bing bongs";
-// 	}
-
-// 	constructor() {
-// 		// Always call super first in constructor
-// 		super();
-
-// 		// Element functionality written in here
-// 		this.root = this.attachShadow({ mode: "open" });
-// 		// this.root.appendChild(templateEl.content);
-
-// 		let p = document.createElement("button");
-// 		p.innerText = "THIS IS A PEEEEEEE";
-// 		p.onclick = e => {
-// 			p.innerText = Date.now();
-// 			this.setAttribute("barf", Date.now());
-// 		};
-
-// 		this.root.appendChild(p);
-// 	}
-
-// 	fn(x) {
-// 		this.setAttribute("barf", x);
-// 	}
-
-// 	onAttrChanged(name, oldValue, newValue) {
-// 		console.log("P ATTR CHANGED", name, oldValue, newValue);
-// 	}
-
-// 	connectedCallback() {
-// 		console.log("CONNN");
-// 	}
-
-// 	disconnectedCallback() {
-// 		console.log("DISCONN");
-// 	}
-// }}`;
-
-// let WordCount = eval(_wc)();
-
-// // debugger;
-
-// // class Cheese extends WordCount {}
-// customElements.define("word-count", WordCount);
-// console.log("WORDCOUNT IS", WordCount);
+import drag from "./util/drag";
+import ZoomControls from "./components/zoom-controls";
 
 class App extends Component {
 	constructor() {
@@ -83,13 +27,32 @@ class App extends Component {
 		window.__ds = this.docState;
 
 		this.state = {
-			importExportMode: null
+			importExportMode: null,
+			bgX: 0,
+			bgY: 0
 		};
 
 		this.boundSetFullscreen = this.setFullscreen.bind(this);
+		this.boundOnDragNodeBoard = this.onDragNodeBoard.bind(this);
+		// this.boundOnStartDragEditBoard = this.onStartDragEditBoard.bind(this);
+		this.boundOnZoomIn = this.onZoomIn.bind(this);
+		this.boundOnZoomOut = this.onZoomOut.bind(this);
 
 		document.addEventListener("keyup", this.onKeyUp.bind(this));
 		window.addEventListener("error", this.onGlobalError.bind(this));
+	}
+
+	// onStartDragEditBoard() {
+	// 	drag(this.refs.editBoard, this.boundonDragNodeBoard);
+	// }
+
+	onDragNodeBoard(el, pt, newLocation, dragData, moveByPt, restrictedDimensions, event) {
+		console.log(pt, newLocation);
+		Events.emit("cable:update");
+		this.setState({
+			bgX: newLocation.x,
+			bgY: newLocation.y
+		});
 	}
 
 	onGlobalError(event) {
@@ -113,6 +76,9 @@ class App extends Component {
 	}
 
 	onKeyUp(event) {
+		if (this.docState.fullscreen && event.keyCode === 27) {
+			this.setFullscreen(false);
+		}
 		if (this.docState.editingNodeId !== null || this.docState.editingPage) return;
 		if (!this.docState.selectedConnection) return;
 
@@ -229,11 +195,29 @@ class App extends Component {
 		});
 	}
 
+	onZoomIn() {
+		this.docState.doAction({
+			type: "setZoomLevel",
+			zoomLevel: this.docState.zoomLevel + 0.2
+		});
+	}
+
+	onZoomOut() {
+		this.docState.doAction({
+			type: "setZoomLevel",
+			zoomLevel: this.docState.zoomLevel - 0.2
+		});
+	}
+
 	render() {
 		return (
 			<div className="App">
 				<MainMenu />
-				<div className="edit-board">
+				<div
+					className="edit-board"
+					ref="editBoard"
+					style={{ backgroundPositionX: this.state.bgX, backgroundPositionY: this.state.bgY }}
+				>
 					<ConnectionsBoard
 						docState={this.docState}
 						isConnecting={this.docState.connecting !== null}
@@ -246,16 +230,19 @@ class App extends Component {
 						docState={this.docState}
 						nodeMap={this.docState.nodeMap}
 						connectingType={this.docState.connecting ? this.docState.connecting.portType : null}
-					/>
-					<Screen
-						pageHTML={this.docState.pageHTML}
-						pageCSS={this.docState.pageCSS}
-						fullscreen={this.docState.fullscreen}
-						setFullscreen={this.boundSetFullscreen}
-						docState={this.docState}
+						onDragBoard={this.boundOnDragNodeBoard}
 					/>
 				</div>
-				{this.docState.editingNodeId !== null ? (
+				<Screen
+					pageHTML={this.docState.pageHTML}
+					pageCSS={this.docState.pageCSS}
+					fullscreen={this.docState.fullscreen}
+					setFullscreen={this.boundSetFullscreen}
+					docState={this.docState}
+				/>
+				<ZoomControls onZoomIn={this.boundOnZoomIn} onZoomOut={this.boundOnZoomOut} />
+				{this.docState.editingNodeId !== null &&
+				this.docState.nodeMap.byId[this.docState.editingNodeId] ? (
 					<Modal>
 						<EditNode docState={this.docState} nodeId={this.docState.editingNodeId} />
 					</Modal>

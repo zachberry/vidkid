@@ -48,7 +48,7 @@ export default class NodeInput extends Component {
 					{this.props.isControlOpen ? "-" : "+"}
 				</span>
 				<div className="label" onClick={this.props.onClickPort}>
-					{this.props.input.name + ":" + this.props.value}
+					{this.props.input.name + (this.props.input.showValue ? ":" + this.props.value : "")}
 				</div>
 				{this.props.isControlOpen ? <div className="input-component">{component}</div> : null}
 				{this.props.isUserTransformOpen ? (

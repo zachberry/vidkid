@@ -21,6 +21,13 @@ class EditNode extends Component {
 
 		let node = this.props.docState.nodeMap.byId[this.props.nodeId];
 
+		if (!node) {
+			node = {
+				templateHTML: "Missing",
+				templateCSS: "Missing"
+			};
+		}
+
 		this.state = {
 			mode: "js",
 			templateHTML: node.templateHTML,
@@ -31,6 +38,8 @@ class EditNode extends Component {
 	}
 
 	isEditorReportingErrors() {
+		if (!this.refs.aceEditor) return false;
+
 		let annotations = this.refs.aceEditor.editor.getSession().$annotations;
 		for (let i = 0, len = annotations.length; i < len; i++) {
 			if (annotations[i].type === "error") return true;

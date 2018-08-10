@@ -4,12 +4,15 @@ import NodeMapAdapter from "./node-map-adapter";
 import createNodeWebComponent from "../node/create-node-web-component";
 import Events from "../events";
 import ChainPool from "../util/chain-pool";
+import ElementRegistry from "../util/element-registry";
 
 const DEFAULT_INPUT_OPTIONS = {
 	label: null,
 	restrict: null,
 	observe: false,
-	visible: true
+	visible: true,
+	defaultValue: null,
+	showValue: true
 };
 
 export default class NodeMap {
@@ -27,6 +30,8 @@ export default class NodeMap {
 		this.byId = {};
 		this.nodeOrder = [];
 		this.chainPool = new ChainPool();
+		this.elementRegistry = new ElementRegistry();
+		this.connectionsToRestore = {};
 	}
 
 	toSerializable() {
@@ -255,7 +260,46 @@ export default class NodeMap {
 			this.setAttribute(nodeId, k, node.initialValues[k]);
 		}
 
-		Events.emit("app:update");
+		// Events.emit("app:update");
+	}
+
+	// This method should be called after the component has been
+	// attached to the DOM. Then can expect onReady to have been called.
+	restoreNodeConnections(nodeId) {
+		// debugger;
+		let node = this.byId[nodeId];
+
+		if (!node || !this.connectionsToRestore[nodeId]) return;
+
+		let inputConnections = this.connectionsToRestore[nodeId].inputConnections;
+		let outputConnections = this.connectionsToRestore[nodeId].outputConnections;
+
+		inputConnections.forEach(connection => {
+			let from = this.getParsedAddress(connection[0]);
+			let to = this.getParsedAddress(connection[1]);
+			if (to[0] === nodeId && node.inputs[to[1]]) {
+				this.connect(
+					from[0],
+					from[1],
+					to[0],
+					to[1]
+				);
+			}
+		});
+		outputConnections.forEach(connection => {
+			let from = this.getParsedAddress(connection[0]);
+			let to = this.getParsedAddress(connection[1]);
+			if (from[0] === nodeId && node.outputs.indexOf(from[1]) > -1) {
+				this.connect(
+					from[0],
+					from[1],
+					to[0],
+					to[1]
+				);
+			}
+		});
+
+		delete this.connectionsToRestore[nodeId];
 	}
 
 	// This is called from the React component wrapper once the component
@@ -335,6 +379,15 @@ export default class NodeMap {
 			let rev = this.byId[nodeId].rev;
 			let inputConnections = this.getNodesInputConnections(nodeId);
 			let outputConnections = this.getNodesOutputConnections(nodeId);
+
+			// We backup the connections to restore. Need to wait until
+			// node is re-attached to the DOM before these connections
+			// can be made:
+			let node = this.byId[nodeId];
+			this.connectionsToRestore[nodeId] = {
+				inputConnections,
+				outputConnections
+			};
 			// let values = [];
 			// for (let k in this.values[nodeId]) {
 			// 	values[k] = this.values[nodeId][k];
@@ -344,32 +397,30 @@ export default class NodeMap {
 			this.removeNode(nodeId, false);
 			this.createNewNode(nodeText, nodeTemplateHTML, nodeTemplateCSS, nodeId, rev + 1, transforms);
 
-			let node = this.byId[nodeId];
-
-			inputConnections.forEach(connection => {
-				let from = this.getParsedAddress(connection[0]);
-				let to = this.getParsedAddress(connection[1]);
-				if (to[0] === nodeId && node.inputs[to[1]]) {
-					this.connect(
-						from[0],
-						from[1],
-						to[0],
-						to[1]
-					);
-				}
-			});
-			outputConnections.forEach(connection => {
-				let from = this.getParsedAddress(connection[0]);
-				let to = this.getParsedAddress(connection[1]);
-				if (from[0] === nodeId && node.outputs.indexOf(from[1]) > -1) {
-					this.connect(
-						from[0],
-						from[1],
-						to[0],
-						to[1]
-					);
-				}
-			});
+			// inputConnections.forEach(connection => {
+			// 	let from = this.getParsedAddress(connection[0]);
+			// 	let to = this.getParsedAddress(connection[1]);
+			// 	if (to[0] === nodeId && node.inputs[to[1]]) {
+			// 		this.connect(
+			// 			from[0],
+			// 			from[1],
+			// 			to[0],
+			// 			to[1]
+			// 		);
+			// 	}
+			// });
+			// outputConnections.forEach(connection => {
+			// 	let from = this.getParsedAddress(connection[0]);
+			// 	let to = this.getParsedAddress(connection[1]);
+			// 	if (from[0] === nodeId && node.outputs.indexOf(from[1]) > -1) {
+			// 		this.connect(
+			// 			from[0],
+			// 			from[1],
+			// 			to[0],
+			// 			to[1]
+			// 		);
+			// 	}
+			// });
 		} catch (e) {
 			console.log("BACKING UP!");
 			this.fromSerializable(backup);
@@ -418,8 +469,7 @@ export default class NodeMap {
 		}
 
 		try {
-			let fn = eval(/*eslint-disable-line no-eval*/ `(x) => ${text}`);
-			if (typeof fn !== "function") throw new Error(`"${text}" was unable to be parsed!`);
+			let fn = new Function("x", "return (" + text + ")");
 
 			node.transforms[inputName] = text;
 			node.transformFns[inputName] = fn;
@@ -455,6 +505,7 @@ export default class NodeMap {
 		delete this.byId[nodeId];
 		this.nodeOrder.splice(this.nodeOrder.indexOf(nodeId), 1);
 		if (deleteValues) delete this.values[nodeId];
+		this.elementRegistry.releaseAllEls(nodeId);
 	}
 
 	getAddress(nodeId, attrName) {
@@ -522,8 +573,8 @@ export default class NodeMap {
 		//when restoring from state
 		// Maybe okay. Just note that when restored these are not called again.
 		// Responsible for a node to send
-		this.byId[fromNodeId].componentInstance.onOutputConnected(fromOutputAttr);
-		this.byId[toNodeId].componentInstance.onInputConnected(toInputAttr);
+		this.byId[fromNodeId].componentInstance.onOutputConnected(fromOutputAttr, input);
+		this.byId[toNodeId].componentInstance.onInputConnected(toInputAttr, output);
 	}
 
 	disconnect(fromAddr, toAddr) {
@@ -547,6 +598,44 @@ export default class NodeMap {
 		let numToNodeConnections = this.getNodesInputConnections(toNodeId).length;
 		let numFromConnections = this.getInputsConnectedToOutput(fromNodeId, fromOutput).length;
 		let numToConnections = this.getOutputsConnectedToInput(toNodeId, toInput).length;
+
+		try {
+			fromNode.componentInstance.onOutputWillDisconnect(fromOutput, toAddr);
+		} catch (e) {
+			Events.emit(
+				"app:error",
+				fromNode.componentInstance.id + " onOutputWillDisconnect error: " + e.message
+			);
+		}
+		try {
+			toNode.componentInstance.onInputWillDisconnect(toInput, fromAddr);
+		} catch (e) {
+			Events.emit(
+				"app:error",
+				toNode.componentInstance.id + " onInputWillDisconnect error: " + e.message
+			);
+		}
+
+		let output = this.getAddress(fromNodeId, fromOutput);
+		let input = this.getAddress(toNodeId, toInput);
+
+		if (!this.portMap[output] || !this.portMap[output][input]) return false;
+
+		this.nodeMap[fromNodeId][toNodeId]--;
+		delete this.portMap[output][input];
+		delete this.inputsMap[input][output];
+
+		if (this.nodeMap[fromNodeId][toNodeId] <= 0) delete this.nodeMap[fromNodeId][toNodeId];
+		if (Object.keys(this.nodeMap[fromNodeId]).length === 0) delete this.nodeMap[fromNodeId];
+		if (Object.keys(this.portMap[output]).length === 0) delete this.portMap[output];
+		if (Object.keys(this.inputsMap[input]).length === 0) delete this.inputsMap[input];
+
+		//@TODO - Should this be a "live" connection?
+		//if unplugged should null be sent?
+
+		// This causes problems when you edit a node
+		// let defValue = this.byId[toNodeId].inputs[toInput].defaultValue;
+		// this.setAttributeFromComponent(toNodeId, toInput, defValue);
 
 		try {
 			fromNode.componentInstance.onOutputDisconnected(
@@ -573,23 +662,6 @@ export default class NodeMap {
 			);
 		}
 
-		let output = this.getAddress(fromNodeId, fromOutput);
-		let input = this.getAddress(toNodeId, toInput);
-
-		if (!this.portMap[output] || !this.portMap[output][input]) return false;
-
-		this.nodeMap[fromNodeId][toNodeId]--;
-		delete this.portMap[output][input];
-		delete this.inputsMap[input][output];
-
-		if (this.nodeMap[fromNodeId][toNodeId] <= 0) delete this.nodeMap[fromNodeId][toNodeId];
-		if (Object.keys(this.nodeMap[fromNodeId]).length === 0) delete this.nodeMap[fromNodeId];
-		if (Object.keys(this.portMap[output]).length === 0) delete this.portMap[output];
-		if (Object.keys(this.inputsMap[input]).length === 0) delete this.inputsMap[input];
-
-		//@TODO - Should this be a "live" connection?
-		//if unplugged should null be sent?
-
 		return true;
 	}
 
@@ -605,18 +677,16 @@ export default class NodeMap {
 
 		// console.log("SET", nodeId, attrName, value, input);
 
-		// Apply type transformation:
+		// 1. Cast value to the correct type:
 		if (input.restrict) {
-			if (input.restrict.transformValue) {
-				value = input.restrict.transformValue(value);
+			if (input.restrict.castValue) {
+				value = input.restrict.castValue(value);
 			} else {
 				value = input.restrict(value);
 			}
 		}
 
-		// console.log("SET", nodeId, attrName, value, input, typeof value);
-
-		// Apply user transformation:
+		// 2. Apply any user transformation:
 		if (applyUserTransformIfAvailable) {
 			let transforms = node.transformFns;
 
@@ -628,6 +698,11 @@ export default class NodeMap {
 					Events.emit("app:error", e.message);
 				}
 			}
+		}
+
+		// 3. Finally, restrict/clamp the value (if possible)
+		if (input.restrict && input.restrict.transformValue) {
+			value = input.restrict.transformValue(value);
 		}
 
 		if (!this.values[nodeId]) this.values[nodeId] = {};
@@ -657,7 +732,7 @@ export default class NodeMap {
 	}
 
 	setAttributeFromComponent(nodeId, attrName, value) {
-		// console.log("safc", nodeId, attrName, value);
+		console.log("safc", nodeId, attrName, value);
 		if (!this.byId[nodeId]) return;
 
 		this.setAttribute(nodeId, attrName, value, true);

@@ -33,4 +33,14 @@ onReady they need to put them back
 PROBLEMS:
 
 - create vid device node, refresh, now move the node - it freezes
-- Edit a node, refresh - system crashes because nodeMap not populated yet
+
+- this.easingFunction is not a function on tween (when you edit )
+- cssbackground fails if screen changes
+
+- example of flow problems:
+  make a cond node and hook it up
+  on restart the values flow incorrectly
+  sends bad value to another node
+
+- midi wasnt sending out bpm for some rasin
+- trans value dialog under cables

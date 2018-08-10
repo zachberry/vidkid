@@ -20,6 +20,8 @@ class NodeBoard extends React.Component {
 			newNodeOffset: DEFAULT_OFFSET
 		};
 
+		this.boundOnMouseDown = this.onMouseDown.bind(this);
+		// this.boundOnDragBoard = this.onDragBoard.bind(this);
 		this.boundOnDragMoveNode = this.onDragMoveNode.bind(this);
 		this.boundDragComplete = this.onDragNodeComplete.bind(this);
 		this.boundOnContextMenu = this.onContextMenu.bind(this);
@@ -28,6 +30,12 @@ class NodeBoard extends React.Component {
 		this.boundOnSearchMenuClose = this.onSearchMenuClose.bind(this);
 		this.boundUpdateTransform = this.updateTransform.bind(this);
 		// this.boundIsInputUIOpen = this.props.docState.isInputUIOpen.bind(this.props.docState);
+	}
+
+	onMouseDown(event) {
+		if (event.target === this.refs.board) {
+			drag(this.refs.board, this.props.onDragBoard);
+		}
 	}
 
 	onClick(event) {
@@ -204,6 +212,7 @@ class NodeBoard extends React.Component {
 	}
 
 	render() {
+		console.log({ transform: `scale(${this.props.docState.zoomLevel})` });
 		return (
 			<div
 				className={
@@ -213,6 +222,8 @@ class NodeBoard extends React.Component {
 				}
 				onContextMenu={this.boundOnContextMenu}
 				onClick={this.boundOnClick}
+				onMouseDown={this.boundOnMouseDown}
+				style={{ transform: `scale(${this.props.docState.zoomLevel})` }}
 				ref="board"
 			>
 				{this.props.nodeOrder.map(nodeId => {

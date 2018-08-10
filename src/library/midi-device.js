@@ -1,5 +1,8 @@
-const c = `class MIDIDevice extends N {
-	static get type() { return N.HARDWARE };
+const N = require("../web-components/base-node").default;
+class MIDIDevice extends N {
+	static get type() {
+		return N.HARDWARE;
+	}
 
 	static get inputs() {
 		return [
@@ -71,8 +74,8 @@ const c = `class MIDIDevice extends N {
 	}
 
 	setInput(id) {
-		console.log('SET INPUT', id);
-		if(!this.inputs) return;
+		console.log("SET INPUT", id);
+		if (!this.inputs) return;
 
 		this.removeMIDIListeners();
 
@@ -83,11 +86,11 @@ const c = `class MIDIDevice extends N {
 			}
 		}
 
-		this.root.getElementById('select').value = id;
+		this.root.getElementById("select").value = id;
 	}
 
 	onAttrChanged(name, oldValue, newValue) {
-		console.log('ACC', name, oldValue, newValue);
+		console.log("ACC", name, oldValue, newValue);
 		this.setInput(newValue);
 	}
 
@@ -99,43 +102,46 @@ const c = `class MIDIDevice extends N {
 	}
 
 	onMIDIMessage(event) {
-		let data = event.data;
-		let channel = this.getAttribute('channel');
-		let allowMessage = this.getAttribute('message');
-		let allowRealTime = this.getAttribute('realtime');
-		let allowNoteOn = this.getAttribute('note-on');
-		let allowNoteOff = this.getAttribute('note-off');
-		let allowCC = this.getAttribute('cc');
-		let transformNoteOnVelocityZeroAsNoteOff = this.getAttribute('zero-as-off');
-		let sendClockPerBeat = this.getAttribute('beat');
+		let data = Array.from(event.data);
+		let channel = this.getAttribute("channel");
+		let allowMessage = this.getAttribute("message");
+		let allowRealTime = this.getAttribute("realtime");
+		let allowNoteOn = this.getAttribute("note-on");
+		let allowNoteOff = this.getAttribute("note-off");
+		let allowCC = this.getAttribute("cc");
+		let transformNoteOnVelocityZeroAsNoteOff = this.getAttribute("zero-as-off");
+		let sendClockPerBeat = this.getAttribute("beat");
 
-		if(allowMessage) this.send("message", data.toString())
+		if (allowMessage) this.send("message", data);
 
 		//// console.log('got midi', data, channel, allowRealTime, allowNoteOn, allowNoteOff, allowCC)
 
 		// Clock:
-		if(data[0] === 0xFA && allowRealTime) { //start
+		if (data[0] === 0xfa && allowRealTime) {
+			//start
 			this.sendClock = true;
 			this.clock = 0;
-			return this.send('start', data.toString());
+			return this.send("start", data);
 		}
-		if(data[0] === 0xFC && allowRealTime) { //stop
+		if (data[0] === 0xfc && allowRealTime) {
+			//stop
 			this.sendClock = false;
 			this.clock = 0;
-			return this.send('stop', data.toString());
+			return this.send("stop", data);
 		}
-		if(data[0] === 0xFB && allowRealTime) { //continue
-			return this.send('continue', data.toString());
+		if (data[0] === 0xfb && allowRealTime) {
+			//continue
+			return this.send("continue", data);
 		}
-		if(data[0] === 0xF8 && allowRealTime && this.sendClock) {
-			if(this.clock % 24 === 0) {
-				let now = Date.now()
-				if(this.lastClock) this.send('bpm', 60000 / (now - this.lastClock))
+		if (data[0] === 0xf8 && allowRealTime && this.sendClock) {
+			if (this.clock % 24 === 0) {
+				let now = Date.now();
+				if (this.lastClock) this.send("bpm", 60000 / (now - this.lastClock));
 				this.lastClock = now;
 			}
 
 			let shouldSendBeat = false;
-			switch(sendClockPerBeat) {
+			switch (sendClockPerBeat) {
 				case "24ppqn":
 					shouldSendBeat = true;
 					break;
@@ -153,26 +159,26 @@ const c = `class MIDIDevice extends N {
 					break;
 			}
 
-			if(shouldSendBeat) this.send('clock', data.toString());
+			if (shouldSendBeat) this.send("clock", data);
 			this.clock = (this.clock + 1) % 384; //24ppqn * 4 quarter notes * 4 bars
 		}
 
 		// Channel messages:
-		if(channel === 0 || channel === (data[0] & 0x0F) + 1) {
+		if (channel === 0 || channel === (data[0] & 0x0f) + 1) {
 			let type = data[0] >> 4;
 
-			if(type === 0x9 && data[2] === 0 && transformNoteOnVelocityZeroAsNoteOff) {
-				type = 0x8
+			if (type === 0x9 && data[2] === 0 && transformNoteOnVelocityZeroAsNoteOff) {
+				type = 0x8;
 			}
 
-			if(type === 0x9 && allowNoteOn) return this.send('note-on', data.toString());
-			if(type === 0x8 && allowNoteOff) return this.send('note-off', data.toString());
-			if(type === 0xB && allowCC) return this.send('cc', data.toString());
+			if (type === 0x9 && allowNoteOn) return this.send("note-on", data);
+			if (type === 0x8 && allowNoteOff) return this.send("note-off", data);
+			if (type === 0xb && allowCC) return this.send("cc", data);
 		}
 	}
 
 	onMIDISuccess(midiAccess) {
-		console.log('MIDI SUCCESS', midiAccess);
+		console.log("MIDI SUCCESS", midiAccess);
 		this.inputs = midiAccess.inputs;
 		let select = this.root.getElementById("select");
 
@@ -198,7 +204,7 @@ const c = `class MIDIDevice extends N {
 		});
 
 		// Force listener to listen:
-		this.setInput(this.getAttribute('device-id'));
+		this.setInput(this.getAttribute("device-id"));
 	}
 
 	onMIDIFailure() {
@@ -218,7 +224,7 @@ const c = `class MIDIDevice extends N {
 		console.error("MIDIDEVICE DESTROY!");
 		this.removeMIDIListeners();
 	}
-}`;
+}
 
 const t = `<div>
 	<select id="select"></select>
@@ -226,6 +232,6 @@ const t = `<div>
 
 export default {
 	label: "MIDI Device",
-	text: c,
+	text: MIDIDevice.toString(),
 	templateHTML: t
 };

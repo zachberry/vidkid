@@ -10,6 +10,7 @@ let onMove = null;
 let dragData = null;
 let restrictAxis = null;
 let restrictBBox = null;
+let scaleFactor = 1;
 
 blocker.style.position = "fixed";
 blocker.style.left = "0";
@@ -51,11 +52,15 @@ let mouseMoveFn = function(event) {
 		x: event.clientX - clientPt.x,
 		y: event.clientY - clientPt.y
 	};
+	moveByPt.x = moveByPt.x / scaleFactor;
+	moveByPt.y = moveByPt.y / scaleFactor;
 
 	pt = {
 		x: event.clientX - initialPt.x,
 		y: event.clientY - initialPt.y
 	};
+	pt.x = pt.x / scaleFactor;
+	pt.y = pt.y / scaleFactor;
 
 	clientPt = {
 		x: event.clientX,
@@ -141,6 +146,7 @@ export default function(
 	dragData = optionalData;
 	restrictAxis = restrictedAxis;
 	restrictBBox = restrictedBBox;
+	scaleFactor = el.getBoundingClientRect().width / el.offsetWidth;
 	document.addEventListener("mousemove", mouseMoveFn);
 	document.addEventListener("mouseup", mouseUpFn);
 }

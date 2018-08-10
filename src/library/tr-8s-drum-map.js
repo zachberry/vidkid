@@ -1,12 +1,10 @@
-const c = `class TR8SDrumMap extends N {
-
+const N = require("../web-components/base-node").default;
+class TR8SDrumMap extends N {
 	static get inputs() {
 		return [
 			{
 				name: "note-on",
-				observe: true,
-				defaultValue: "",
-				restrict: String
+				observe: true
 			}
 		];
 	}
@@ -16,28 +14,50 @@ const c = `class TR8SDrumMap extends N {
 	}
 
 	onAttrChanged(name, oldValue, newValue) {
-		console.log('ACC', name, oldValue, newValue);
+		let midiData = this.getAttribute("note-on");
+		if (!(midiData instanceof Array)) return;
 
-		let midiData = newValue;
-		let noteNum = parseInt(midiData.split(",")[1])
+		let noteNum = parseInt(midiData[1], 10);
 
-		switch(noteNum) {
-			case 0x24: this.send("BD", midiData); break;
-			case 0x26: this.send("SD", midiData); break;
-			case 0x2B: this.send("LT", midiData); break;
-			case 0x2F: this.send("MT", midiData); break;
-			case 0x32: this.send("HT", midiData); break;
-			case 0x25: this.send("RS", midiData); break;
-			case 0x27: this.send("HC", midiData); break;
-			case 0x2A: this.send("CH", midiData); break;
-			case 0x2E: this.send("OH", midiData); break;
-			case 0x31: this.send("CC", midiData); break;
-			case 0x33: this.send("RC", midiData); break;
+		switch (noteNum) {
+			case 0x24:
+				this.send("BD", midiData);
+				break;
+			case 0x26:
+				this.send("SD", midiData);
+				break;
+			case 0x2b:
+				this.send("LT", midiData);
+				break;
+			case 0x2f:
+				this.send("MT", midiData);
+				break;
+			case 0x32:
+				this.send("HT", midiData);
+				break;
+			case 0x25:
+				this.send("RS", midiData);
+				break;
+			case 0x27:
+				this.send("HC", midiData);
+				break;
+			case 0x2a:
+				this.send("CH", midiData);
+				break;
+			case 0x2e:
+				this.send("OH", midiData);
+				break;
+			case 0x31:
+				this.send("CC", midiData);
+				break;
+			case 0x33:
+				this.send("RC", midiData);
+				break;
 		}
 	}
-}`;
+}
 
 export default {
-	label: "TR-8s Drum Map",
-	text: c
+	label: "TR-8S Drum Map",
+	text: TR8SDrumMap.toString()
 };

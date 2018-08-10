@@ -1,5 +1,8 @@
-const t = `class CSSFilterElement extends N {
-	static get type() { return N.SCREEN }
+const N = require("../web-components/base-node").default;
+class CSSFilterElement extends N {
+	static get type() {
+		return N.SCREEN;
+	}
 
 	static get inputs() {
 		return [
@@ -32,34 +35,33 @@ const t = `class CSSFilterElement extends N {
 	}
 
 	onInputDisconnected(name) {
-		if(name === 'chain-id')
-		{
-			this.setAttribute('chain-id', '')
+		if (name === "chain-id") {
+			this.setAttribute("chain-id", "");
 		}
 	}
 
 	getCSSFilterString(chainId) {
 		let chain = this.getChain(chainId);
-		if(!chain) return ''
+		if (!chain) return "";
 
-		return chain.get().join(' ')
+		return chain.get().join(" ");
 	}
 
 	onAttrChanged(name, oldValue, newValue) {
 		switch (name) {
 			case "selector":
-				this.setFilter(oldValue, '');
+				this.setFilter(oldValue, "");
 				this.setFilter(newValue, this.getCSSFilterString(this.getAttribute("chain-id")));
 				break;
 
 			case "chain-id":
-				this.setFilter(this.getAttribute('selector'), this.getCSSFilterString(newValue));
+				this.setFilter(this.getAttribute("selector"), this.getCSSFilterString(newValue));
 				break;
 		}
 	}
-}`;
+}
 
 export default {
 	label: "CSS Filter Element",
-	text: t
+	text: CSSFilterElement.toString()
 };

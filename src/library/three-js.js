@@ -1,5 +1,9 @@
-const t = `class ThreeJS extends N {
-	static get type() { return N.SCREEN }
+const THREE = require("three");
+const N = require("../web-components/base-node").default;
+class ThreeJS extends N {
+	static get type() {
+		return N.SCREEN;
+	}
 
 	static get inputs() {
 		return [
@@ -8,12 +12,12 @@ const t = `class ThreeJS extends N {
 				observe: true,
 				defaultValue: 5,
 				restrict: Number,
-				control: N.range({ min:-10, max:200 })
+				control: N.range({ min: -10, max: 200 })
 			},
 			{
 				name: "color",
 				observe: true,
-				defaultValue: '#FF0000',
+				defaultValue: "#FF0000",
 				restrict: String,
 				control: N.color()
 			},
@@ -74,13 +78,13 @@ const t = `class ThreeJS extends N {
 		this.active = true;
 		this.animate();
 
-		window.addEventListener('resize', this.boundResize);
+		window.addEventListener("resize", this.boundResize);
 	}
 
 	onDestroy() {
 		this.active = false;
 		this.screen.body.removeChild(this.domElement);
-		window.removeEventListener('resize', this.boundResize);
+		window.removeEventListener("resize", this.boundResize);
 	}
 
 	onScreenDestroy() {
@@ -98,7 +102,7 @@ const t = `class ThreeJS extends N {
 				break;
 
 			case "color":
-				this.cube.material.color = new THREE.Color(newValue)
+				this.cube.material.color = new THREE.Color(newValue);
 				break;
 
 			case "wireframe":
@@ -106,9 +110,9 @@ const t = `class ThreeJS extends N {
 				break;
 		}
 	}
-}`;
+}
 
 export default {
 	label: "Three JS",
-	text: t
+	text: ThreeJS.toString()
 };

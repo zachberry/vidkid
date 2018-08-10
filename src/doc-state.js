@@ -51,6 +51,7 @@ class DocState {
 		this.updatingNodeId = null;
 		this.scenes = ["Stage", "Scene 1", "Component 1", "Controller 1", "Controller: Keypad"];
 		this.fullscreen = false;
+		this.zoomLevel = 1;
 		// this.screen;
 		this.nodeMap.init();
 		// this.hardwareMap.init()
@@ -84,7 +85,8 @@ class DocState {
 			pageHTML: this.pageHTML,
 			pageCSS: this.pageCSS,
 			nodeUIMap: this.nodeUIMap,
-			fullscreen: this.fullscreen
+			fullscreen: this.fullscreen,
+			zoomLevel: this.zoomLevel
 		});
 
 		o.nodeMap = this.nodeMap.toSerializable();
@@ -102,6 +104,7 @@ class DocState {
 		this.pageCSS = o.pageCSS;
 		this.nodeUIMap = o.nodeUIMap;
 		this.fullscreen = o.fullscreen;
+		this.zoomLevel = o.zoomLevel;
 		//this.nodeMap.fromSerializable(o.nodeMap);
 		// this.hardwareMap.fromSerializable(o.hardwareMap)
 
@@ -420,6 +423,10 @@ class DocState {
 
 				case "abortConnection":
 					this.connecting = null;
+					break;
+
+				case "setZoomLevel":
+					this.zoomLevel = action.zoomLevel;
 					break;
 
 				default:

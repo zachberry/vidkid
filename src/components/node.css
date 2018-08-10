@@ -103,6 +103,14 @@
 	background: rgba(0, 0, 0, 0.5);
 }
 
+.node.is-type-info {
+	background: #2f9254;
+}
+
+.node.is-type-info header {
+	background: rgba(0, 0, 0, 0.3);
+}
+
 .node.is-type-screen {
 	background: #234556;
 }

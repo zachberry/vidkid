@@ -1,14 +1,19 @@
-const t = `class PixelCanvas extends N {
+const N = require("../web-components/base-node").default;
+class PixelCanvas extends N {
+	static get type() {
+		return N.SCREEN;
+	}
+
 	static get inputs() {
 		return [
 			{
-				name: 'selector',
+				name: "selector",
 				observe: true,
-				defaultValue: '',
+				defaultValue: "",
 				restrict: String
 			},
 			{
-				name: "canvas-el",
+				name: "el-id",
 				observe: true,
 				defaultValue: null
 			},
@@ -17,14 +22,14 @@ const t = `class PixelCanvas extends N {
 				observe: false,
 				defaultValue: 50,
 				restrict: N.int(2),
-				control: N.range({min:2, max:400})
+				control: N.range({ min: 2, max: 400 })
 			},
 			{
 				name: "margin-size",
 				observe: false,
 				defaultValue: 0,
 				restrict: N.int(0),
-				control: N.range({min:0, max:400})
+				control: N.range({ min: 0, max: 400 })
 			},
 			{
 				name: "capture",
@@ -35,47 +40,56 @@ const t = `class PixelCanvas extends N {
 	}
 
 	static get outputs() {
-		return ["el", "context", "captured"];
+		return ["el-id", "data-url", "captured"];
 	}
 
 	onSelectorUpdated() {
-		let sel = this.getAttribute('selector');
+		let sel = this.getAttribute("selector");
 
 		try {
 			let el = this.screen.querySelector(sel);
-			if(el) {
-				el.appendChild(this.canvasEl)
+			if (el) {
+				el.appendChild(this.canvasEl);
 			} else {
-				this.root.getElementById('container').appendChild(this.canvasEl);
+				this.root.getElementById("container").appendChild(this.canvasEl);
 			}
-		}
-		catch(e) {
-			this.root.getElementById('container').appendChild(this.canvasEl);
+		} catch (e) {
+			this.root.getElementById("container").appendChild(this.canvasEl);
 		}
 	}
 
 	onOutputConnected(name) {
-		switch(name) {
-			case 'el':
-				this.send('el', this.canvasEl);
+		switch (name) {
+			case "el-id":
+				this.send("el-id", this.elId);
 				break;
+		}
+	}
 
-			case 'context':
-				this.send('context', this.canvasEl.getContext('2d'));
-				break;
+	onOutputWillDisconnect(name, toAddr) {
+		if (name === "el-id") {
+			this.sendTo("el-id", toAddr, null);
 		}
 	}
 
 	onReady() {
 		this.extCanvasEl = null;
 		this.extCanvasCtx = null;
-		this.canvasEl = this.root.getElementById('canvas');
-		this.canvasCtx = this.canvasEl.getContext('2d');
+		this.canvasEl = this.root.getElementById("canvas");
+		this.elId = this.registerEl("canvas", this.canvasEl);
+		this.canvasCtx = this.canvasEl.getContext("2d");
 		this.boundOnFrame = this.onFrame.bind(this);
 	}
 
+	onDestroy() {
+		if (this.canvasEl) {
+			this.root.getElementById("container").appendChild(this.canvasEl);
+		}
+	}
+
 	onFrame() {
-		if(!this.extCanvasEl || !this.canvasEl) return
+		console.log("of", this.extCanvasEl, this.canvasEl);
+		if (!this.extCanvasEl || !this.canvasEl) return;
 
 		let w = this.extCanvasEl.width;
 		let h = this.extCanvasEl.height;
@@ -85,8 +99,8 @@ const t = `class PixelCanvas extends N {
 
 		this.canvasCtx.clearRect(0, 0, w, h);
 
-		let blockSize = this.getAttribute('pixel-size');
-		let marginSize = this.getAttribute('margin-size');
+		let blockSize = this.getAttribute("pixel-size");
+		let marginSize = this.getAttribute("margin-size");
 		let innerBlockSize = Math.max(1, blockSize - marginSize - marginSize);
 
 		let fw = Math.ceil(w / blockSize) * blockSize;
@@ -95,43 +109,48 @@ const t = `class PixelCanvas extends N {
 			for (let y = -(fh - h) / 2; y < fh; y += blockSize) {
 				let pixel = this.extCanvasCtx.getImageData(x + blockSize / 2, y + blockSize / 2, 1, 1);
 				let d = pixel.data;
-				this.canvasCtx.fillStyle = 'rgb(' + d[0] + ',' + d[1] + ',' + d[2] + ')';
+				this.canvasCtx.fillStyle = "rgb(" + d[0] + "," + d[1] + "," + d[2] + ")";
 				let diff = (blockSize - innerBlockSize) / 2;
-				this.canvasCtx.fillRect(Math.floor(x + diff), Math.floor(y + diff), innerBlockSize, innerBlockSize);
+				this.canvasCtx.fillRect(
+					Math.floor(x + diff),
+					Math.floor(y + diff),
+					innerBlockSize,
+					innerBlockSize
+				);
 			}
 		}
 
 		// this.canvasCtx.drawImage(extEl, 0, 0, canvas.width, canvas.height);
-		// this.send("captured", true);
+		this.send("captured", true);
+		this.send("data-url", this.canvasEl.toDataURL());
 	}
 
 	onScreenUpdated() {
-		this.onSelectorUpdated()
+		this.onSelectorUpdated();
 	}
 
 	onAttrChanged(name, oldValue, newValue) {
 		// debugger;
-		switch(name) {
-			case 'canvas-el':
-				let el = this.getAttribute('canvas-el');
-				if(el && el.tagName && el.tagName.toLowerCase() === 'canvas') {
+		switch (name) {
+			case "el-id":
+				let el = this.getEl(newValue);
+				if (el && el.tagName && el.tagName.toLowerCase() === "canvas") {
 					this.extCanvasEl = el;
-					this.extCanvasCtx = this.extCanvasEl.getContext('2d');
+					this.extCanvasCtx = this.extCanvasEl.getContext("2d");
 				}
 				break;
 
-			case 'selector':
+			case "selector":
 				this.onSelectorUpdated();
 				break;
 
-			case 'capture':
+			case "capture":
 				break;
 		}
 
 		this.onFrame();
 	}
-
-}`;
+}
 
 const template = `<div id="container">
 	<canvas id="canvas" width="640" height="480"></select>
@@ -149,7 +168,7 @@ canvas {
 
 export default {
 	label: "PixelCanvas",
-	text: t,
+	text: PixelCanvas.toString(),
 	templateHTML: template,
 	templateCSS: css
 };

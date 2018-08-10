@@ -24,6 +24,8 @@ export default class NodeWebComponentWrapper extends Component {
 			);
 		}
 		this.props.nodeMap.setInitialValues(this.props.node.id);
+		this.props.nodeMap.restoreNodeConnections(this.props.node.id);
+		Events.emit("app:update");
 	}
 
 	componentWillUnmount() {
