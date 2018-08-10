@@ -120,7 +120,6 @@ class LazerGrid extends N {
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 
 		this.light = new THREE.AmbientLight(0x0000ff, 0.2);
-		// console.log('lightttt', this.light)
 		this.scene.add(this.light);
 
 		this.lightTarget = new THREE.Object3D();
@@ -131,7 +130,6 @@ class LazerGrid extends N {
 		this.drawStars();
 		this.drawMountains();
 		this.grids = this.drawGrid();
-		// this.walls = this.drawWalls()
 		this.dome = this.drawDome();
 
 		this.directionalLight = new THREE.DirectionalLight(0xffffff, 0.9);
@@ -152,14 +150,12 @@ class LazerGrid extends N {
 		this.animate();
 		this.tweenCamera();
 
-		//this.screen.body.appendChild(this.renderer.domElement)
 		this.root.getElementById("container").appendChild(this.renderer.domElement);
 	}
 
 	tweenCamera() {
 		let intervalTime = Math.max(this.TWEEN_TIME * 4, Math.random() * this.TWEEN_TIME * 16);
 
-		console.log("tween", this.cameraTarget);
 		let cameraTargetPos = {
 			x: this.cameraTarget.position.x,
 			y: this.cameraTarget.position.y,
@@ -189,7 +185,7 @@ class LazerGrid extends N {
 		let cameraPosTween = new TWEEN.Tween(cameraPos)
 			.to(
 				{
-					x: this.camera.position.x, //Math.floor((Math.random() * 50) - 25),
+					x: this.camera.position.x,
 					y: Math.floor(Math.random() * 3 + 0),
 					z: this.camera.position.z
 				},
@@ -241,7 +237,6 @@ class LazerGrid extends N {
 			v: 1
 		};
 
-		console.log(this.scene);
 		let light = {
 			v: this.light.intensity
 		};
@@ -266,12 +261,10 @@ class LazerGrid extends N {
 		if (this.colorTween) this.colorTween.stop();
 		if (this.colorBackTween) this.colorBackTween.stop();
 
-		console.log(this.scene.background);
 		let flashTime = 800;
 		let origColor = new THREE.Color(this.color1);
 		let toColor = new THREE.Color(this.color2);
 
-		console.log(this.scene);
 		let color = {
 			r: this.scene.background.r,
 			g: this.scene.background.g,
@@ -384,7 +377,6 @@ class LazerGrid extends N {
 		gridGeo.vertices.push(new THREE.Vector3(0, 0, 200));
 		let grid = new THREE.Line(gridGeo, gridMaterial);
 		grid.position.x = x;
-		// scene.add(grid)
 
 		return grid;
 	}
@@ -478,7 +470,6 @@ class LazerGrid extends N {
 		for (let i = this.walls.length - 1; i >= 0; i--) {
 			this.walls[i].position.z += tf * 2;
 			if (this.walls[i].position.z < -1000) {
-				//this.walls[i].position.z = 200
 				this.scene.remove(this.walls[i]);
 				this.lines.splice(i, 1);
 			}
@@ -489,9 +480,7 @@ class LazerGrid extends N {
 		this.dome.position.z += tf;
 		if (this.dome.position.z <= -1000) {
 			this.dome.position.z = 150;
-			//this.toggleBackground()
 		}
-		//this.scene.background = new THREE.Color(this._c, 0, 0)
 
 		this.renderer.render(this.scene, this.camera);
 	}
@@ -510,12 +499,7 @@ class LazerGrid extends N {
 		this.isColor1 = !this.isColor1;
 	}
 
-	onScreenDestroy() {
-		//if(this.renderer && this.renderer.domElement) this.screen.body.removeChild(this.renderer.domElement)
-	}
-
 	onScreenUpdated() {
-		//if(this.renderer && this.renderer.domElement) this.screen.body.appendChild(this.renderer.domElement)
 		this.onSelectorUpdated();
 	}
 

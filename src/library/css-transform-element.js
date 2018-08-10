@@ -30,7 +30,6 @@ class CSSTransformElement extends N {
 	}
 
 	setTransform(selector, transformText) {
-		console.log("__set trans__", selector, transformText);
 		let el = this.getEl(selector);
 		if (el) el.style.transform = transformText;
 	}

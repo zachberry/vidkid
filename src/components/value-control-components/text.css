@@ -3,7 +3,6 @@
 
 .text textarea,
 .text input {
-	/* font-size: 12pt; */
 	border-radius: 0.25em;
 	border: none;
 	width: 100%;

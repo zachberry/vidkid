@@ -1,10 +1,7 @@
 import React, { Component } from "react";
-// import ReactDOM from "react-dom";
-// import logo from "./logo.svg";
 import "./App.css";
 
 import Events from "./events";
-// import NodeMap from "./node/node-map";
 import NodeBoard from "./components/node-board";
 import ConnectionsBoard from "./components/connections-board";
 import MainMenu from "./components/main-menu";
@@ -15,7 +12,6 @@ import Screen from "./components/screen";
 import EditPage from "./components/edit-page";
 import ImportExportDialog from "./components/import-export-dialog";
 import ErrorMessage from "./components/error-message";
-import drag from "./util/drag";
 import ZoomControls from "./components/zoom-controls";
 
 class App extends Component {
@@ -34,7 +30,6 @@ class App extends Component {
 
 		this.boundSetFullscreen = this.setFullscreen.bind(this);
 		this.boundOnDragNodeBoard = this.onDragNodeBoard.bind(this);
-		// this.boundOnStartDragEditBoard = this.onStartDragEditBoard.bind(this);
 		this.boundOnZoomIn = this.onZoomIn.bind(this);
 		this.boundOnZoomOut = this.onZoomOut.bind(this);
 
@@ -42,12 +37,7 @@ class App extends Component {
 		window.addEventListener("error", this.onGlobalError.bind(this));
 	}
 
-	// onStartDragEditBoard() {
-	// 	drag(this.refs.editBoard, this.boundonDragNodeBoard);
-	// }
-
 	onDragNodeBoard(el, pt, newLocation, dragData, moveByPt, restrictedDimensions, event) {
-		console.log(pt, newLocation);
 		Events.emit("cable:update");
 		this.setState({
 			bgX: newLocation.x,
@@ -97,7 +87,6 @@ class App extends Component {
 	}
 
 	onUpdate() {
-		console.log("upendaten");
 		localStorage.saved = JSON.stringify(this.docState.toSerializable());
 		this.forceUpdate();
 	}
@@ -121,8 +110,6 @@ class App extends Component {
 		);
 		Events.on("importExportDialog:import", this.onDialogImport.bind(this));
 		Events.on("app:error", this.onErrorMessage.bind(this));
-		// Events.on("screen:iframeUpdated", this.restoreNodeMap.bind(this));
-		// Events.on("toolbar:initState", this.initState.bind(this));
 	}
 
 	onErrorMessage(message) {
@@ -153,31 +140,11 @@ class App extends Component {
 
 			setTimeout(() => {
 				this.forceUpdate();
-
-				//@TODO:
-				let gamepad = require("./library/audio-device").default;
-				console.log("gp", gamepad);
-				// this.docState.doAction({
-				// 	type: "createNode",
-				// 	text: gamepad.text,
-				// 	templateHTML: gamepad.templateHTML
-				// 	// templateCSS: gamepad.templateCSS
-				// });
 			});
 		});
-
-		// this.forceUpdate(() => {
-		// 	// this.docState.fromSerializableNodeMap(newState);
-		// 	this.onUpdate();
-
-		// 	setTimeout(() => {
-		// 		this.forceUpdate();
-		// 	});
-		// });
 	}
 
 	onDialogImport(newState) {
-		// this.docState.fromSerializable(newState)
 		this.setState({
 			importExportMode: null
 		});

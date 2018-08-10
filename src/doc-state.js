@@ -9,19 +9,9 @@ import Events from "./events";
 
 class DocState {
 	constructor(hardware) {
-		//@TODO
-		//this.hardware = hardware;
-		this.hardware = {
-			disable: () => {},
-			enable: () => {}
-		};
-
 		this.nodeMap = new NodeMap(this);
-		// this.hardwareMap = new HardwareMap(hardware, this.nodeMap)
 
 		this.init();
-		// this.stateHistory = [this.toSerializable()]
-		// this.historyPtr = null
 
 		this._onUpdateCallback = () => {};
 	}
@@ -29,7 +19,6 @@ class DocState {
 	init() {
 		this.shouldDisplayUpdate = true;
 		this.view = DocState.VIEW_EDIT;
-		// this.modal = null;
 		this.editingNodeId = null;
 		this.editingPage = false;
 		this.selectedConnection = null;
@@ -52,25 +41,12 @@ class DocState {
 		this.scenes = ["Stage", "Scene 1", "Component 1", "Controller 1", "Controller: Keypad"];
 		this.fullscreen = false;
 		this.zoomLevel = 1;
-		// this.screen;
 		this.nodeMap.init();
-		// this.hardwareMap.init()
 	}
 
 	isNodeNotUpdating(nodeId) {
 		return this.updatingNodeId !== null && this.updatingNodeId !== nodeId;
 	}
-
-	// undo() {
-	// 	if (this.historyPtr === null)
-	// 	{
-	// 		this.historyPtr = this.stateHistory.length
-	// 	}
-
-	// 	this.historyPtr--
-
-	// 	this.fromSerializable
-	// }
 
 	update() {
 		this._onUpdateCallback();
@@ -95,7 +71,6 @@ class DocState {
 	}
 
 	fromSerializable(o) {
-		console.log("STATE FS", o);
 		this.editingNodeId = o.editingNodeId;
 		this.connecting = o.connecting;
 		this.editingPage = o.editingPage;
@@ -105,19 +80,12 @@ class DocState {
 		this.nodeUIMap = o.nodeUIMap;
 		this.fullscreen = o.fullscreen;
 		this.zoomLevel = o.zoomLevel;
-		//this.nodeMap.fromSerializable(o.nodeMap);
-		// this.hardwareMap.fromSerializable(o.hardwareMap)
-
-		// console.log('new state', this.nodeMap)
-
-		// this.update()
 	}
 
 	// This function is split off since nodes could reference page elements
 	// and the page may not be built by the time this is being recreated
 	// from a saved state!
 	fromSerializableNodeMap(o) {
-		console.log("FSNM", o);
 		this.nodeMap.fromSerializable(o.nodeMap);
 	}
 
@@ -125,17 +93,9 @@ class DocState {
 		this._onUpdateCallback = fn;
 	}
 
-	// toObject() { //@TODO rename?
-	// 	return this._state;
-	// }
-
 	// Since we set input values very often this is a faster method
 	// to shortcut having to create an object
 	setAttribute(nodeId, attrName, value, applyUserTransformIfAvailable) {
-		// this.updatingNodeId = nodeId;
-		// this.nodeMap.setInputValue(nodeId, portIndex, value, applyTransform);
-		// this.update();
-		// this.updatingNodeId = null;
 		this.nodeMap.setAttribute(nodeId, attrName, value, applyUserTransformIfAvailable);
 
 		this.update();
@@ -162,7 +122,6 @@ class DocState {
 	}
 
 	openInputUI(type, nodeId, inputName) {
-		console.log("opren");
 		if (!this.nodeUIMap[nodeId]) this.nodeUIMap[nodeId] = {};
 		if (!this.nodeUIMap[nodeId][type]) this.nodeUIMap[nodeId][type] = {};
 
@@ -182,28 +141,14 @@ class DocState {
 		}
 	}
 
-	todo_forceAllNodesToRun() {
-		//@TODO: I think this could be problematic since
-		//INCREMENT would increment when re-ran
-		// debugger
-		for (let id in this.nodeMap.nodesInstancesById) {
-			let node = this.nodeMap.nodesInstancesById[id];
-			console.log("run", node.id, this.nodeMap.inputValues[node.id]);
-			node.sendAll(this.nodeMap.inputValues[node.id]);
-		}
-	}
-
 	doAction(action) {
-		console.log("DO ACTION", action);
 		let error = null;
 
 		let backup = this.toSerializable();
-		// console.log('BACK BE ALL', backup)
 
 		this.updatingNodeId = null;
 
 		try {
-			//console.log('DO ACTION', action)
 			switch (action.type) {
 				case "toggleView":
 					this.view =
@@ -226,18 +171,15 @@ class DocState {
 						action.templateCSS
 					);
 					if (action.x || action.y) {
-						// this.nodeMap.setNodePositionById(newNode.id, action.x, action.y);
 						this.setNodePosition(newNode.id, action.x, action.y);
 					}
 					break;
 
 				case "moveNode":
-					//this.nodeMap.setNodePositionById(action.id, action.x, action.y);
 					this.setNodePosition(action.id, action.x, action.y);
 					break;
 
 				case "removeNode":
-					// this.hardwareMap.disconnectAllForNode(action.id)
 					this.nodeMap.removeNode(action.id);
 					break;
 
@@ -246,15 +188,12 @@ class DocState {
 					break;
 
 				case "copyNode":
-					// let pos = this.nodeMap.getNodePositionById(action.id);
 					let clone = this.nodeMap.cloneNode(action.id);
 					let pos = this.getNodePosition(action.id);
 					this.setNodePosition(clone.id, pos[0] + 20, pos[1] + 20);
-					// this.nodeMap.setNodePositionById(clone.id, pos[0] + 10, pos[1] + 10);
 					break;
 
 				case "openInputControl":
-					// this.toggleControl(action.id, action.portIndex);
 					this.openInputUI("control", action.id, action.name);
 					break;
 
@@ -269,10 +208,6 @@ class DocState {
 				case "closeInputUserTransform":
 					this.closeInputUI("userTransform", action.id, action.name);
 					break;
-
-				// case "toggleTransform":
-				// 	this.nodeMap.toggleTransform(action.id, action.portIndex);
-				// 	break;
 
 				case "setTransform":
 					let isSuccessful = this.nodeMap.setUserTransform(action.id, action.name, action.text);
@@ -297,8 +232,6 @@ class DocState {
 
 				case "removeSelectedConnection":
 					if (!this.selectedConnection) return;
-
-					// debugger
 
 					this.nodeMap.disconnect(this.selectedConnection.from, this.selectedConnection.to);
 					this.selectedConnection = null;
@@ -343,41 +276,6 @@ class DocState {
 					this.editingPage = false;
 					break;
 
-				case "setNodeProp":
-					this.nodeMap.setNodePropById(action.id, action.name, action.value);
-					break;
-
-				// case 'runNode':
-				// 	// this.nodeMap.nodesInstancesById[action.id].runAndSend()
-				// 	this.nodeMap.getNodeById(action.id).runAndSend()
-				// 	break;
-
-				// This forces the node to recieve something, meaning
-				// it sets the input value AND executes onInput
-				// case "recieveValue":
-				// 	this.nodeMap
-				// 		.getNodeById(action.id)
-				// 		.recieve(action.portIndex, action.value, action.applyTransform);
-				// 	break;
-
-				// This only sets a value but doesn't execut anything
-				// case 'setInputValue':
-				// 	console.log('wowee zowee')
-				// 	this.updatingNodeId = action.id
-
-				// 	this.nodeMap.setInputValue(action.id, action.portIndex, action.value, action.applyTransform)
-
-				// 	break;
-
-				case "setInputValues":
-					this.nodeMap.setInputValues(action.id, action.values);
-
-					break;
-
-				////case 'setHardwareListenerAddress':
-				////	this.nodeMap.setHardwareListenerAddress(action.id, action.address);
-				////	break;
-
 				case "connect":
 					let inConnection;
 					let outConnection;
@@ -408,8 +306,6 @@ class DocState {
 							return false;
 					}
 
-					//console.log('CON', this.connecting, action);
-
 					this.nodeMap.connect(
 						outConnection.id,
 						outConnection.name,
@@ -432,8 +328,6 @@ class DocState {
 				default:
 					return false;
 			}
-
-			// this.stateHistory.push(this.toSerializable())
 		} catch (e) {
 			console.error("CAUGHT ERROR");
 			console.error(e);
@@ -450,18 +344,6 @@ class DocState {
 
 		return error || true;
 	}
-
-	// update(newProps) {
-	// 	Object.assign(this._state, newProps)
-	// 	this._onUpdateCallback()
-	// }
 }
-
-DocState.VIEW_EDIT = "editView";
-DocState.VIEW_PERFORMANCE = "performanceView";
-
-// let state = new State();
-
-// window.__state = state;
 
 export default DocState;

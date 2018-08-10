@@ -2,8 +2,6 @@ import "./error-message.css";
 
 import React, { Component } from "react";
 
-import Events from "../events";
-
 class ErrorMessage extends Component {
 	render() {
 		return (

@@ -2,13 +2,9 @@
 	width: 98vw;
 	height: 98vh;
 	position: relative;
-	/* color: black; */
-
 	background: rgba(0, 0, 0, 0.7);
 	background: #3a3a3a;
 	color: white;
-	/* padding: 0.5em 1em;
-	padding: 3em; */
 	box-sizing: border-box;
 	border-radius: 0.25em;
 }

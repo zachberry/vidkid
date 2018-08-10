@@ -7,7 +7,6 @@ import "brace/mode/html";
 import "brace/mode/css";
 import "brace/theme/monokai";
 
-// import App from '../App';
 import writeToIframe from "../util/write-to-iframe";
 
 class EditHTML extends Component {

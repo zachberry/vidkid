@@ -63,7 +63,6 @@ class ThreeJS extends N {
 		this.renderer = new THREE.WebGLRenderer();
 		this.domElement = this.renderer.domElement;
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
-		// debugger;
 		this.screen.body.appendChild(this.domElement);
 
 		let geometry = new THREE.BoxGeometry(3, 3, 3);

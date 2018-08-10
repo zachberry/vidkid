@@ -29,13 +29,11 @@
 	position: absolute;
 	left: 2.75em;
 	top: 0;
-	/* right: 0; */
 	border: none;
 	font-family: monospace;
 	border-radius: 0.25em;
 	height: 2.2em;
 	padding: 0.25em;
-	/* padding-left: 3em; */
 	box-sizing: border-box;
 	vertical-align: middle;
 	width: 78%;

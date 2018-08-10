@@ -88,7 +88,6 @@ class PixelCanvas extends N {
 	}
 
 	onFrame() {
-		console.log("of", this.extCanvasEl, this.canvasEl);
 		if (!this.extCanvasEl || !this.canvasEl) return;
 
 		let w = this.extCanvasEl.width;
@@ -120,7 +119,6 @@ class PixelCanvas extends N {
 			}
 		}
 
-		// this.canvasCtx.drawImage(extEl, 0, 0, canvas.width, canvas.height);
 		this.send("captured", true);
 		this.send("data-url", this.canvasEl.toDataURL());
 	}
@@ -130,7 +128,6 @@ class PixelCanvas extends N {
 	}
 
 	onAttrChanged(name, oldValue, newValue) {
-		// debugger;
 		switch (name) {
 			case "el-id":
 				let el = this.getEl(newValue);

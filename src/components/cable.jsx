@@ -3,10 +3,6 @@ import "./cable.css";
 import React, { Component } from "react";
 
 import Events from "../events";
-// import App from '../App';
-
-// import getValueComponent from '../values/get-value-component'
-// import TransformDialog from './transform-dialog'
 
 class Cable extends Component {
 	constructor() {
@@ -24,18 +20,6 @@ class Cable extends Component {
 	}
 
 	updateRender() {
-		// 		fromEl
-		// :
-		// div.output
-		// fromPort
-		// :
-		// "n1.0"
-		// toEl
-		// :
-		// div.input
-		// toPort
-		// :
-		// "n0.0"
 		let w;
 		let h;
 		let hw;
@@ -71,16 +55,11 @@ class Cable extends Component {
 					*[TO]
 			*/
 
-			// top: fromBBox.top - boardBBox.top,
-			// 	left: fromBBox.left - boardBBox.left + fromBBox.width,
-
 			left = fromBBox.left + fromBBox.width - 10;
 			top = fromBBox.top;
 
 			w = toBBox.left - left + 10;
 			h = toBBox.top - fromBBox.top + 9.5;
-			// hw = w / 2
-			// this.refs.path.setAttribute('d', `M0,0 C${hw},0 ${hw},${h} ${w},${h}`)
 		} else if (fromBBox.left >= toBBox.left && fromBBox.top < toBBox.top) {
 			/*
 					*[FROM]
@@ -93,8 +72,6 @@ class Cable extends Component {
 
 			w = fromBBox.left - left + 10;
 			h = toBBox.top - fromBBox.top + 9.5;
-			// hw = w / 2
-			// this.refs.path.setAttribute('d', `M0,0 C${hw},0 ${hw},${h} ${w},${h}`)
 		} else if (fromBBox.left < toBBox.left && fromBBox.top >= toBBox.top) {
 			/*
 					*[TO]
@@ -117,7 +94,6 @@ class Cable extends Component {
 
 			w = fromBBox.left - left + 10;
 			h = fromBBox.top - toBBox.top + 9.5;
-			// hw = w / 2
 		}
 
 		hw = w / 2;
@@ -132,10 +108,6 @@ class Cable extends Component {
 
 		this.refs.end.setAttribute("cx", w - 5);
 		this.refs.end.setAttribute("cy", h - 5);
-
-		//
-		// [ ] --> [ ]
-		//
 	}
 
 	onClick() {
@@ -143,7 +115,6 @@ class Cable extends Component {
 	}
 
 	render() {
-		// console.log(this.props.connection)
 		if (!this.props.connection.isComplete && (this.props.mouseX === -1 || this.props.mouseY === -1))
 			return null;
 

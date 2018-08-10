@@ -10,7 +10,8 @@ class Increment extends N {
 			{
 				name: "reset",
 				observe: true,
-				control: N.button()
+				control: N.button(),
+				showValue: false
 			},
 			{
 				name: "value",

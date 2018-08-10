@@ -1,9 +1,6 @@
 import "./toggle.css";
 
 import React from "react";
-// import ReactDOM from 'react-dom';
-
-// import drag from '../drag';
 
 export default class Toggle extends React.Component {
 	constructor(props) {

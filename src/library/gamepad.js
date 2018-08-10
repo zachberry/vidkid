@@ -21,15 +21,10 @@ class Gamepad extends N {
 	}
 
 	onAttrChanged(name, oldValue, newValue) {
-		console.log("ACC", name, oldValue, newValue);
-		//this.setInput(newValue);
 		this.updateList();
-		console.log(this.gamepads);
 	}
 
 	updateList() {
-		//if (!this.select || !this.gamepads) return;
-
 		while (this.select.children.length > 0) {
 			this.select.removeChild(this.select.children[0]);
 		}
@@ -55,22 +50,6 @@ class Gamepad extends N {
 	}
 
 	updateGamepads() {
-		// let existingGamepads = navigator.getGamepads();
-		// this.gamepads = [];
-
-		// for (let i = 0, len = existingGamepads.length; i < len; i++) {
-		// 	let gamepad = existingGamepads[i];
-		// 	if (gamepad && gamepad.id) {
-		// 		this.gamepads.push(gamepad);
-		// 	}
-		// }
-
-		// this.updateList();
-
-		// if (this.getAttribute("gamepad-num") === "") {
-		// 	this.setAttribute("gamepad-num", this.gamepads[0].id);
-		// }
-
 		this.updateList();
 	}
 
@@ -139,7 +118,6 @@ class Gamepad extends N {
 	}
 
 	onReady() {
-		console.log("GP READY!");
 		this.active = true;
 		this.gamepads = [];
 		this.lastValues = {};
@@ -155,9 +133,6 @@ class Gamepad extends N {
 		this.boundOnGamepadDisconnected = this.onGamepadDisconnected.bind(this);
 		window.addEventListener("gamepadconnected", this.boundOnGamepadConnected);
 		window.addEventListener("gamepaddisconnected", this.boundOnGamepadDisconnected);
-
-		// Force listener to listen:
-		//this.setInput(this.getAttribute('device-id'));
 
 		//@TODO: Move this
 		this.boundPoll = this.poll.bind(this);

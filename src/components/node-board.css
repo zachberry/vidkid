@@ -1,17 +1,14 @@
 .node-board {
-	/* background: url("./grid-bg.png"); */
 	transition: background-color 0.2s, transform 0.2s;
 	background: rgba(0, 0, 0, 0.2);
 }
 
 .node-board.is-connecting {
-	/* cursor: none; */
 	background-color: black;
 }
 
 .node-board.is-connecting .node,
 .node-board.is-connecting .node * {
-	/* cursor: none; */
 	pointer-events: none;
 }
 

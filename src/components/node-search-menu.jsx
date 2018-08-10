@@ -7,8 +7,6 @@ export default class NodeSearchMenu extends React.Component {
 	constructor(props) {
 		super(props);
 
-		// this.allItems = this.getParsedList(this.props.initialAllItems);
-
 		this.boundOnItemSelect = this.onItemSelect.bind(this);
 
 		this.state = {

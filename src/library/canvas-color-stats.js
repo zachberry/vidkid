@@ -72,7 +72,6 @@ class CanvasColorStats extends N {
 			}
 		}
 
-		// this.canvasCtx.drawImage(extEl, 0, 0, canvas.width, canvas.height);
 		this.send("captured", true);
 		this.send("r", r / total);
 		this.send("g", g / total);

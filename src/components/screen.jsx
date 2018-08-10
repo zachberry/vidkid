@@ -28,7 +28,6 @@ class Screen extends Component {
 	}
 
 	componentDidUpdate() {
-		console.log("IFRAME DID UPDATE", this.needsIframeUpdate);
 		if (this.needsIframeUpdate) {
 			delete this.needsIframeUpdate;
 			this.updateIframe();
@@ -59,7 +58,6 @@ class Screen extends Component {
 	}
 
 	updateIframe() {
-		console.log("UPDOOT IFRAME");
 		writeToIframe(this.refs.iframe, this.state.html, this.state.css, () => {
 			Events.emit("screen:iframeUpdated");
 		});

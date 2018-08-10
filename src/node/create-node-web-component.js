@@ -5,50 +5,10 @@ const THREE = require("three");
 const TWEEN = require("@tweenjs/tween.js");
 
 const N = require("../web-components/base-node").default; // eslint-disable-line no-unused-vars
-// var { int, float } = require("./input-restrict-functions").default;
-
-// const methodsToWrap = ["onAttrChanged"];
-// const wrapMethods = C => {
-// 	//@TODO - How much slower is this?
-
-// 	for (let methodName of methodsToWrap) {
-// 		let origMethod = C.prototype[methodName];
-
-// 		if (origMethod) {
-// 			C.prototype[methodName] = (arg1, arg2, arg3) => {
-// 				try {
-// 					origMethod(arg1, arg2, arg3);
-// 				} catch (e) {
-// 					Events.emit("app:error", "yo yo shit");
-// 				}
-// 			};
-// 		}
-// 	}
-// 	// let origAttrChangedCallback = C.prototype.onAttrChanged;
-// 	// if (origAttrChangedCallback) {
-// 	// 	C.prototype.onAttrChanged = (name, oldValue, newValue) => {
-// 	// 		try {
-// 	// 			origAttrChangedCallback(name, oldValue, newValue);
-// 	// 		} catch (e) {
-// 	// 			Events.emit("app:error", C.name + " onAttrChanged error: " + e.message);
-// 	// 		}
-// 	// 	};
-// 	// }
-// };
 
 export default (elementName, classText, templateHTML = null, templateCSS = null) => {
 	//Eval classText to and store result into EvaledClass
 	try {
-		// 	var EvaledClass = eval(/*eslint-disable-line no-eval*/ `
-		// 	(
-		// 		(function() {
-		// 			return (
-		// 				${classText}
-		// 			)
-		// 		})
-		// 	)()
-		// `);
-		// let f = new Function("THREE", "TWEEN", "N", `return (${classText})`);
 		var EvaledClass = new Function("THREE", "TWEEN", "N", `return (${classText})`)(THREE, TWEEN, N);
 	} catch (e) {
 		return {
@@ -57,16 +17,10 @@ export default (elementName, classText, templateHTML = null, templateCSS = null)
 		};
 	}
 
-	// We override the setAttribute method to call the nodeMap's setAttribute method instead!
-	// let origSetAttr = EvaledClass.prototype.setAttribute;
-	// EvaledClass.prototype.setAttribute = signalManager.setAttribute.bind(signalManager, nodeId);
-	// EvaledClass.prototype.native_setAttribute = origSetAttr;
-
 	// Grab the inputs and outputs from the class
 	let inputs = EvaledClass.inputs || [];
 
 	// Dynamically create and add the webcomponent observedAttributes
-	// getter:
 	let observedAttributes = [];
 	let testEl = document.createElement("div");
 	for (let i = 0, len = inputs.length; i < len; i++) {
@@ -89,64 +43,6 @@ export default (elementName, classText, templateHTML = null, templateCSS = null)
 			get: () => observedAttributes
 		});
 	}
-	// let origAttrChangedCallback = EvaledClass.prototype.onAttrChanged;
-	// if (origAttrChangedCallback) {
-	// 	EvaledClass.prototype.onAttrChanged = (name, oldValue, newValue) => {
-	// 		try {
-	// 			console.log("runrunrun time");
-	// 			debugger;
-	// 			origAttrChangedCallback(name, oldValue, newValue);
-	// 		} catch (e) {
-	// 			Events.emit(
-	// 				"app:error",
-	// 				EvaledClass.name + " onAttrChanged error: " + e.message
-	// 			);
-	// 		}
-	// 	};
-	// }
-
-	// wrapMethods(EvaledClass);
-
-	// Events.emit("test");
-	// EvaledClass = new Proxy(EvaledClass, {
-	// 	get: function(target, propName, receiver) {
-	// 		const origMethod = target[propName];
-
-	// 		console.log("pp", propName, typeof target[propName], origMethod);
-	// 		if (typeof target[propName] !== "function") {
-	// 			return Reflect.get(target, propName, receiver);
-	// 		}
-
-	// 		return function(...args) {
-	// 			console.log("PROX");
-	// 			return origMethod.apply(target, args);
-	// 		};
-	// 	}
-	// });
-	// let P = new Proxy(EvaledClass, {
-	// 	construct() {
-	// 		return new EvaledClass();
-	// 	}
-	// });
-
-	// var P = new Proxy(EvaledClass, {
-	// 	construct() {
-	// 		return new Proxy(new EvaledClass(), {
-	// 			get(target, value) {
-	// 				if (value == "element") return target;
-	// 				console.info(`proxy: property ${value} for <${target.localName}> is "${target[value]}"`);
-	// 				return target[value];
-	// 			}
-	// 		});
-	// 	}
-	// });
-	// EvaledClass = P;
-	// EvaledClass = new Proxy(EvaledClass, {
-	// 	get(target, value) {
-	// 		console.info(`proxy: property ${value} for <${target.localName}> is "${target[value]}"`);
-	// 		return target[value];
-	// 	}
-	// });
 
 	// Register the custom component with the registry
 	customElements.define(elementName, EvaledClass);
@@ -162,11 +58,6 @@ export default (elementName, classText, templateHTML = null, templateCSS = null)
 		styleEl = document.createElement("style");
 		styleEl.innerText = templateCSS;
 	}
-
-	// let inst = new EvaledClass(templateEl);
-	// inst.init(nodeId, signalManager);
-
-	// return inst;
 
 	return {
 		isError: false,

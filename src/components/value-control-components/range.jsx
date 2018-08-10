@@ -21,8 +21,6 @@ export default class Range extends React.Component {
 		let max = opts.max || opts.max === 0 ? opts.max : restrict.max;
 		let step = opts.step;
 
-		console.log("min", min, "max", max, this.props);
-
 		return (
 			<div className={"range"}>
 				<input

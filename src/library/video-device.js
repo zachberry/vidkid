@@ -51,8 +51,6 @@ class VideoDevice extends N {
 		option.value = "";
 		select.appendChild(option);
 
-		console.log("ACC CDL", this.getAttribute("device-id"));
-
 		navigator.mediaDevices.enumerateDevices().then(devices => {
 			devices.forEach(device => {
 				if (device.kind === "videoinput") {
@@ -70,7 +68,6 @@ class VideoDevice extends N {
 			});
 
 			let deviceId = this.getAttribute("device-id");
-			console.log("ACC gotem", deviceId, select.value);
 			if (deviceId) select.value = deviceId;
 
 			if (deviceId === "default" && Object.keys(this.devices).length > 0) {
@@ -80,7 +77,6 @@ class VideoDevice extends N {
 	}
 
 	onGetDeviceSuccess(stream) {
-		console.log("GROT", stream);
 		this.stream = stream;
 		this.root.getElementById("video").srcObject = stream;
 		this.root.getElementById("video").play();
@@ -97,7 +93,6 @@ class VideoDevice extends N {
 		if (!id) return;
 
 		var constraints = { deviceId: { exact: id } };
-		console.log("select", constraints);
 		navigator.getUserMedia(
 			{ video: constraints },
 			this.onGetDeviceSuccess.bind(this),
@@ -126,8 +121,6 @@ class VideoDevice extends N {
 	}
 
 	onAttrChanged(name, oldValue, newValue) {
-		console.log("ACC", name, oldValue, newValue);
-
 		switch (name) {
 			case "device-id":
 				this.selectDevice(newValue);

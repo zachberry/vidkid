@@ -2,7 +2,6 @@ import "./edit-node.css";
 
 import React, { Component } from "react";
 import AceEditor from "react-ace";
-// import brace from "brace";
 import Events from "../events";
 
 import "brace/mode/javascript";
@@ -10,14 +9,9 @@ import "brace/theme/monokai";
 
 import EditHTML from "./edit-html";
 
-// import App from '../App';
-
 class EditNode extends Component {
 	constructor(props) {
 		super(props);
-
-		// this.nodeText = "";
-		// return;
 
 		let node = this.props.docState.nodeMap.byId[this.props.nodeId];
 
@@ -73,8 +67,6 @@ class EditNode extends Component {
 			templateCSS: this.state.templateCSS
 		});
 
-		//this.refs.aceEditor.editor.getSession().$annotations
-
 		if (successOrError !== true)
 			Events.emit("app:error", "Unable to save: " + successOrError, successOrError);
 
@@ -107,7 +99,6 @@ class EditNode extends Component {
 	}
 
 	render() {
-		console.log("EditNode render", this.state);
 		return (
 			<div className="edit-node">
 				<header>

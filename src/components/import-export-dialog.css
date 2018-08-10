@@ -1,7 +1,6 @@
 .import-export-dialog {
 	width: 50vw;
 	height: 50vh;
-
 	background: rgba(0, 0, 0, 0.7);
 	color: white;
 	padding: 0.5em 1em;
@@ -41,7 +40,6 @@
 	cursor: pointer;
 	padding-bottom: 0.2em;
 	color: white;
-	/* background: red; */
 	font-size: 1em;
 }
 

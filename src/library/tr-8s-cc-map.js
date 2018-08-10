@@ -21,8 +21,6 @@ class TR8SCCMap extends N {
 		let ccNum = parseInt(midiData[1], 10);
 		let ccVal = parseInt(midiData[2], 10);
 
-		console.log("md", midiData, ccNum, ccVal);
-
 		switch (ccNum) {
 			case 0x18:
 				this.send("BD", ccVal);

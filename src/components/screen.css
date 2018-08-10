@@ -1,5 +1,4 @@
 .screen {
-	/* overflow: hidden; */
 	position: relative;
 }
 
@@ -56,7 +55,6 @@
 	color: gray;
 	cursor: pointer;
 	border: 1px solid rgba(255, 255, 255, 0.2);
-	/* opacity: .5; */
 }
 
 .screen.fullscreen button {

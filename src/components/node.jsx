@@ -1,43 +1,20 @@
 import "./node.css";
 
 import React, { Component } from "react";
-// import ReactDOM from "react-dom";
 
 import NodeInput from "./node-input";
 import NodeOutput from "./node-output";
 import NodeWebComponentWrapper from "./node-web-component-wrapper";
 
 export default class Node extends Component {
-	// componentDidMount() {
-	// 	this.componentEl = this.props.node.component;
-	// 	ReactDOM.findDOMNode(this.refs.container).appendChild(this.componentEl);
-	// }
-
-	// componentWillUnmount() {
-	// 	// Ensure that the web component disconnectedCallback is fired:
-	// 	// if (this.componentEl && this.componentEl.parentElement) {
-	// 	// 	this.componentEl.parentElement.removeChild(this.componentEl);
-	// 	// }
-	// }
-
-	// onClick(event) {
-	// 	this.setState({
-	// 		name: "Updated"
-	// 	});
-	// }
-
 	shouldComponentUpdate() {
 		return this.props.docState.shouldDisplayUpdate;
 	}
 
 	render() {
-		// console.log("NODE RENDER", this.props.node);
 		let pos = this.props.docState.getNodePosition(this.props.node.id);
 		let x = pos[0];
 		let y = pos[1];
-
-		// let inputs = Object.values(this.props.node.inputs);
-		// console.log("nnn", this.props);
 
 		return (
 			<div
@@ -53,8 +30,9 @@ export default class Node extends Component {
 			>
 				<header>
 					<span className="name" onMouseDown={this.props.onStartDrag}>
-						{this.props.node.id + ":" + this.props.node.component.name}
+						{this.props.node.component.name}
 					</span>
+					<span className="id">{this.props.node.id}</span>
 					<div className="controls">
 						<button className="edit-button" onClick={this.props.onClickEdit}>
 							✎
@@ -67,19 +45,6 @@ export default class Node extends Component {
 						</button>
 					</div>
 				</header>
-				{/* <span className="input-controls">
-
-					{this.props.node.inputsList.map(input => {
-						return (
-							<NodeInput
-								input={input}
-								value={this.props.getAttribute(this.props.node.id, input.name)}
-								key={input.name}
-								onUserSetValue={this.props.onUserSetValue.bind(null, input)}
-							/>
-						);
-					})}
-				</span> */}
 				<span className="inputs ports">
 					{this.props.node.inputsList.map(input => {
 						if (!input.visible) return null;

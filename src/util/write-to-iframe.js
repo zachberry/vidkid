@@ -1,5 +1,4 @@
 export default (iframe, html, css, cb = () => {}) => {
-	console.log("WTIF", html);
 	iframe.onload = cb;
 	iframe.contentWindow.document.open();
 	iframe.contentWindow.document.write(html);

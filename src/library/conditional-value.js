@@ -1,5 +1,5 @@
 const N = require("../web-components/base-node").default;
-class Conditional extends N {
+class ConditionalValue extends N {
 	static get inputs() {
 		return [
 			{
@@ -64,6 +64,6 @@ class Conditional extends N {
 }
 
 export default {
-	label: "Conditional",
-	text: Conditional.toString()
+	label: "Conditional Value",
+	text: ConditionalValue.toString()
 };

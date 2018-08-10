@@ -1,9 +1,6 @@
 import "./color.css";
 
 import React from "react";
-// import ReactDOM from 'react-dom';
-
-// import drag from '../drag';
 
 export default class Color extends React.Component {
 	constructor(props) {

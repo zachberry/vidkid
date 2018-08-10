@@ -35,14 +35,6 @@ export default class N extends HTMLElement {
 		return [];
 	}
 
-	//connectedCallback()
-	//disconnectedCallback()
-	//adoptedCallback()
-	//attributeChangedCallback(name, oldValue, newValue)
-
-	// inputConnectedCallback() {}
-	// outputConnectedCallback() {}
-
 	init(id, nodeMapAdapter, templateEl = null, styleEl = null) {
 		this.id = id;
 		this.nodeMapAdapter = nodeMapAdapter;

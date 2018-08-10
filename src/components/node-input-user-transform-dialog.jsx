@@ -61,7 +61,6 @@ export default class NodeInputUserTransformDialog extends Component {
 						Set
 					</button>
 				</div>
-				{/* <div className="value">{component}</div> */}
 				<button className="close-button" onClick={this.props.onCloseUserTransform}>
 					&times;
 				</button>

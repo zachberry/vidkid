@@ -53,8 +53,6 @@ class IFrame extends N {
 				break;
 
 			case "selector":
-				console.log("--V-->selector update", oldValue, newValue);
-
 				this.el = null;
 
 				let oldEl = this.getVideoEl(oldValue);

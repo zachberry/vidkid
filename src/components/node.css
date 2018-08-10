@@ -3,7 +3,6 @@
 	border-radius: 0.25em;
 	color: white;
 	display: inline-block;
-	/* border: 1px solid rgba(0, 0, 0, 0.1); */
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
 }
 
@@ -19,18 +18,22 @@
 	font-weight: bold;
 }
 
-/* .node header:hover,
-.node.dragging header {
-	background: #ffe501;
-	color: black;
-} */
-
 .node header .name {
 	cursor: move;
 	padding: 0.2em;
 	width: 100%;
 	display: inline-block;
 	box-sizing: border-box;
+}
+
+.node header .id {
+	font-weight: normal;
+	font-size: 0.8em;
+	opacity: 0.2;
+	position: absolute;
+	right: 6em;
+	top: 0.3em;
+	pointer-events: none;
 }
 
 .node header .controls {
@@ -95,7 +98,6 @@
 }
 
 .node.is-type-hardware {
-	/* border: 1px solid #37212d; */
 	background: #6f425a;
 }
 

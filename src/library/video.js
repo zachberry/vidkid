@@ -59,8 +59,6 @@ class Video extends N {
 		this.el.addEventListener("loadeddata", this.boundOnLoadedVideo);
 		let src = this.getAttribute("file");
 		if (src) this.el.src = this.getAttribute("file");
-
-		//this.send('el-id', this.el);
 	}
 
 	onOutputConnected(name) {
@@ -87,26 +85,7 @@ class Video extends N {
 		this.onSelectorUpdated();
 	}
 
-	// onScreenUpdated() {
-	// 	let el = this.getVideoEl(this.getAttribute('selector'));
-	// 	if(el) {
-	// 		this.setEl(el);
-	// 	}
-	// }
-
-	// getVideoEl(selector) {
-	// 	try {
-	// 		let el = this.screen.querySelector(selector);
-	// 		if(el && el.tagName && el.tagName.toLowerCase() === 'video') return el;
-	// 	} catch(e) {
-	// 		return null;
-	// 	}
-
-	// 	return null;
-	// }
-
 	updateVideo() {
-		console.log("--V-->updating video");
 		this.el.currentTime = parseFloat(this.getAttribute("time")) * this.el.duration;
 		this.el.loop = this.getAttribute("loop");
 		this.el.muted = this.getAttribute("muted");
@@ -114,27 +93,9 @@ class Video extends N {
 	}
 
 	onLoadedVideo(event) {
-		console.log("--V-->video loaded", event);
 		this.updateVideo();
 		this.videoReady = true;
 	}
-
-	// setEl(el) {
-	// 	this.videoReady = false;
-	// 	console.log('--V-->setEl', el)
-	// 	this.el = el;
-	// 	this.el.addEventListener('loadeddata', this.boundOnLoadedVideo)
-	// 	let src = this.getAttribute('file');
-	// 	if(src) this.el.src = this.getAttribute('file');
-	// }
-
-	// clearEl(el) {
-	// 	this.videoReady = false;
-	// 	console.log('--V-->clearEl', el)
-	// 	el.removeEventListener('loadeddata', this.boundOnLoadedVideo);
-	// 	el.src = null;
-	// 	this.el = null;
-	// }
 
 	onSelectorUpdated() {
 		let sel = this.getAttribute("selector");
@@ -146,19 +107,15 @@ class Video extends N {
 			} else {
 				this.root.getElementById("container").appendChild(this.el);
 			}
-
-			//this.updateVideo()
 		} catch (e) {
 			this.root.getElementById("container").appendChild(this.el);
 		}
 	}
 
 	onAttrChanged(name, oldValue, newValue) {
-		console.log("--V-->VIDEO ATTR", name, oldValue, newValue);
 		switch (name) {
 			case "file":
 				if (!this.el || !newValue) return;
-				console.log("--V-->set src to", newValue);
 				this.el.src = newValue;
 				break;
 
@@ -185,21 +142,7 @@ class Video extends N {
 
 			case "selector":
 				this.onSelectorUpdated();
-			// console.log('--V-->selector update', oldValue, newValue)
-
-			// let oldEl = this.getVideoEl(oldValue);
-			// console.log('--V-->oldEl', oldEl)
-			// if(oldEl) {
-
-			// 	this.clearEl(oldEl);
-			// }
-
-			// let newEl = this.getVideoEl(newValue);
-			// if(newEl) {
-			// 	this.setEl(newEl);
-			// }
-
-			// console.log('selector', oldValue, newValue, oldEl, newEl)
+				break;
 		}
 	}
 }

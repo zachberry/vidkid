@@ -74,7 +74,6 @@ class MIDIDevice extends N {
 	}
 
 	setInput(id) {
-		console.log("SET INPUT", id);
 		if (!this.inputs) return;
 
 		this.removeMIDIListeners();
@@ -90,7 +89,6 @@ class MIDIDevice extends N {
 	}
 
 	onAttrChanged(name, oldValue, newValue) {
-		console.log("ACC", name, oldValue, newValue);
 		this.setInput(newValue);
 	}
 
@@ -113,8 +111,6 @@ class MIDIDevice extends N {
 		let sendClockPerBeat = this.getAttribute("beat");
 
 		if (allowMessage) this.send("message", data);
-
-		//// console.log('got midi', data, channel, allowRealTime, allowNoteOn, allowNoteOff, allowCC)
 
 		// Clock:
 		if (data[0] === 0xfa && allowRealTime) {
@@ -178,7 +174,6 @@ class MIDIDevice extends N {
 	}
 
 	onMIDISuccess(midiAccess) {
-		console.log("MIDI SUCCESS", midiAccess);
 		this.inputs = midiAccess.inputs;
 		let select = this.root.getElementById("select");
 
@@ -188,18 +183,13 @@ class MIDIDevice extends N {
 		select.appendChild(option);
 
 		for (let input of this.inputs.values()) {
-			console.log(input);
 			option = document.createElement("option");
 			option.innerText = input.manufacturer + " " + input.name;
 			option.value = input.id;
 			select.appendChild(option);
 		}
 
-		// let deviceId = this.getAttribute('device-id');
-		// select.value = deviceId;
-
 		select.addEventListener("change", event => {
-			console.log("you did it", event.target.value);
 			this.setAttribute("device-id", event.target.value);
 		});
 
@@ -212,8 +202,6 @@ class MIDIDevice extends N {
 	}
 
 	onReady() {
-		console.log("MIDIDEVICE READY!");
-
 		this.boundOnMIDIMessage = this.onMIDIMessage.bind(this);
 		navigator
 			.requestMIDIAccess()
@@ -221,7 +209,6 @@ class MIDIDevice extends N {
 	}
 
 	onDestroy() {
-		console.error("MIDIDEVICE DESTROY!");
 		this.removeMIDIListeners();
 	}
 }

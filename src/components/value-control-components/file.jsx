@@ -1,9 +1,6 @@
 import "./file.css";
 
 import React from "react";
-// import ReactDOM from 'react-dom';
-
-// import drag from '../drag';
 
 export default class File extends React.Component {
 	constructor(props) {

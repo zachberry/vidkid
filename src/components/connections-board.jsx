@@ -20,7 +20,6 @@ class ConnectionsBoard extends Component {
 			mouseX: -1,
 			mouseY: -1
 		};
-		// this.boundOnNodeMoved = this.onNodeMoved.bind(this);
 		this.boundOnCableClick = this.onCableClick.bind(this);
 		this.boundOnMouseMove = this.onMouseMove.bind(this);
 		this.boundOnKeyUp = this.onKeyUp.bind(this);
@@ -45,7 +44,6 @@ class ConnectionsBoard extends Component {
 			mouseX: event.clientX,
 			mouseY: event.clientY
 		});
-		//Events.emit("cable:update");
 	}
 
 	onCableClick(connection) {
@@ -117,26 +115,6 @@ class ConnectionsBoard extends Component {
 						/>
 					);
 				})}
-				{/* {this.props.isConnecting ? (
-					<Cable
-						isSelected={false}
-						key="connecting-cable"
-						index={-1}
-						connection={{
-							isComplete: false,
-							fromEl: getDOMElement(
-								docState.connecting.portType,
-								docState.nodeMap.getAddress(docState.connecting.id, docState.connecting.name)
-							),
-							fromPort: docState.connecting.id,
-							toEl: null,
-							toPort: null
-						}}
-						connectingMouseX={this.state.mouseX}
-						connectingMouseY={this.state.mouseY}
-						boardEl={ReactDOM.findDOMNode(this)}
-					/>
-				) : null} */}
 			</div>
 		);
 	}

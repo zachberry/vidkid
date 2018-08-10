@@ -17,7 +17,6 @@ blocker.style.left = "0";
 blocker.style.right = "0";
 blocker.style.top = "0";
 blocker.style.bottom = "0";
-// blocker.style.pointerEvents = 'none';
 blocker.style.cursor = "grabbing";
 blocker.style.backgroundColor = "rgba(0,0,0,0)";
 blocker.style.zIndex = "99999";
@@ -38,10 +37,6 @@ let mouseMoveFn = function(event) {
 			left: el.offsetLeft || 0,
 			top: el.offsetTop || 0
 		};
-		// initialPt = {
-		// 	x: el.offsetLeft || 0,
-		// 	y: el.offsetTop || 0
-		// }
 
 		el.classList.add("dragging");
 
@@ -73,8 +68,6 @@ let mouseMoveFn = function(event) {
 	};
 
 	let restrictedDimensions = fit(newLocation);
-
-	// if (newLocation.x > restrictBBox.right) newLocation.x = restrictBBox.right
 
 	el.style.left = newLocation.x + "px";
 	el.style.top = newLocation.y + "px";

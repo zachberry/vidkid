@@ -41,7 +41,6 @@
 .node-port .transform {
 	width: 0.35em;
 	height: 0.35em;
-	/* border-radius: 0.5em; */
 	border: 1px solid rgba(255, 255, 255, 0.5);
 	position: absolute;
 	top: 0.5em;
@@ -49,8 +48,6 @@
 	transform: translate(0, -50%) translate(0, 1px) rotate(45deg);
 	cursor: pointer;
 }
-
-/*f f 0 0 6 5*/
 
 .node-port .transform.is-transform-set {
 	background: #ffe501;
@@ -80,7 +77,6 @@
 
 .node-port .expand {
 	cursor: pointer;
-	/* font-size: 0.5em; */
 	position: absolute;
 	left: 2em;
 	top: 0.05em;
@@ -88,10 +84,6 @@
 
 .node-input .expand:hover {
 	color: #ffe501;
-}
-
-.node-input .expand.is-expanded {
-	/* transform: rotateX(180deg) translate(0, 2px); */
 }
 
 .node-output .port {

@@ -78,21 +78,12 @@ class Canvas extends N {
 		}
 	}
 
-	// onInputDisconnected(name) {
-	// 	switch(name) {
-	// 		case 'el': {
-	// 			this.setAttribute('el', null);
-	// 		}
-	// 	}
-	// }
-
 	onReady() {
 		this.dead = false;
 		this.canvasEl = this.root.getElementById("canvas");
 		this.ctx = this.canvasEl.getContext("2d");
 		this.elId = this.registerEl("canvas", this.canvasEl);
 		this.boundOnFrame = this.onFrame.bind(this);
-		//this.send('el', this.canvasEl);
 	}
 
 	onFrame() {

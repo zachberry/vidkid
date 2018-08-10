@@ -24,7 +24,6 @@ class Note extends N {
 	}
 
 	onInput(event) {
-		console.log(">>onInput", event);
 		this.setAttribute("text", event.target.innerHTML);
 	}
 

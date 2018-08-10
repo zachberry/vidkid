@@ -86,7 +86,6 @@ class Tween extends N {
 			.to({ v: newValue }, this.getAttribute("time"))
 			.easing(TWEEN.Easing[tokens[0]][tokens[1]])
 			.start();
-		console.log("tweeeeeen", this.tween, TWEEN);
 		window.requestAnimationFrame(this.boundOnUpdate);
 	}
 }

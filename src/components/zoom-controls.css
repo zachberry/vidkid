@@ -7,13 +7,11 @@
 	border: none;
 	color: rgba(255, 255, 255, 0.5);
 	font-family: "Open Sans";
-
 	width: 2em;
 	height: 2em;
 	font-weight: bold;
 	user-select: none;
 	cursor: pointer;
-
 	font-size: 0.7em;
 }
 

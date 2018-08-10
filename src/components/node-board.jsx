@@ -21,7 +21,6 @@ class NodeBoard extends React.Component {
 		};
 
 		this.boundOnMouseDown = this.onMouseDown.bind(this);
-		// this.boundOnDragBoard = this.onDragBoard.bind(this);
 		this.boundOnDragMoveNode = this.onDragMoveNode.bind(this);
 		this.boundDragComplete = this.onDragNodeComplete.bind(this);
 		this.boundOnContextMenu = this.onContextMenu.bind(this);
@@ -29,7 +28,6 @@ class NodeBoard extends React.Component {
 		this.boundOnSearchMenuItemSelect = this.onSearchMenuItemSelect.bind(this);
 		this.boundOnSearchMenuClose = this.onSearchMenuClose.bind(this);
 		this.boundUpdateTransform = this.updateTransform.bind(this);
-		// this.boundIsInputUIOpen = this.props.docState.isInputUIOpen.bind(this.props.docState);
 	}
 
 	onMouseDown(event) {
@@ -69,7 +67,6 @@ class NodeBoard extends React.Component {
 	}
 
 	onSearchMenuItemSelect(menuItem) {
-		console.log("osm", menuItem);
 		this.props.docState.doAction({
 			type: "createNode",
 			text: menuItem.text,
@@ -197,7 +194,6 @@ class NodeBoard extends React.Component {
 	}
 
 	updateTransform(node, input, text) {
-		console.log("ut", node, input, text);
 		this.props.docState.doAction({
 			type: "setTransform",
 			id: node.id,
@@ -207,12 +203,10 @@ class NodeBoard extends React.Component {
 	}
 
 	componentDidUpdate() {
-		// console.log("NODE BOARD CDU");
 		Events.emit("connections:update");
 	}
 
 	render() {
-		console.log({ transform: `scale(${this.props.docState.zoomLevel})` });
 		return (
 			<div
 				className={

@@ -20,6 +20,7 @@ class Node extends N {
 				// Other options:
 				//visible: true,
 				//editable: true
+				//showValue: true
 			}
 		];
 	}
