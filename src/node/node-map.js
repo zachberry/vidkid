@@ -374,6 +374,14 @@ export default class NodeMap {
 		return false;
 	}
 
+	isInputConnected(nodeId, inputName) {
+		return !!this.inputsMap[nodeId + "." + inputName];
+	}
+
+	isOutputConnected(nodeId, outputName) {
+		return !!this.portMap[nodeId + "." + outputName];
+	}
+
 	isPortsConnected(fromNodeId, fromOutputAttr, toNodeId, toInputAttr) {
 		let output = this.getAddress(fromNodeId, fromOutputAttr);
 		let input = this.getAddress(toNodeId, toInputAttr);

@@ -48,6 +48,7 @@ export default class Node extends Component {
 				<span className="inputs ports">
 					{this.props.node.inputsList.map(input => {
 						if (!input.visible) return null;
+						console.log("input", input);
 						return (
 							<NodeInput
 								node={this.props.node}
@@ -56,6 +57,10 @@ export default class Node extends Component {
 								key={input.name}
 								onUserSetValue={this.props.onUserSetValue.bind(null, input)}
 								updateTransform={this.props.updateTransform.bind(null, input)}
+								// isConnected={this.props.docState.nodeMap.isInputConnected(
+								// 	this.props.node.id,
+								// 	input.name
+								// )}
 								isControlOpen={this.props.docState.isInputUIOpen(
 									"control",
 									this.props.node.id,

@@ -36,7 +36,11 @@ export default class NodeInput extends Component {
 		let transformText = this.props.node.transforms[this.props.input.name];
 		return (
 			<div className="node-input node-port">
-				<div data-input-id={this.props.node.id + "." + this.props.input.name} className="port" />
+				<div
+					data-input-id={this.props.node.id + "." + this.props.input.name}
+					// className={"port " + (this.props.isConnected ? " is-connected" : "")}
+					className={"port"}
+				/>
 				<div
 					className={"transform" + (transformText ? " is-transform-set" : " is-not-transform-set")}
 					onClick={this.props.onOpenUserTransform}

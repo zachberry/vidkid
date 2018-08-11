@@ -22,6 +22,7 @@ class DocState {
 		this.editingNodeId = null;
 		this.editingPage = false;
 		this.selectedConnection = null;
+		this.isCablesMuted = false;
 		this.nodeUIMap = {};
 		this.pageHTML = `<body>
 
@@ -61,6 +62,7 @@ class DocState {
 			pageHTML: this.pageHTML,
 			pageCSS: this.pageCSS,
 			nodeUIMap: this.nodeUIMap,
+			isCablesMuted: this.isCablesMuted,
 			fullscreen: this.fullscreen,
 			zoomLevel: this.zoomLevel
 		});
@@ -78,6 +80,7 @@ class DocState {
 		this.pageHTML = o.pageHTML;
 		this.pageCSS = o.pageCSS;
 		this.nodeUIMap = o.nodeUIMap;
+		this.isCablesMuted = o.isCablesMuted;
 		this.fullscreen = o.fullscreen;
 		this.zoomLevel = o.zoomLevel;
 	}
@@ -150,9 +153,8 @@ class DocState {
 
 		try {
 			switch (action.type) {
-				case "toggleView":
-					this.view =
-						this.view === DocState.VIEW_EDIT ? DocState.VIEW_PERFORMANCE : DocState.VIEW_EDIT;
+				case "setMutedCables":
+					this.isCablesMuted = action.value;
 					break;
 
 				case "setView":
@@ -203,10 +205,12 @@ class DocState {
 
 				case "openInputUserTransform":
 					this.openInputUI("userTransform", action.id, action.name);
+					this.isCablesMuted = true;
 					break;
 
 				case "closeInputUserTransform":
 					this.closeInputUI("userTransform", action.id, action.name);
+					this.isCablesMuted = false;
 					break;
 
 				case "setTransform":
@@ -242,7 +246,6 @@ class DocState {
 					break;
 
 				case "editNode":
-					this.hardware.disable();
 					this.editingNodeId = action.id; //this.nodeMap.getNodeById(action.id);
 					break;
 
@@ -260,7 +263,6 @@ class DocState {
 
 				case "stopEditingNode":
 					this.editingNodeId = null;
-					this.hardware.enable();
 					break;
 
 				case "editPage":

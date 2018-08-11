@@ -98,7 +98,7 @@ class ConnectionsBoard extends Component {
 		}
 
 		return (
-			<div className="connections-board">
+			<div className={"connections-board" + (this.props.isCablesMuted ? " is-cables-muted" : "")}>
 				{this.connections.map((connection, index) => {
 					let isSelected =
 						connection.fromPort === selectedConnection.from &&

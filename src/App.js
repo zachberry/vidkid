@@ -33,6 +33,7 @@ class App extends Component {
 		this.boundOnZoomIn = this.onZoomIn.bind(this);
 		this.boundOnZoomOut = this.onZoomOut.bind(this);
 
+		// document.addEventListener("keydown", this.onKeyDown.bind(this));
 		document.addEventListener("keyup", this.onKeyUp.bind(this));
 		window.addEventListener("error", this.onGlobalError.bind(this));
 	}
@@ -65,11 +66,32 @@ class App extends Component {
 		return this.docState.shouldDisplayUpdate;
 	}
 
+	// onKeyDown(event) {
+	// if (this.docState.fullscreen || this.docState.editingNodeId || this.docState.editingPage)
+	// 	return;
+	// if (event.shiftKey) {
+	// 	this.docState.doAction({
+	// 		type: "setMutedCables",
+	// 		value: true
+	// 	});
+	// }
+	// }
+
 	onKeyUp(event) {
+		console.log("upp", event.shiftKey, this.docState.isCablesMuted);
+
 		if (this.docState.fullscreen && event.keyCode === 27) {
 			this.setFullscreen(false);
 		}
 		if (this.docState.editingNodeId !== null || this.docState.editingPage) return;
+
+		// if (event.keyCode === 16) {
+		// 	this.docState.doAction({
+		// 		type: "setMutedCables",
+		// 		value: !this.docState.isCablesMuted
+		// 	});
+		// }
+
 		if (!this.docState.selectedConnection) return;
 
 		if (event.keyCode === 46 || event.keyCode === 8) {
@@ -188,6 +210,7 @@ class App extends Component {
 					<ConnectionsBoard
 						docState={this.docState}
 						isConnecting={this.docState.connecting !== null}
+						isCablesMuted={this.docState.isCablesMuted}
 					/>
 					<NodeBoard
 						nodeOrder={this.docState.nodeMap.nodeOrder}

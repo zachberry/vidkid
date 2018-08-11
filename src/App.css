@@ -42,6 +42,16 @@
 	top: 0;
 	right: 0;
 	bottom: 0;
+	/* z-index: 1; */
+}
+.App .edit-board .connections-board {
+	z-index: 2;
+}
+.App .edit-board .connections-board.is-cables-muted {
+	z-index: 1;
+}
+.App .edit-board .node-board {
+	z-index: 1;
 }
 
 .App .screen {
@@ -49,10 +59,11 @@
 }
 
 .App .zoom-controls {
-	z-index: 9999;
+	z-index: 999;
 	position: absolute;
 	left: 1.2em;
 	top: 3em;
+	display: none; /* @TODO */
 }
 
 .App .modal {
