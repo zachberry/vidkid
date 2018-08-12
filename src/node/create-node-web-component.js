@@ -1,15 +1,13 @@
-import Events from "../events";
-
 // Included libraries:
 const THREE = require("three");
 const TWEEN = require("@tweenjs/tween.js");
 
-const N = require("../web-components/base-node").default; // eslint-disable-line no-unused-vars
-
 export default (elementName, classText, templateHTML = null, templateCSS = null) => {
 	//Eval classText to and store result into EvaledClass
 	try {
-		var EvaledClass = new Function("THREE", "TWEEN", "N", `return (${classText})`)(THREE, TWEEN, N);
+		console.log("EVAL:");
+		console.log(classText);
+		var EvaledClass = new Function("THREE", "TWEEN", `return (${classText})`)(THREE, TWEEN);
 	} catch (e) {
 		return {
 			isError: true,

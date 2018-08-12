@@ -1,5 +1,7 @@
-const N = require("../web-components/base-node").default;
-class Node extends N {
+// Need this line to put N on window
+// import "../web-components/base-node";
+
+let c = `class Node extends window.N {
 	static get inputs() {
 		return [
 			{
@@ -31,9 +33,10 @@ class Node extends N {
 	onOutputWillDisconnect(name, toAddress) {}
 	onInputDisconnected(name, numConnections, numNodeConnections) {}
 	onOutputDisconnected(name, numConnections, numNodeConnections) {}
-}
+}`;
 
 export default {
 	label: "New Node",
-	text: Node.toString()
+	text: c
+	// text: Node.toString()
 };

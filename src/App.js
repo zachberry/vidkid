@@ -1,3 +1,6 @@
+//require("./web-components/base-node"); // eslint-disable-line no-unused-vars
+import "./web-components/base-node";
+
 import React, { Component } from "react";
 import "./App.css";
 
@@ -78,8 +81,6 @@ class App extends Component {
 	// }
 
 	onKeyUp(event) {
-		console.log("upp", event.shiftKey, this.docState.isCablesMuted);
-
 		if (this.docState.fullscreen && event.keyCode === 27) {
 			this.setFullscreen(false);
 		}

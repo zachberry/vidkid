@@ -48,7 +48,6 @@ export default class Node extends Component {
 				<span className="inputs ports">
 					{this.props.node.inputsList.map(input => {
 						if (!input.visible) return null;
-						console.log("input", input);
 						return (
 							<NodeInput
 								node={this.props.node}
