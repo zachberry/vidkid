@@ -12,7 +12,7 @@ import {
 	button
 } from "../node/control-functions";
 
-window.N = class N extends HTMLElement {
+export default class N extends HTMLElement {
 	static GENERIC = "generic";
 	static HARDWARE = "hardware";
 	static SCREEN = "screen";
@@ -113,6 +113,4 @@ window.N = class N extends HTMLElement {
 	onScreenUpdated() {}
 	onReady() {}
 	onDestroy() {}
-};
-
-export default window.N;
+}

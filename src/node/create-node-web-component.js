@@ -1,13 +1,12 @@
 // Included libraries:
 const THREE = require("three");
 const TWEEN = require("@tweenjs/tween.js");
+const N = require("../web-components/base-node").default;
 
 export default (elementName, classText, templateHTML = null, templateCSS = null) => {
 	//Eval classText to and store result into EvaledClass
 	try {
-		console.log("EVAL:");
-		console.log(classText);
-		var EvaledClass = new Function("THREE", "TWEEN", `return (${classText})`)(THREE, TWEEN);
+		var EvaledClass = new Function("THREE", "TWEEN", "N", `return (${classText})`)(THREE, TWEEN, N);
 	} catch (e) {
 		return {
 			isError: true,
