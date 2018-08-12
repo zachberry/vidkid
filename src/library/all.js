@@ -22,6 +22,8 @@ export default [
 	require("./increment").default,
 	require("./lazer-grid").default,
 	require("./midi-device").default,
+	require("./midi-note-on").default,
+	require("./draw-notes").default,
 	require("./mouse").default,
 	require("./note").default,
 	require("./pixel-canvas").default,

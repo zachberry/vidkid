@@ -164,7 +164,7 @@ canvas {
 }`;
 
 export default {
-	label: "PixelCanvas",
+	label: "Pixel Canvas",
 	text: PixelCanvas.toString(),
 	templateHTML: template,
 	templateCSS: css
