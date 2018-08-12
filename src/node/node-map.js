@@ -6,6 +6,8 @@ import Events from "../events";
 import ChainPool from "../util/chain-pool";
 import ElementRegistry from "../util/element-registry";
 
+let b = require("js-beautify").js;
+
 const DEFAULT_INPUT_OPTIONS = {
 	label: null,
 	restrict: null,
@@ -98,6 +100,8 @@ export default class NodeMap {
 		setRevId = null,
 		transforms = null
 	) {
+		nodeText = b(nodeText, { indent_size: 1, indent_char: "\t" });
+
 		let nodeId = setNodeId !== null ? setNodeId : this.getNextId();
 		let rev = setRevId !== null ? setRevId : 0;
 

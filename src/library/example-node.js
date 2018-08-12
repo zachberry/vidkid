@@ -1,5 +1,5 @@
 const N = require("../web-components/base-node").default;
-class Node extends N {
+class ExampleNode extends N {
 	// This simply color-codes the node:
 	static get type() {
 		return N.GENERIC;
@@ -127,7 +127,7 @@ const css = `#container {
 
 export default {
 	label: "Example Node",
-	text: Node.toString(),
+	text: ExampleNode.toString(),
 	templateHTML: template,
 	templateCSS: css
 };

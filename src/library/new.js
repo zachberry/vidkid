@@ -1,5 +1,6 @@
 const N = require("../web-components/base-node").default;
 class Node extends N {
+	// Here is a comment
 	static get inputs() {
 		return [
 			{

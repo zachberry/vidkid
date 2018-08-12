@@ -4,7 +4,7 @@ const autoprefixer = require("autoprefixer");
 const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+// const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
@@ -105,46 +105,73 @@ module.exports = {
 			path.relative(paths.appSrc, info.absoluteResourcePath).replace(/\\/g, "/")
 	},
 	optimization: {
-		// minimizer: [
-		//   new UglifyJsPlugin({
-		//     uglifyOptions: {
-		//       parse: {
-		//         // we want uglify-js to parse ecma 8 code. However, we don't want it
-		//         // to apply any minfication steps that turns valid ecma 5 code
-		//         // into invalid ecma 5 code. This is why the 'compress' and 'output'
-		//         // sections only apply transformations that are ecma 5 safe
-		//         // https://github.com/facebook/create-react-app/pull/4234
-		//         ecma: 8,
-		//       },
-		//       compress: {
-		//         ecma: 5,
-		//         warnings: false,
-		//         // Disabled because of an issue with Uglify breaking seemingly valid code:
-		//         // https://github.com/facebook/create-react-app/issues/2376
-		//         // Pending further investigation:
-		//         // https://github.com/mishoo/UglifyJS2/issues/2011
-		//         comparisons: false,
-		//       },
-		//       mangle: {
-		//         safari10: true,
-		//       },
-		//       output: {
-		//         ecma: 5,
-		//         comments: false,
-		//         // Turned on because emoji and regex is not minified properly using default
-		//         // https://github.com/facebook/create-react-app/issues/2488
-		//         ascii_only: true,
-		//       },
-		//     },
-		//     // Use multi-process parallel running to improve the build speed
-		//     // Default number of concurrent runs: os.cpus().length - 1
-		//     parallel: true,
-		//     // Enable file caching
-		//     cache: true,
-		//     sourceMap: shouldUseSourceMap,
-		//   }),
-		//   new OptimizeCSSAssetsPlugin(),
-		// ],
+		minimize: false,
+		minimizer: [
+			// new UglifyJsPlugin({
+			// 	uglifyOptions: {
+			// 		parse: {
+			// 			// we want uglify-js to parse ecma 8 code. However, we don't want it
+			// 			// to apply any minfication steps that turns valid ecma 5 code
+			// 			// into invalid ecma 5 code. This is why the 'compress' and 'output'
+			// 			// sections only apply transformations that are ecma 5 safe
+			// 			// https://github.com/facebook/create-react-app/pull/4234
+			// 			ecma: 8
+			// 		},
+			// 		compress: {
+			// 			ecma: 5,
+			// 			warnings: false,
+			// 			// Disabled because of an issue with Uglify breaking seemingly valid code:
+			// 			// https://github.com/facebook/create-react-app/issues/2376
+			// 			// Pending further investigation:
+			// 			// https://github.com/mishoo/UglifyJS2/issues/2011
+			// 			comparisons: false,
+			// 			arrows: false,
+			// 			booleans: false,
+			// 			collapse_vars: false,
+			// 			computed_props: false,
+			// 			conditionals: false,
+			// 			dead_code: false,
+			// 			drop_console: false,
+			// 			drop_debugger: false,
+			// 			evaluate: false,
+			// 			expression: false,
+			// 			global_defs: {},
+			// 			hoist_funs: false,
+			// 			hoist_props: false,
+			// 			hoist_vars: false,
+			// 			if_return: false,
+			// 			inline: 0,
+			// 			join_vars: false,
+			// 			keep_classnames: false
+			// 		},
+			// 		mangle: {
+			// 			safari10: true,
+			// 			keep_classnames: true,
+			// 			keep_fnames: true
+			// 		},
+			// 		keep_classnames: true,
+			// 		keep_fnames: true,
+			// 		output: {
+			// 			ecma: 5,
+			// 			comments: true,
+			// 			// Turned on because emoji and regex is not minified properly using default
+			// 			// https://github.com/facebook/create-react-app/issues/2488
+			// 			ascii_only: true,
+			// 			beautify: true
+
+			// 			// keep_classnames: true,
+			// 			// keep_fnames: true
+			// 		}
+			// 	},
+			// 	// Use multi-process parallel running to improve the build speed
+			// 	// Default number of concurrent runs: os.cpus().length - 1
+			// 	parallel: true,
+			// 	// Enable file caching
+			// 	cache: true,
+			// 	sourceMap: shouldUseSourceMap
+			// }),
+			new OptimizeCSSAssetsPlugin()
+		],
 		// Automatically split vendor and commons
 		// https://twitter.com/wSokra/status/969633336732905474
 		// https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
@@ -366,18 +393,7 @@ module.exports = {
 		new HtmlWebpackPlugin({
 			inject: true,
 			template: paths.appHtml,
-			minify: {
-				removeComments: true,
-				collapseWhitespace: true,
-				removeRedundantAttributes: true,
-				useShortDoctype: true,
-				removeEmptyAttributes: true,
-				removeStyleLinkTypeAttributes: true,
-				keepClosingSlash: true,
-				minifyJS: true,
-				minifyCSS: true,
-				minifyURLs: true
-			}
+			minify: false
 		}),
 		// Makes some environment variables available in index.html.
 		// The public URL is available as %PUBLIC_URL% in index.html, e.g.:
