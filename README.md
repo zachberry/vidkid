@@ -21,6 +21,18 @@
 
 1.  Run `yarn build`
 
+# Give me a super fast example
+
+1.  Go to [https://vidkid.app](https://vidkid.app)
+2.  Right click on the grid background
+3.  Select a new "Lazer Grid" [sic]
+4.  Click on the plus near the 'selector' input
+5.  Type in 'body' - The grid will jump to the display
+6.  Hit the 'Fullscreen' button in the bottom of the display box
+7.  Enjoy!
+
+Psst... For more examples, check out the examples directory. Click 'Import' in the toolbar and paste some JSON in. Some of the examples rely on MIDI hardware. Examples are still being updated, woo!
+
 # How it works
 
 ## When you start you'll see the Edit screen.
