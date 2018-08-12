@@ -4,6 +4,10 @@
 
 **Totally tubular disclaimer:** I consider this **alpha software** for the moment. You'll probably find bugs, it needs documentation and it needs tests. If you use this in a performance it could very well crash and eat your work! This is a consequence of a tight deadline to have it finished for JSConf US 2018 (This is my only defense). With that disclaimer out of the way I'd love for you to check it out and PRs are welcome.
 
+# Try it out
+
+[https://vidkid.app](https://vidkid.app)
+
 # Installation
 
 1.  Clone this project
@@ -12,6 +16,10 @@
 # Running
 
 1.  Run `yarn start`
+
+# Production build
+
+1.  Run `yarn build`
 
 # How it works
 
