@@ -57,21 +57,28 @@ class ExampleNode extends N {
 		// this.registerEl(giveAName, domElement);
 	}
 
-	onDestroy() {
-		// Called when component will be removed from the DOM.
+	onRemove() {
+		// Called when component is being removed.
 		// Remove any event listeners and elements on the screen.
 		// Release any chains you may be holding on to:
 		// this.releaseChain(chainId);
 	}
 
+	onDestroy() {
+		// Called when component will be removed from the DOM.
+		// All values have been removed so you cannot call getAttribute here.
+	}
+
 	onScreenDestroy() {
 		// Called when the display is being updated. Any attached DOM elements
-		// will be destroyed so you should remove them.
+		// will be destroyed.
 	}
 
 	onScreenUpdated() {
 		// Called when the display has been updated. If you attached any DOM
-		// elements to screen you can re-attach them.
+		// elements to screen you can re-attach them. If you had any DOM
+		// referenced stored (i.e. this.el) you'll need to update them
+		// as those reference elements have been replaced
 	}
 
 	onInputConnected(name, toAddress) {

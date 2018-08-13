@@ -8,6 +8,7 @@ export default [
 	require("./canvas").default,
 	require("./conditional-send").default,
 	require("./conditional-value").default,
+	require("./css-rule").default,
 	require("./css-background").default,
 	require("./css-filter-element").default,
 	require("./css-filter").default,
@@ -17,6 +18,7 @@ export default [
 	require("./delay").default,
 	require("./difference").default,
 	require("./flip-flop").default,
+	require("./function3").default,
 	require("./gamepad").default,
 	require("./iframe").default,
 	require("./increment").default,
@@ -38,6 +40,7 @@ export default [
 	require("./value-boolean").default,
 	require("./value-number").default,
 	require("./value-string").default,
+	require("./value-color").default,
 	require("./video-device").default,
 	require("./video").default
 ];

@@ -112,5 +112,6 @@ export default class N extends HTMLElement {
 	onScreenDestroy() {}
 	onScreenUpdated() {}
 	onReady() {}
+	onRemove() {}
 	onDestroy() {}
 }

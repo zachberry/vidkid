@@ -333,6 +333,8 @@ export default class NodeMap {
 		let node = this.byId[nodeId];
 		if (!node) return;
 
+		node.componentInstance.onRemove();
+
 		this.getNodesConnections(nodeId).forEach(connection => {
 			this.disconnect(connection[0], connection[1]);
 		});
