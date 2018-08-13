@@ -1,0 +1,61 @@
+{
+	"editingNodeId": null,
+	"editingPage": false,
+	"selectedConnection": null,
+	"connecting": null,
+	"pageHTML": "<body>\n<div id=\"container\">\n    <div id=\"spinner\"></div>\n</div>\n</body>",
+	"pageCSS":
+		"body {\n\twidth: 100%;\n\theight: 100%;\n\tmargin: 0;\n\tpadding: 0;\n\tfont-size: 14pt;\n\tfont-family: Arial, Helvetica, sans-serif;\n\tcolor: white;\n\tbackground: black;\n}\n\n#container {\n    position: absolute;\n    left: 50%;\n    top: 50%;\n    transform: translate(-50%, -50%);\n}\n\n#spinner {\n    width: 50vw;\n    height: 10vh;\n    background: red;\n    transform-origin: center center;\n}",
+	"nodeUIMap": {
+		"n0": { "pos": [481, 203] },
+		"n1": { "pos": [32, 176], "control": { "smooth-const": true } },
+		"n2": { "pos": [664, 327] },
+		"n3": { "pos": [367, 353], "control": { "type": true } },
+		"n4": { "pos": [392, 194], "control": { "in": true } }
+	},
+	"isCablesMuted": true,
+	"fullscreen": false,
+	"zoomLevel": 1,
+	"nodeMap": {
+		"nodeMap": { "n1": { "n4": 1 } },
+		"portMap": { "n1.rms-volume": { "n4.in": true } },
+		"inputsMap": { "n4.in": { "n1.rms-volume": true } },
+		"nextId": 5,
+		"nodeOrder": ["n1", "n4"],
+		"values": {
+			"n1": {
+				"device-id": "default",
+				"fft-size": "256",
+				"smooth-const": 0.9,
+				"filter": false,
+				"cutoff-freq": 400
+			},
+			"n4": { "in": 59.00662039127474 }
+		},
+		"byId": {
+			"n1": {
+				"id": "n1",
+				"rev": 0,
+				"text":
+					"class AudioDevice extends N {\n\tstatic get type() {\n\t\treturn N.HARDWARE;\n\t}\n\n\tstatic get inputs() {\n\t\treturn [{\n\t\t\tname: \"device-id\",\n\t\t\tobserve: true,\n\t\t\tdefaultValue: \"default\",\n\t\t\trestrict: String,\n\t\t\tvisible: false\n\t\t}, {\n\t\t\tname: \"fft-size\",\n\t\t\tobserve: true,\n\t\t\tdefaultValue: \"256\",\n\t\t\trestrict: N.set([\"128\", \"256\", \"512\", \"1024\", \"2048\", \"4096\", \"8192\", \"16384\"])\n\t\t}, {\n\t\t\tname: \"smooth-const\",\n\t\t\tobserve: true,\n\t\t\tdefaultValue: 0.1,\n\t\t\trestrict: N.float(0, 1),\n\t\t\tcontrol: N.range({\n\t\t\t\tstep: 0.1\n\t\t\t})\n\t\t}, {\n\t\t\tname: \"filter\",\n\t\t\tobserve: true,\n\t\t\tdefaultValue: false\n\t\t}, {\n\t\t\tname: \"cutoff-freq\",\n\t\t\tobserve: true,\n\t\t\tdefaultValue: 400,\n\t\t\trestrict: Number\n\t\t}];\n\t}\n\n\tstatic get outputs() {\n\t\treturn [\"rms-volume\", \"trigger\"];\n\t}\n\n\tgetFFTSize() {\n\t\treturn parseInt(this.getAttribute(\"fft-size\"));\n\t}\n\n\tlisten(stream) {\n\t\tthis.context = new AudioContext();\n\t\tthis.analyser = this.context.createAnalyser();\n\t\tthis.analyser.smoothingTimeConstant = this.getAttribute(\"smooth-const\");\n\t\tthis.analyser.fftSize = this.getFFTSize();\n\t\tthis.node = this.context.createScriptProcessor(this.analyser.fftSize * 2, 1, 1);\n\t\tthis.node.addEventListener(\"audioprocess\", this.boundOnAudioProcess);\n\t\tthis.input = this.context.createMediaStreamSource(stream);\n\t\tthis.input.connect(this.analyser);\n\t\tthis.analyser.connect(this.node);\n\t\tthis.node.connect(this.context.destination);\n\t}\n\n\tonAudioProcess() {\n\t\tthis.spectrum = new Uint8Array(this.analyser.frequencyBinCount);\n\t\tthis.analyser.getByteFrequencyData(this.spectrum);\n\t\tthis.vol = this.getRMS(this.spectrum);\n\t\tthis.send(\"rms-volume\", this.vol);\n\t\tthis.send(\"trigger\", this.vol / 128 > 1);\n\t}\n\n\tgetRMS(spectrum) {\n\t\tlet rms = 0;\n\n\t\tfor (let i = 0, len = spectrum.length; i < len; i++) {\n\t\t\trms += spectrum[i] * spectrum[i];\n\t\t}\n\n\t\trms /= spectrum.length;\n\t\trms = Math.sqrt(rms);\n\t\treturn rms;\n\t}\n\n\tgetAudioDevices() {\n\t\t// Need to get permission for microphone so we can get more useful info in enumerateDevices\n\t\tnavigator.getUserMedia({\n\t\t\taudio: true\n\t\t}, this.onGetUserMediaSuccess.bind(this), this.onGetUserMediaError.bind(this));\n\t}\n\n\tonGetUserMediaError() {\n\t\tconsole.error(arguments);\n\t\tconsole.error(\"Unable to access audio devices!\");\n\t}\n\n\tonGetUserMediaSuccess() {\n\t\tthis.createDeviceList();\n\t}\n\n\tcreateDeviceList() {\n\t\tlet select = this.root.getElementById(\"select\");\n\t\tlet option = document.createElement(\"option\");\n\t\toption.innerText = \"Select device...\";\n\t\toption.value = \"\";\n\t\tselect.appendChild(option);\n\t\tnavigator.mediaDevices.enumerateDevices().then(devices => {\n\t\t\tdevices.forEach(device => {\n\t\t\t\tif (device.kind === \"audioinput\") {\n\t\t\t\t\tthis.devices[device.deviceId] = device;\n\t\t\t\t\tlet option = document.createElement(\"option\");\n\t\t\t\t\toption.innerText = device.label;\n\t\t\t\t\toption.value = device.deviceId;\n\t\t\t\t\tselect.appendChild(option);\n\t\t\t\t}\n\t\t\t});\n\t\t\tselect.addEventListener(\"change\", event => {\n\t\t\t\tthis.setAttribute(\"device-id\", event.target.value);\n\t\t\t});\n\t\t\tlet deviceId = this.getAttribute(\"device-id\");\n\t\t\tif (deviceId) select.value = deviceId;\n\t\t});\n\t}\n\n\tonGetDeviceSuccess(stream) {\n\t\tthis.stream = stream;\n\t\tthis.listen(stream);\n\t}\n\n\tonGetDeviceError() {\n\t\tconsole.error(arguments);\n\t\tconsole.error(\"Unable to get audio stream!\");\n\t}\n\n\tselectDevice(id) {\n\t\tif (!id) return;\n\t\tvar constraints = {\n\t\t\tdeviceId: {\n\t\t\t\texact: id\n\t\t\t}\n\t\t};\n\t\tnavigator.getUserMedia({\n\t\t\taudio: constraints\n\t\t}, this.onGetDeviceSuccess.bind(this), this.onGetDeviceError.bind(this));\n\t}\n\n\tstopAudioProcessing() {\n\t\tif (this.node) this.node.removeEventListener(\"audioprocess\", this.boundOnAudioProcess);\n\t}\n\n\tonReady() {\n\t\tthis.context = null;\n\t\tthis.analyser = null;\n\t\tthis.node = null;\n\t\tthis.spectrum = null;\n\t\tthis.vol = null;\n\t\tthis.stream = null;\n\t\tthis.devices = {};\n\t\tthis.boundOnAudioProcess = this.onAudioProcess.bind(this);\n\t\tthis.getAudioDevices();\n\t}\n\n\tonDestroy() {\n\t\tthis.stopAudioProcessing();\n\t}\n\n\tonAttrChanged(name, oldValue, newValue) {\n\t\tswitch (name) {\n\t\t\tcase \"device-id\":\n\t\t\t\tthis.stopAudioProcessing();\n\t\t\t\tthis.selectDevice(newValue);\n\n\t\t\tcase \"fft-size\":\n\t\t\t\tthis.stopAudioProcessing();\n\t\t\t\tif (this.stream) this.listen(this.stream);\n\t\t\t\tbreak;\n\n\t\t\tcase \"smooth-const\":\n\t\t\t\tif (this.analyser) this.analyser.smoothingTimeConstant = parseFloat(newValue);\n\t\t\t\tbreak;\n\t\t}\n\t}\n\n}",
+				"templateHTML": "<div id=\"container\">\n\t<select id=\"select\"></select>\n</div>",
+				"templateCSS": "#container {\n\twidth: 13em;\n}\n\n#select {\n\twidth: 100%;\n}",
+				"transforms": {}
+			},
+			"n4": {
+				"id": "n4",
+				"rev": 4,
+				"text":
+					"class Node extends N {\n\t// Here is a comment\n\tstatic get inputs() {\n\t\treturn [{\n\t\t\tname: \"in\",\n\t\t\tobserve: true,\n\t\t\tdefaultValue: 0,\n\t\t\trestrict: Number\n\t\t}];\n\t}\n\n\tonAttrChanged(name, oldValue, newValue) {\n\t\tthis.screen.getElementById('spinner').style.transform = `rotate(${newValue}deg)`;\n\t}\n}",
+				"templateHTML": null,
+				"templateCSS": null,
+				"transforms": { "in": "x*2" }
+			}
+		},
+		"chainPool": {
+			"nodeIdToChainId": { "n2": "c2" },
+			"nextChainId": 3,
+			"pool": { "c2": { "id": "c2", "values": [] } }
+		}
+	}
+}
