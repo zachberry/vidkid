@@ -1,9 +1,5 @@
 const N = require("../web-components/base-node").default;
 class Function3 extends N {
-	static get type() {
-		return N.SCREEN;
-	}
-
 	static get inputs() {
 		return [
 			{
