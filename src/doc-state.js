@@ -215,7 +215,10 @@ class DocState {
 
 				case "setTransform":
 					let isSuccessful = this.nodeMap.setUserTransform(action.id, action.name, action.text);
-					if (isSuccessful) this.closeInputUI("userTransform", action.id, action.name);
+					if (isSuccessful) {
+						this.closeInputUI("userTransform", action.id, action.name);
+						this.isCablesMuted = false;
+					}
 					break;
 
 				case "removeConnection":
