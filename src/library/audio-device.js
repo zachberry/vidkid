@@ -20,23 +20,29 @@ class AudioDevice extends N {
 				restrict: N.set(["128", "256", "512", "1024", "2048", "4096", "8192", "16384"])
 			},
 			{
+				name: "active",
+				observe: true,
+				defaultValue: true,
+				restrict: Boolean
+			},
+			{
 				name: "smooth-const",
 				observe: true,
 				defaultValue: 0.1,
 				restrict: N.float(0, 1),
 				control: N.range({ step: 0.1 })
-			},
-			{
-				name: "filter",
-				observe: true,
-				defaultValue: false
-			},
-			{
-				name: "cutoff-freq",
-				observe: true,
-				defaultValue: 400,
-				restrict: Number
 			}
+			// {
+			// 	name: "filter",
+			// 	observe: true,
+			// 	defaultValue: false
+			// },
+			// {
+			// 	name: "cutoff-freq",
+			// 	observe: true,
+			// 	defaultValue: 400,
+			// 	restrict: Number
+			// }
 		];
 	}
 
@@ -55,12 +61,13 @@ class AudioDevice extends N {
 		this.analyser.fftSize = this.getFFTSize();
 
 		this.node = this.context.createScriptProcessor(this.analyser.fftSize * 2, 1, 1);
-		this.node.addEventListener("audioprocess", this.boundOnAudioProcess);
 
 		this.input = this.context.createMediaStreamSource(stream);
 		this.input.connect(this.analyser);
 		this.analyser.connect(this.node);
 		this.node.connect(this.context.destination);
+
+		this.updateListeners();
 	}
 
 	onAudioProcess() {
@@ -151,7 +158,20 @@ class AudioDevice extends N {
 	}
 
 	stopAudioProcessing() {
-		if (this.node) this.node.removeEventListener("audioprocess", this.boundOnAudioProcess);
+		if (this.node) {
+			this.input.disconnect(this.analyser);
+			this.node.onaudioprocess = null;
+			delete this.node.onaudioprocess;
+		}
+	}
+
+	updateListeners() {
+		if (!this.node) return;
+
+		this.node.onaudioprocess = null;
+		if (this.getAttribute("active")) {
+			this.node.onaudioprocess = this.boundOnAudioProcess;
+		}
 	}
 
 	onReady() {
@@ -167,7 +187,7 @@ class AudioDevice extends N {
 		this.getAudioDevices();
 	}
 
-	onDestroy() {
+	onRemove() {
 		this.stopAudioProcessing();
 	}
 
@@ -176,6 +196,7 @@ class AudioDevice extends N {
 			case "device-id":
 				this.stopAudioProcessing();
 				this.selectDevice(newValue);
+				break;
 
 			case "fft-size":
 				this.stopAudioProcessing();
@@ -184,6 +205,14 @@ class AudioDevice extends N {
 
 			case "smooth-const":
 				if (this.analyser) this.analyser.smoothingTimeConstant = parseFloat(newValue);
+				break;
+
+			case "active":
+				this.updateListeners();
+				break;
+
+			case "stop-audio":
+				this.stopAudioProcessing();
 				break;
 		}
 	}
