@@ -24,6 +24,9 @@ export default class NodeMap {
 	}
 
 	init() {
+		// This will force disconnect and onRemove calls to fire:
+		this.callOnRemoveForAllNodes();
+
 		this.nodeMap = {};
 		this.portMap = {};
 		this.inputsMap = {};
@@ -343,6 +346,12 @@ export default class NodeMap {
 		this.nodeOrder.splice(this.nodeOrder.indexOf(nodeId), 1);
 		if (deleteValues) delete this.values[nodeId];
 		this.elementRegistry.releaseAllEls(nodeId);
+	}
+
+	callOnRemoveForAllNodes() {
+		for (let nodeId in this.byId) {
+			this.byId[nodeId].componentInstance.onRemove();
+		}
 	}
 
 	getAddress(nodeId, attrName) {

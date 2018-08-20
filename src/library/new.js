@@ -23,6 +23,7 @@ class Node extends N {
 	}
 
 	onReady() {}
+	onRemove() {}
 	onDestroy() {}
 	onScreenDestroy() {}
 	onScreenUpdated() {}
