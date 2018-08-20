@@ -1,5 +1,9 @@
 export default [
 	{
+		label: "First Example",
+		json: require("./first-example.json")
+	},
+	{
 		label: "Mouse Coords",
 		json: require("./mouse-coords.json")
 	},
