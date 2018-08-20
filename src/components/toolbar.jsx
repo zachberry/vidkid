@@ -29,11 +29,16 @@ class Toolbar extends Component {
 		Events.emit("toolbar:import");
 	}
 
+	onClickExamples() {
+		Events.emit("toolbar:examples");
+	}
+
 	render() {
 		return (
 			<div className="toolbar">
 				{/* <button onClick={this.onClickUndo}>Undo</button>
 				<button onClick={this.onClickRedo}>Redo</button> */}
+				<button onClick={this.onClickExamples}>Examples</button>
 				<button onClick={this.onClickEditPage}>Edit Screen</button>
 				<button onClick={this.onClickExport}>Export</button>
 				<button onClick={this.onClickImport}>Import</button>

@@ -8,6 +8,7 @@ import Events from "./events";
 import NodeBoard from "./components/node-board";
 import ConnectionsBoard from "./components/connections-board";
 import MainMenu from "./components/main-menu";
+import NodeSearchMenu from "./components/node-search-menu";
 import DocState from "./doc-state";
 import Modal from "./components/modal";
 import EditNode from "./components/edit-node";
@@ -16,6 +17,7 @@ import EditPage from "./components/edit-page";
 import ImportExportDialog from "./components/import-export-dialog";
 import ErrorMessage from "./components/error-message";
 import ZoomControls from "./components/zoom-controls";
+import Examples from "./examples/all";
 
 class App extends Component {
 	constructor() {
@@ -26,7 +28,7 @@ class App extends Component {
 		window.__ds = this.docState;
 
 		this.state = {
-			importExportMode: null,
+			dialog: null,
 			bgX: 0,
 			bgY: 0
 		};
@@ -35,6 +37,8 @@ class App extends Component {
 		this.boundOnDragNodeBoard = this.onDragNodeBoard.bind(this);
 		this.boundOnZoomIn = this.onZoomIn.bind(this);
 		this.boundOnZoomOut = this.onZoomOut.bind(this);
+		this.boundOnExamplesMenuItemSelect = this.onExamplesMenuItemSelect.bind(this);
+		this.boundOnExamplesMenuClose = this.onExamplesMenuClose.bind(this);
 
 		// document.addEventListener("keydown", this.onKeyDown.bind(this));
 		document.addEventListener("keyup", this.onKeyUp.bind(this));
@@ -125,12 +129,10 @@ class App extends Component {
 		Events.on("app:update", this.forceUpdate.bind(this, null));
 		Events.on("toolbar:editPage", this.docState.doAction.bind(this.docState, { type: "editPage" }));
 		Events.on("toolbar:initState", this.onToolbarInitState.bind(this));
-		Events.on("toolbar:import", this.setState.bind(this, { importExportMode: "import" }, null));
-		Events.on("toolbar:export", this.setState.bind(this, { importExportMode: "export" }, null));
-		Events.on(
-			"importExportDialog:close",
-			this.setState.bind(this, { importExportMode: null }, null)
-		);
+		Events.on("toolbar:import", this.setState.bind(this, { dialog: "import" }, null));
+		Events.on("toolbar:export", this.setState.bind(this, { dialog: "export" }, null));
+		Events.on("toolbar:examples", this.setState.bind(this, { dialog: "examples" }, null));
+		Events.on("importExportDialog:close", this.setState.bind(this, { dialog: null }, null));
 		Events.on("importExportDialog:import", this.onDialogImport.bind(this));
 		Events.on("app:error", this.onErrorMessage.bind(this));
 	}
@@ -169,7 +171,7 @@ class App extends Component {
 
 	onDialogImport(newState) {
 		this.setState({
-			importExportMode: null
+			dialog: null
 		});
 		this.fromSerializable(newState);
 	}
@@ -197,6 +199,15 @@ class App extends Component {
 			type: "setZoomLevel",
 			zoomLevel: this.docState.zoomLevel - 0.2
 		});
+	}
+
+	onExamplesMenuItemSelect(item) {
+		this.setState({ dialog: null });
+		this.fromSerializable(item.json);
+	}
+
+	onExamplesMenuClose() {
+		this.setState({ dialog: null });
 	}
 
 	render() {
@@ -247,17 +258,24 @@ class App extends Component {
 						/>
 					</Modal>
 				) : null}
-				{this.state.importExportMode !== null ? (
+				{this.state.dialog === "import" || this.state.dialog === "export" ? (
 					<Modal>
 						<ImportExportDialog
-							mode={this.state.importExportMode}
+							mode={this.state.dialog}
 							text={
-								this.state.importExportMode === "export"
+								this.state.dialog === "export"
 									? JSON.stringify(this.docState.toSerializable())
 									: null
 							}
 						/>
 					</Modal>
+				) : null}
+				{this.state.dialog === "examples" ? (
+					<NodeSearchMenu
+						initialAllItems={Examples}
+						onItemSelect={this.boundOnExamplesMenuItemSelect}
+						onClose={this.boundOnExamplesMenuClose}
+					/>
 				) : null}
 				{this.state.errorMessage ? (
 					<ErrorMessage

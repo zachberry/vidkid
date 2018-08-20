@@ -69,3 +69,9 @@
 .App .modal {
 	z-index: 999999;
 }
+
+.App > .node-search-menu {
+	position: absolute;
+	right: 16.7em;
+	top: 4.6em;
+}
