@@ -18,10 +18,15 @@ import ImportExportDialog from "./components/import-export-dialog";
 import ErrorMessage from "./components/error-message";
 import ZoomControls from "./components/zoom-controls";
 import Examples from "./examples/all";
+import first from "./first.json";
 
 class App extends Component {
 	constructor() {
 		super();
+
+		if (!localStorage.saved) {
+			localStorage.saved = JSON.stringify(first);
+		}
 
 		this.docState = new DocState();
 		this.docState.onUpdateCallback = this.onUpdate.bind(this);

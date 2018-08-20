@@ -1,0 +1,37 @@
+{
+	"editingNodeId": null,
+	"editingPage": false,
+	"selectedConnection": null,
+	"connecting": null,
+	"pageHTML": "<body>\n\n</body>",
+	"pageCSS":
+		"body {\n\twidth: 100%;\n\theight: 100%;\n\tmargin: 0;\n\tpadding: 0;\n\tfont-size: 14pt;\n\tfont-family: Arial, Helvetica, sans-serif;\n\tcolor: white;\n\tbackground: black;\n}",
+	"nodeUIMap": { "n0": { "pos": [42, 37] } },
+	"isCablesMuted": false,
+	"fullscreen": false,
+	"zoomLevel": 1,
+	"nodeMap": {
+		"nodeMap": {},
+		"portMap": {},
+		"inputsMap": {},
+		"nextId": 1,
+		"nodeOrder": ["n0"],
+		"values": {
+			"n0": {
+				"text": "Thanks for checking out VidKid! Click on 'Examples' in the menu to get started."
+			}
+		},
+		"byId": {
+			"n0": {
+				"id": "n0",
+				"rev": 0,
+				"text":
+					"class Note extends N {\n\tstatic get type() {\n\t\treturn N.INFO;\n\t}\n\n\tstatic get inputs() {\n\t\treturn [{\n\t\t\tname: \"text\",\n\t\t\tobserve: false,\n\t\t\trestrict: String,\n\t\t\tvisible: false\n\t\t}];\n\t}\n\n\tonReady() {\n\t\tthis.boundOnInput = this.onInput.bind(this);\n\t\tthis.root.getElementById(\"container\").addEventListener(\"input\", this.boundOnInput);\n\t\tlet text = this.getAttribute(\"text\");\n\t\tif (text) this.root.getElementById(\"container\").innerHTML = text;\n\t}\n\n\tonInput(event) {\n\t\tthis.setAttribute(\"text\", event.target.innerHTML);\n\t}\n\n\tonAttrChanged(name, oldValue, newValue) {\n\t\tswitch (name) {\n\t\t\tcase \"text\":\n\t\t\t\tthis.root.getElementById(\"container\").innerHTML = newValue;\n\t\t\t\tbreak;\n\t\t}\n\t}\n\n}",
+				"templateHTML": "<div id=\"container\" contenteditable>Click here to edit...</div>",
+				"templateCSS": "#container { width: 13em; }",
+				"transforms": {}
+			}
+		},
+		"chainPool": { "nodeIdToChainId": {}, "nextChainId": 0, "pool": {} }
+	}
+}
