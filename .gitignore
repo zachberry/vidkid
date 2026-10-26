@@ -23,3 +23,4 @@ yarn-error.log*
 # project specific
 /example-*
 TODO.md
+do-pushlive.sh
